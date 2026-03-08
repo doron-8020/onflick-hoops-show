@@ -194,7 +194,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
       {/* Right side actions */}
       <div
-        className="absolute right-3 bottom-32 flex flex-col items-center gap-5 z-10"
+        className="absolute end-3 bottom-32 flex flex-col items-center gap-5 z-10"
         onClick={(e) => e.stopPropagation()}
       >
         {video.user_id && (
