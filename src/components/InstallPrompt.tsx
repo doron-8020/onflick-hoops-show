@@ -51,7 +51,7 @@ const InstallPrompt = ({ show, onClose }: InstallPromptProps) => {
         {/* Close button */}
         <button
           onClick={handleDismiss}
-          className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-secondary transition-colors"
+          className="absolute top-4 end-4 p-1.5 rounded-full hover:bg-secondary transition-colors"
         >
           <X className="h-4 w-4 text-muted-foreground" />
         </button>

@@ -101,7 +101,7 @@ const BottomNav = () => {
                 {item.label}
               </span>
               {isNotif && unreadCount > 0 && (
-                <span className="absolute -top-0.5 right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground animate-scale-in">
+                <span className="absolute -top-0.5 end-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground animate-scale-in">
                   {unreadCount > 99 ? "99+" : unreadCount}
                 </span>
               )}
