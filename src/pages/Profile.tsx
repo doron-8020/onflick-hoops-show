@@ -66,7 +66,15 @@ const Profile = () => {
         <div className="flex gap-8 mb-6">
           <div className="flex flex-col items-center">
             <span className="font-display text-xl text-foreground">{videos.length}</span>
-            <span className="text-xs text-muted-foreground">Posts</span>
+            <span className="text-xs text-muted-foreground">פוסטים</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="font-display text-xl text-foreground">{profile?.followers_count || 0}</span>
+            <span className="text-xs text-muted-foreground">עוקבים</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="font-display text-xl text-foreground">{profile?.following_count || 0}</span>
+            <span className="text-xs text-muted-foreground">עוקב</span>
           </div>
         </div>
 

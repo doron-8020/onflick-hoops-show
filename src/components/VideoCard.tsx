@@ -165,6 +165,20 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
               </p>
             )}
           </div>
+          {user && video.user_id && user.id !== video.user_id && (
+            <button
+              onClick={(e) => { e.stopPropagation(); toggleFollow(); }}
+              disabled={followLoading}
+              className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
+                isFollowing
+                  ? "bg-secondary text-secondary-foreground"
+                  : "gradient-fire text-primary-foreground shadow-glow"
+              }`}
+            >
+              {isFollowing ? <UserCheck className="h-3.5 w-3.5" /> : <UserPlus className="h-3.5 w-3.5" />}
+              {isFollowing ? "עוקב" : "עקוב"}
+            </button>
+          )}
         </div>
 
         {video.caption && <p className="text-sm text-foreground mb-2">{video.caption}</p>}
