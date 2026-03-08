@@ -85,6 +85,26 @@ const Settings = () => {
           </div>
         </section>
 
+        {/* Admin Section */}
+        {user && isAdmin && (
+          <section>
+            <h2 className="font-display text-lg text-foreground mb-3 tracking-wide">
+              {language === "he" ? "ניהול" : "Admin"}
+            </h2>
+            <div className="rounded-xl bg-card border border-border overflow-hidden">
+              <button
+                onClick={() => navigate("/admin")}
+                className="w-full flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-primary/10"
+              >
+                <Shield className="h-5 w-5 text-primary" />
+                <span className="flex-1 text-sm text-foreground text-start font-medium">
+                  {language === "he" ? "ניהול משתמשים" : "User Management"}
+                </span>
+              </button>
+            </div>
+          </section>
+        )}
+
         {/* Account Section */}
         {user && (
           <section>
