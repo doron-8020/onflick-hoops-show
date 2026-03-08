@@ -29,7 +29,7 @@ const typeColors: Record<string, string> = {
 };
 
 const Notifications = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -94,6 +94,17 @@ const Notifications = () => {
       navigate(`/player/${notif.from_user_id}`);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center pb-24">
+        <div className="animate-pulse-glow rounded-full gradient-fire p-6">
+          <span className="font-display text-2xl text-primary-foreground">🏀</span>
+        </div>
+        <BottomNav />
+      </div>
+    );
+  }
 
   if (!user) {
     return (

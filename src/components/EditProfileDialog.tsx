@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 
 interface EditProfileDialogProps {
@@ -23,6 +24,7 @@ interface EditProfileDialogProps {
 
 const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfileDialogProps) => {
   const { user } = useAuth();
+  const { t, isRTL } = useLanguage();
   const fileRef = useRef<HTMLInputElement>(null);
   const [displayName, setDisplayName] = useState("");
   const [position, setPosition] = useState("");
@@ -48,12 +50,12 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("הקובץ גדול מדי (מקסימום 5MB)");
+      toast.error(t("editProfile.fileTooLarge"));
       return;
     }
     // FIX #39: Validate image type
     if (!file.type.startsWith("image/")) {
-      toast.error("יש לבחור קובץ תמונה");
+      toast.error(t("editProfile.invalidImage"));
       return;
     }
     setAvatarFile(file);
@@ -64,7 +66,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
     if (!user) return;
     // FIX #40: Validate display name
     if (displayName.trim().length < 2) {
-      toast.error("שם תצוגה חייב להכיל לפחות 2 תווים");
+      toast.error(t("editProfile.nameMinLength"));
       return;
     }
     setSaving(true);
@@ -99,11 +101,11 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
 
       if (error) throw error;
 
-      toast.success("הפרופיל עודכן בהצלחה");
+      toast.success(t("editProfile.success"));
       onSaved();
       onOpenChange(false);
     } catch (e: any) {
-      toast.error(e.message || "שגיאה בעדכון הפרופיל");
+      toast.error(e.message || t("editProfile.error"));
     } finally {
       setSaving(false);
     }
@@ -111,10 +113,10 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm bg-background border-border" dir="rtl">
+      <DialogContent className="max-w-sm bg-background border-border" dir={isRTL ? "rtl" : "ltr"}>
         <DialogHeader>
           <DialogTitle className="text-foreground font-display text-xl">
-            עריכת פרופיל
+            {t("editProfile.title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -143,11 +145,11 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
               onChange={handleFileChange}
             />
           </button>
-          <p className="text-xs text-muted-foreground">לחץ לשינוי תמונה</p>
+          <p className="text-xs text-muted-foreground">{t("editProfile.changePhoto")}</p>
 
           <div className="w-full space-y-3">
             <div>
-              <Label className="text-muted-foreground text-xs">שם תצוגה *</Label>
+              <Label className="text-muted-foreground text-xs">{t("editProfile.displayName")}</Label>
               <Input
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
@@ -156,7 +158,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
               />
             </div>
             <div>
-              <Label className="text-muted-foreground text-xs">עמדה</Label>
+              <Label className="text-muted-foreground text-xs">{t("editProfile.position")}</Label>
               <Input
                 value={position}
                 onChange={(e) => setPosition(e.target.value)}
@@ -166,7 +168,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
               />
             </div>
             <div>
-              <Label className="text-muted-foreground text-xs">קבוצה</Label>
+              <Label className="text-muted-foreground text-xs">{t("editProfile.team")}</Label>
               <Input
                 value={team}
                 onChange={(e) => setTeam(e.target.value)}
@@ -175,7 +177,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
               />
             </div>
             <div>
-              <Label className="text-muted-foreground text-xs">ביו</Label>
+              <Label className="text-muted-foreground text-xs">{t("editProfile.bio")}</Label>
               <Textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
@@ -198,10 +200,10 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
             {saving ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                שומר...
+                {t("editProfile.saving")}
               </span>
             ) : (
-              "שמור"
+              t("editProfile.save")
             )}
           </button>
         </div>

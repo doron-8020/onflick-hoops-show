@@ -121,6 +121,27 @@ export const translations = {
   "comments.signInToComment": { he: "התחבר כדי להגיב", en: "Sign in to comment" },
   "comments.placeholder": { he: "הוסף תגובה...", en: "Add a comment..." },
   "comments.empty": { he: "אין תגובות עדיין. היה הראשון! 🏀", en: "No comments yet. Be the first! 🏀" },
+  "comments.sendError": { he: "שגיאה בשליחת התגובה", en: "Error sending comment" },
+  "comments.deleteError": { he: "שגיאה במחיקת התגובה", en: "Error deleting comment" },
+  "comments.anonymous": { he: "אנונימי", en: "Anonymous" },
+
+  // Edit Profile
+  "editProfile.title": { he: "עריכת פרופיל", en: "Edit Profile" },
+  "editProfile.changePhoto": { he: "לחץ לשינוי תמונה", en: "Tap to change photo" },
+  "editProfile.displayName": { he: "שם תצוגה *", en: "Display Name *" },
+  "editProfile.position": { he: "עמדה", en: "Position" },
+  "editProfile.team": { he: "קבוצה", en: "Team" },
+  "editProfile.bio": { he: "ביו", en: "Bio" },
+  "editProfile.save": { he: "שמור", en: "Save" },
+  "editProfile.saving": { he: "שומר...", en: "Saving..." },
+  "editProfile.success": { he: "הפרופיל עודכן בהצלחה", en: "Profile updated successfully" },
+  "editProfile.error": { he: "שגיאה בעדכון הפרופיל", en: "Error updating profile" },
+  "editProfile.nameMinLength": { he: "שם תצוגה חייב להכיל לפחות 2 תווים", en: "Display name must be at least 2 characters" },
+  "editProfile.fileTooLarge": { he: "הקובץ גדול מדי (מקסימום 5MB)", en: "File too large (max 5MB)" },
+  "editProfile.invalidImage": { he: "יש לבחור קובץ תמונה", en: "Please select an image file" },
+
+  // Follow
+  "follow.error": { he: "שגיאה", en: "Error" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

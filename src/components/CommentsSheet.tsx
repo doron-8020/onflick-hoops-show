@@ -26,16 +26,16 @@ interface CommentsSheetProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const timeAgo = (dateStr: string) => {
+const timeAgo = (dateStr: string, lang: string) => {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "עכשיו";
-  if (mins < 60) return `${mins}ד׳`;
+  if (mins < 1) return lang === "he" ? "עכשיו" : "now";
+  if (mins < 60) return lang === "he" ? `${mins}ד׳` : `${mins}m`;
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}ש׳`;
+  if (hrs < 24) return lang === "he" ? `${hrs}ש׳` : `${hrs}h`;
   const days = Math.floor(hrs / 24);
-  if (days < 7) return `${days}י׳`;
-  return `${Math.floor(days / 7)}שב׳`;
+  if (days < 7) return lang === "he" ? `${days}י׳` : `${days}d`;
+  return lang === "he" ? `${Math.floor(days / 7)}שב׳` : `${Math.floor(days / 7)}w`;
 };
 
 const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
@@ -44,7 +44,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const { user } = useAuth();
-  const { t, isRTL } = useLanguage();
+  const { t, isRTL, language } = useLanguage();
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -103,7 +103,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
     });
 
     if (error) {
-      toast.error("שגיאה בשליחת התגובה");
+      toast.error(t("comments.sendError"));
     } else {
       setNewComment("");
       setTimeout(
@@ -120,7 +120,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
 
   const handleDelete = async (commentId: string) => {
     const { error } = await supabase.from("comments").delete().eq("id", commentId);
-    if (error) toast.error("שגיאה במחיקת התגובה");
+    if (error) toast.error(t("comments.deleteError"));
   };
 
   return (
@@ -152,7 +152,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
             </p>
           ) : (
             comments.map((comment) => {
-              const name = comment.profiles?.display_name || "אנונימי";
+              const name = comment.profiles?.display_name || t("comments.anonymous");
               return (
                 <div key={comment.id} className="flex gap-3 group">
                   {/* FIX #22: Show avatar in comments */}
@@ -173,7 +173,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold text-foreground">{name}</span>
                       <span className="text-[10px] text-muted-foreground">
-                        {timeAgo(comment.created_at)}
+                        {timeAgo(comment.created_at, language)}
                       </span>
                     </div>
                     <p className="text-sm text-foreground mt-0.5 break-words">

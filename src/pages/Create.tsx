@@ -9,7 +9,7 @@ import BottomNav from "@/components/BottomNav";
 
 const Create = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { t, isRTL } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -19,6 +19,17 @@ const Create = () => {
   const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [tags, setTags] = useState("");
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center pb-24">
+        <div className="animate-pulse-glow rounded-full gradient-fire p-6">
+          <span className="font-display text-2xl text-primary-foreground">🏀</span>
+        </div>
+        <BottomNav />
+      </div>
+    );
+  }
 
   if (!user) {
     return (

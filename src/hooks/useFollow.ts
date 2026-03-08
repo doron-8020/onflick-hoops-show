@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 
 export const useFollow = (targetUserId: string | undefined) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -43,7 +45,7 @@ export const useFollow = (targetUserId: string | undefined) => {
         setIsFollowing(true);
       }
     } catch (e: any) {
-      toast.error(e.message || "שגיאה");
+      toast.error(e.message || t("follow.error"));
     } finally {
       setLoading(false);
     }

@@ -34,11 +34,12 @@ const Auth = () => {
       if (isLogin) {
         await signIn(email, password);
         toast.success(t("auth.welcome"));
+        navigate("/");
       } else {
         await signUp(email, password, displayName.trim());
         toast.success(t("auth.signUpSuccess"));
+        // Don't navigate - user needs to verify email first
       }
-      navigate("/");
     } catch (error: any) {
       const msg = error.message;
       if (msg?.includes("Invalid login")) {

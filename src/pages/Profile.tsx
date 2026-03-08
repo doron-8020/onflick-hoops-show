@@ -19,7 +19,7 @@ const formatCount = (n: number) => {
 };
 
 const Profile = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading: authLoading } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
@@ -79,6 +79,17 @@ const Profile = () => {
     const elRect = el.getBoundingClientRect();
     return { left: elRect.left - barRect.left, width: elRect.width };
   }, [activeTab]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center pb-24">
+        <div className="animate-pulse-glow rounded-full gradient-fire p-6">
+          <span className="font-display text-2xl text-primary-foreground">🏀</span>
+        </div>
+        <BottomNav />
+      </div>
+    );
+  }
 
   if (!user) {
     return (
