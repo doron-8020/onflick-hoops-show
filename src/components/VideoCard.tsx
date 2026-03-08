@@ -154,8 +154,15 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       {/* Bottom info */}
       <div className="absolute bottom-20 left-0 right-16 p-4">
         <div className="mb-3 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full gradient-fire font-display text-lg text-primary-foreground">
-            {displayName.charAt(0).toUpperCase()}
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-full gradient-fire font-display text-lg text-primary-foreground cursor-pointer"
+            onClick={(e) => { e.stopPropagation(); if (video.user_id) navigate(`/player/${video.user_id}`); }}
+          >
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="" className="h-full w-full rounded-full object-cover" />
+            ) : (
+              displayName.charAt(0).toUpperCase()
+            )}
           </div>
           <div className="flex-1">
             <span className="font-semibold text-foreground text-sm">{displayName}</span>
