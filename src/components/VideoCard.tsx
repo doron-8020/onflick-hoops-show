@@ -165,7 +165,10 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
             )}
           </div>
           <div className="flex-1">
-            <span className="font-semibold text-foreground text-sm">{displayName}</span>
+            <span
+              className="font-semibold text-foreground text-sm cursor-pointer"
+              onClick={(e) => { e.stopPropagation(); if (video.user_id) navigate(`/player/${video.user_id}`); }}
+            >{displayName}</span>
             {profile?.position && (
               <p className="text-xs text-muted-foreground">
                 {profile.position}{profile.team ? ` · ${profile.team}` : ""}
