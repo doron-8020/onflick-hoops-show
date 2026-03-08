@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 export const useFollow = (targetUserId: string | undefined) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
 
