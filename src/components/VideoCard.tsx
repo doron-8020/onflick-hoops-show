@@ -153,7 +153,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   return (
     <div
       className="relative h-full w-full"
-      onClick={video.media_type !== "image" ? handleTap : undefined}
+      onClick={video.media_type !== "image" && video.media_type !== "gallery" ? handleTap : undefined}
     >
       {/* Media */}
       <div className="absolute inset-0">
