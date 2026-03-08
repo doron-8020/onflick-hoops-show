@@ -18,11 +18,15 @@ interface PlayerProfile {
 
 const PlayerCard = ({ player }: { player: PlayerProfile }) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { isFollowing, toggleFollow, loading } = useFollow(player.user_id);
   const isSelf = user?.id === player.user_id;
 
   return (
-    <div className="flex items-center gap-3 rounded-xl bg-secondary p-3">
+    <div
+      className="flex items-center gap-3 rounded-xl bg-secondary p-3 cursor-pointer transition-colors hover:bg-secondary/80"
+      onClick={() => navigate(`/player/${player.user_id}`)}
+    >
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full gradient-fire font-display text-lg text-primary-foreground">
         {(player.display_name || "P").charAt(0).toUpperCase()}
       </div>
