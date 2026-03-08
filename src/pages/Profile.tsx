@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Settings, Grid3X3, Bookmark, BadgeCheck, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
+import EditProfileDialog from "@/components/EditProfileDialog";
 
 const Profile = () => {
   const { user, signOut } = useAuth();
