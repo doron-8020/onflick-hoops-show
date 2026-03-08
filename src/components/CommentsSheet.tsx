@@ -139,7 +139,6 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
           <SheetTitle className="text-center text-sm">
             {t("comments.title")} ({comments.length})
           </SheetTitle>
-          </SheetTitle>
         </SheetHeader>
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
