@@ -204,10 +204,10 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
           <Input
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            placeholder="הוסף תגובה..."
+            placeholder={user ? t("comments.placeholder") : t("comments.signInToComment")}
             className="flex-1 text-sm bg-secondary"
-            dir="rtl"
-            disabled={submitting}
+            dir={isRTL ? "rtl" : "ltr"}
+            disabled={submitting || !user}
             maxLength={500}
           />
           <Button
