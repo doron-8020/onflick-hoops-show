@@ -27,6 +27,7 @@ const App = () => (
             <Route path="/discover" element={<Discover />} />
             <Route path="/create" element={<Create />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/player/:userId" element={<PlayerProfile />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="*" element={<NotFound />} />
