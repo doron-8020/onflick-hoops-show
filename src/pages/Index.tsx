@@ -23,6 +23,7 @@ interface VideoWithProfile {
   shares_count: number;
   views_count: number;
   media_type: string;
+  gallery_urls: string[] | null;
   created_at?: string;
   profiles: {
     display_name: string | null;
