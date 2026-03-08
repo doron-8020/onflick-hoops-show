@@ -29,7 +29,7 @@ const typeColors: Record<string, string> = {
 };
 
 const Notifications = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
