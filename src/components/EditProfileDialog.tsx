@@ -158,7 +158,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
               />
             </div>
             <div>
-              <Label className="text-muted-foreground text-xs">עמדה</Label>
+              <Label className="text-muted-foreground text-xs">{t("editProfile.position")}</Label>
               <Input
                 value={position}
                 onChange={(e) => setPosition(e.target.value)}
