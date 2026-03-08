@@ -152,7 +152,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
             </p>
           ) : (
             comments.map((comment) => {
-              const name = comment.profiles?.display_name || "אנונימי";
+              const name = comment.profiles?.display_name || t("comments.anonymous");
               return (
                 <div key={comment.id} className="flex gap-3 group">
                   {/* FIX #22: Show avatar in comments */}
