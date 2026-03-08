@@ -15,6 +15,7 @@ const Settings = () => {
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const [signingOut, setSigningOut] = useState(false);
 
   const handleSignOut = async () => {
