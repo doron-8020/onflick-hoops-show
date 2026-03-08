@@ -168,7 +168,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
               />
             </div>
             <div>
-              <Label className="text-muted-foreground text-xs">קבוצה</Label>
+              <Label className="text-muted-foreground text-xs">{t("editProfile.team")}</Label>
               <Input
                 value={team}
                 onChange={(e) => setTeam(e.target.value)}
