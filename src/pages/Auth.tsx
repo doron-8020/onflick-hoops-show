@@ -36,9 +36,8 @@ const Auth = () => {
       if (isLogin) {
         await signIn(email, password);
         toast.success(t("auth.welcome"));
-        setShowInstall(true);
-        // Navigate after a brief delay to allow install prompt to show
-        setTimeout(() => navigate("/"), 300);
+        localStorage.setItem("show-install-prompt", "true");
+        navigate("/");
       } else {
         await signUp(email, password, displayName.trim());
         toast.success(t("auth.signUpSuccess"));
