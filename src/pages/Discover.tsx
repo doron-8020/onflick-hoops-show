@@ -100,8 +100,10 @@ const Discover = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
+      <div className="mx-auto max-w-2xl">
       <div className="px-4 pt-14 pb-4">
         <h1 className="font-display text-3xl text-foreground tracking-wide">{t("discover.title")}</h1>
+      </div>
       </div>
 
       <div className="px-4 mb-6">
