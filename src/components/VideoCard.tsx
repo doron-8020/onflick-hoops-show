@@ -124,7 +124,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           <span className="text-xs font-semibold text-foreground">{formatNumber(likes)}</span>
         </button>
 
-        <button className="flex flex-col items-center gap-1">
+        <button onClick={() => setCommentsOpen(true)} className="flex flex-col items-center gap-1">
           <div className="rounded-full bg-background/30 p-2.5 backdrop-blur-sm">
             <MessageCircle className="h-7 w-7 text-foreground" />
           </div>
