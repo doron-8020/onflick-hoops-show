@@ -19,7 +19,7 @@ const formatCount = (n: number) => {
 };
 
 const Profile = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading: authLoading } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
