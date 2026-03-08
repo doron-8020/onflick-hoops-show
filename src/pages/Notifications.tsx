@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { Heart, MessageCircle, UserPlus, Bell, Trash2 } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
@@ -27,23 +28,24 @@ const typeColors: Record<string, string> = {
   follow: "bg-green-500/15 text-green-400",
 };
 
-const timeAgo = (dateStr: string) => {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "עכשיו";
-  if (mins < 60) return `לפני ${mins}ד׳`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `לפני ${hrs}ש׳`;
-  const days = Math.floor(hrs / 24);
-  if (days < 7) return `לפני ${days} ימים`;
-  return `לפני ${Math.floor(days / 7)} שבועות`;
-};
-
 const Notifications = () => {
   const { user } = useAuth();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const timeAgo = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return t("notifications.now");
+    if (mins < 60) return language === "he" ? `לפני ${mins}${t("notifications.min")}` : `${mins}${t("notifications.min")} ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return language === "he" ? `לפני ${hrs}${t("notifications.hour")}` : `${hrs}${t("notifications.hour")} ago`;
+    const days = Math.floor(hrs / 24);
+    if (days < 7) return language === "he" ? `לפני ${days} ${t("notifications.days")}` : `${days} ${t("notifications.days")} ago`;
+    return language === "he" ? `לפני ${Math.floor(days / 7)} ${t("notifications.weeks")}` : `${Math.floor(days / 7)} ${t("notifications.weeks")} ago`;
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -61,7 +63,6 @@ const Notifications = () => {
 
     fetchNotifications();
 
-    // Mark all as read
     supabase
       .from("notifications")
       .update({ read: true })
@@ -73,35 +74,25 @@ const Notifications = () => {
       .channel("notifications")
       .on(
         "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "notifications",
-          filter: `user_id=eq.${user.id}`,
-        },
+        { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
         (payload) => {
           setNotifications((prev) => [payload.new as Notification, ...prev]);
         }
       )
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [user]);
 
-  // FIX #28: Delete notification
   const handleDelete = async (id: string) => {
     await supabase.from("notifications").delete().eq("id", id);
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
-  // FIX #29: Click notification to navigate
   const handleClick = (notif: Notification) => {
     if (notif.from_user_id && notif.type === "follow") {
       navigate(`/player/${notif.from_user_id}`);
     }
-    // Could navigate to video for like/comment notifications in future
   };
 
   if (!user) {
@@ -110,15 +101,13 @@ const Notifications = () => {
         <div className="rounded-full bg-secondary p-6 mb-4">
           <Bell className="h-10 w-10 text-muted-foreground" />
         </div>
-        <p className="font-display text-2xl text-foreground mb-2">התראות</p>
-        <p className="text-sm text-muted-foreground mb-6 text-center">
-          התחבר כדי לראות את ההתראות שלך
-        </p>
+        <p className="font-display text-2xl text-foreground mb-2">{t("notifications.title")}</p>
+        <p className="text-sm text-muted-foreground mb-6 text-center">{t("notifications.signInToSee")}</p>
         <button
           onClick={() => navigate("/auth")}
           className="rounded-xl gradient-fire px-8 py-3 text-sm font-bold text-primary-foreground shadow-glow"
         >
-          התחבר
+          {t("auth.signIn")}
         </button>
         <BottomNav />
       </div>
@@ -128,7 +117,7 @@ const Notifications = () => {
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="px-4 pt-14 pb-4">
-        <h1 className="font-display text-3xl text-foreground">התראות</h1>
+        <h1 className="font-display text-3xl text-foreground">{t("notifications.title")}</h1>
       </div>
 
       {loading ? (
@@ -140,10 +129,8 @@ const Notifications = () => {
           <div className="rounded-full bg-secondary p-5 mb-4">
             <Bell className="h-8 w-8 text-muted-foreground/50" />
           </div>
-          <p className="text-foreground font-semibold mb-1">אין התראות</p>
-          <p className="text-muted-foreground text-xs text-center">
-            כשמישהו יעשה לייק, יגיב או יעקוב — תראה את זה כאן
-          </p>
+          <p className="text-foreground font-semibold mb-1">{t("notifications.empty")}</p>
+          <p className="text-muted-foreground text-xs text-center">{t("notifications.emptyDesc")}</p>
         </div>
       ) : (
         <div className="divide-y divide-border">
@@ -159,31 +146,20 @@ const Notifications = () => {
                 }`}
               >
                 <div className={`rounded-full p-2 mt-0.5 shrink-0 ${colorClass}`}>
-                  <Icon
-                    className="h-4 w-4"
-                    fill={notif.type === "like" ? "currentColor" : "none"}
-                  />
+                  <Icon className="h-4 w-4" fill={notif.type === "like" ? "currentColor" : "none"} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-foreground leading-snug">{notif.message}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {timeAgo(notif.created_at)}
-                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">{timeAgo(notif.created_at)}</p>
                 </div>
-                {/* FIX #28: Delete button */}
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(notif.id);
-                  }}
+                  onClick={(e) => { e.stopPropagation(); handleDelete(notif.id); }}
                   className="opacity-0 group-hover:opacity-100 transition-opacity mt-1 p-1"
                   aria-label="Delete notification"
                 >
                   <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive transition-colors" />
                 </button>
-                {!notif.read && (
-                  <div className="h-2 w-2 rounded-full bg-primary mt-2 shrink-0" />
-                )}
+                {!notif.read && <div className="h-2 w-2 rounded-full bg-primary mt-2 shrink-0" />}
               </div>
             );
           })}
