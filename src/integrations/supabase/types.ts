@@ -144,46 +144,108 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          comment_privacy: string
           created_at: string
           display_name: string | null
           followers_count: number
           following_count: number
           id: string
+          notify_comments: boolean
+          notify_followers: boolean
+          notify_likes: boolean
+          notify_messages: boolean
           position: string | null
+          private_profile: boolean
           status: Database["public"]["Enums"]["user_status"]
           team: string | null
           updated_at: string
           user_id: string
+          verified: boolean
         }
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          comment_privacy?: string
           created_at?: string
           display_name?: string | null
           followers_count?: number
           following_count?: number
           id?: string
+          notify_comments?: boolean
+          notify_followers?: boolean
+          notify_likes?: boolean
+          notify_messages?: boolean
           position?: string | null
+          private_profile?: boolean
           status?: Database["public"]["Enums"]["user_status"]
           team?: string | null
           updated_at?: string
           user_id: string
+          verified?: boolean
         }
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          comment_privacy?: string
           created_at?: string
           display_name?: string | null
           followers_count?: number
           following_count?: number
           id?: string
+          notify_comments?: boolean
+          notify_followers?: boolean
+          notify_likes?: boolean
+          notify_messages?: boolean
           position?: string | null
+          private_profile?: boolean
           status?: Database["public"]["Enums"]["user_status"]
           team?: string | null
           updated_at?: string
           user_id?: string
+          verified?: boolean
         }
         Relationships: []
+      }
+      reports: {
+        Row: {
+          created_at: string
+          id: string
+          reason: string
+          reporter_id: string
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          video_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reason?: string
+          reporter_id: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          video_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reason?: string
+          reporter_id?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -310,6 +372,8 @@ export type Database = {
         }
         Returns: undefined
       }
+      admin_toggle_verified: { Args: { p_user_id: string }; Returns: boolean }
+      delete_own_account: { Args: never; Returns: undefined }
       get_user_status: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["user_status"]
