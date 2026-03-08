@@ -142,7 +142,7 @@ const Admin = () => {
     setActionLoading(null);
   };
 
-  const assignRole = async (userId: string, role: "admin" | "moderator") => {
+  const assignRole = async (userId: string, role: "admin" | "moderator" | "user") => {
     setActionLoading(userId);
     const { error } = await supabase.from("user_roles").insert({ user_id: userId, role });
     if (error) {
