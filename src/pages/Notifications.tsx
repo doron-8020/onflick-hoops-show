@@ -95,6 +95,17 @@ const Notifications = () => {
     }
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center pb-24">
+        <div className="animate-pulse-glow rounded-full gradient-fire p-6">
+          <span className="font-display text-2xl text-primary-foreground">🏀</span>
+        </div>
+        <BottomNav />
+      </div>
+    );
+  }
+
   if (!user) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-8 pb-24">
