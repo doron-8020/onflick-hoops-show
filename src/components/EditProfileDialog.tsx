@@ -177,7 +177,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
               />
             </div>
             <div>
-              <Label className="text-muted-foreground text-xs">ביו</Label>
+              <Label className="text-muted-foreground text-xs">{t("editProfile.bio")}</Label>
               <Textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
