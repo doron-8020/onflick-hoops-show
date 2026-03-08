@@ -55,7 +55,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
     }
     // FIX #39: Validate image type
     if (!file.type.startsWith("image/")) {
-      toast.error("יש לבחור קובץ תמונה");
+      toast.error(t("editProfile.invalidImage"));
       return;
     }
     setAvatarFile(file);
