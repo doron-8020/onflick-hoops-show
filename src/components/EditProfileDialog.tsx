@@ -24,6 +24,7 @@ interface EditProfileDialogProps {
 
 const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfileDialogProps) => {
   const { user } = useAuth();
+  const { t, isRTL } = useLanguage();
   const fileRef = useRef<HTMLInputElement>(null);
   const [displayName, setDisplayName] = useState("");
   const [position, setPosition] = useState("");
