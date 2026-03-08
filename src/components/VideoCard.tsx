@@ -181,7 +181,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       {video.media_type !== "image" && (
         <button
           onClick={toggleMute}
-          className="absolute top-16 right-4 z-30 rounded-full bg-background/30 p-2 backdrop-blur-sm"
+          className="absolute top-16 end-4 z-30 rounded-full bg-background/30 p-2 backdrop-blur-sm"
           aria-label={muted ? "Unmute" : "Mute"}
         >
           {muted ? (
@@ -194,7 +194,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
       {/* Right side actions */}
       <div
-        className="absolute right-3 bottom-32 flex flex-col items-center gap-5 z-10"
+        className="absolute end-3 bottom-32 flex flex-col items-center gap-5 z-10"
         onClick={(e) => e.stopPropagation()}
       >
         {video.user_id && (
@@ -265,7 +265,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </div>
 
       {/* Bottom info */}
-      <div className="absolute bottom-20 left-0 right-16 p-4">
+      <div className="absolute bottom-20 start-0 end-16 p-4">
         <div className="mb-3 flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <span
