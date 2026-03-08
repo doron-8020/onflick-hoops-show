@@ -173,7 +173,7 @@ const Discover = () => {
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-                  <div className="absolute bottom-2 left-2 right-2">
+                  <div className="absolute bottom-2 start-2 end-2">
                     <p className="text-xs font-semibold text-foreground truncate">{video.player.name}</p>
                     <p className="text-[10px] text-muted-foreground">{video.views} {t("feed.views")}</p>
                   </div>

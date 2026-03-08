@@ -133,7 +133,7 @@ const Create = () => {
             )}
             <button
               onClick={() => { setSelectedFile(null); setPreviewUrl(null); }}
-              className="absolute top-2 right-2 rounded-full bg-background/70 p-1.5 backdrop-blur-sm"
+              className="absolute top-2 end-2 rounded-full bg-background/70 p-1.5 backdrop-blur-sm"
             >
               <X className="h-4 w-4 text-foreground" />
             </button>

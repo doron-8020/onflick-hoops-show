@@ -219,7 +219,7 @@ const PlayerProfile = () => {
                   ) : (
                     <video src={video.video_url} className="h-full w-full object-cover" muted playsInline preload="metadata" />
                   )}
-                  <div className="absolute bottom-1 left-1 flex items-center gap-0.5 pointer-events-none">
+                  <div className="absolute bottom-1 start-1 flex items-center gap-0.5 pointer-events-none">
                     <Play className="h-3 w-3 text-primary-foreground" fill="currentColor" />
                     <span className="text-[10px] font-semibold text-primary-foreground drop-shadow-md">
                       {formatCount(video.views_count || 0)}
