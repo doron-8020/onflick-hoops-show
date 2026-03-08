@@ -26,16 +26,16 @@ interface CommentsSheetProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const timeAgo = (dateStr: string) => {
+const timeAgo = (dateStr: string, lang: string) => {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "עכשיו";
-  if (mins < 60) return `${mins}ד׳`;
+  if (mins < 1) return lang === "he" ? "עכשיו" : "now";
+  if (mins < 60) return lang === "he" ? `${mins}ד׳` : `${mins}m`;
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}ש׳`;
+  if (hrs < 24) return lang === "he" ? `${hrs}ש׳` : `${hrs}h`;
   const days = Math.floor(hrs / 24);
-  if (days < 7) return `${days}י׳`;
-  return `${Math.floor(days / 7)}שב׳`;
+  if (days < 7) return lang === "he" ? `${days}י׳` : `${days}d`;
+  return lang === "he" ? `${Math.floor(days / 7)}שב׳` : `${Math.floor(days / 7)}w`;
 };
 
 const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
