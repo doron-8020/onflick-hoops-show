@@ -66,7 +66,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
     if (!user) return;
     // FIX #40: Validate display name
     if (displayName.trim().length < 2) {
-      toast.error("שם תצוגה חייב להכיל לפחות 2 תווים");
+      toast.error(t("editProfile.nameMinLength"));
       return;
     }
     setSaving(true);
