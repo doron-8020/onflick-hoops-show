@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import CommentsSheet from "./CommentsSheet";
+import GalleryCarousel from "./GalleryCarousel";
 
 interface VideoCardProps {
   video: {
@@ -23,6 +24,7 @@ interface VideoCardProps {
     shares_count: number;
     views_count: number;
     media_type?: string;
+    gallery_urls?: string[] | null;
     profiles?: {
       display_name: string | null;
       avatar_url: string | null;
@@ -151,37 +153,44 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   return (
     <div
       className="relative h-full w-full"
-      onClick={video.media_type !== "image" ? handleTap : undefined}
+      onClick={video.media_type !== "image" && video.media_type !== "gallery" ? handleTap : undefined}
     >
       {/* Media */}
       <div className="absolute inset-0">
-        {video.media_type === "image" ? (
-          <img
-            src={video.video_url}
-            className="h-full w-full object-cover"
-            alt={video.caption || "Highlight"}
-            loading="lazy"
-          />
+        {video.media_type === "gallery" && video.gallery_urls && video.gallery_urls.length > 0 ? (
+          <GalleryCarousel urls={video.gallery_urls} alt={video.caption || "Gallery"} />
+        ) : video.media_type === "image" ? (
+          <>
+            <img
+              src={video.video_url}
+              className="h-full w-full object-cover"
+              alt={video.caption || "Highlight"}
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/30" />
+          </>
         ) : (
-          <video
-            ref={videoRef}
-            src={video.video_url}
-            className="h-full w-full object-cover"
-            loop
-            playsInline
-            muted={globalMuted}
-            poster={video.thumbnail_url || undefined}
-            preload="metadata"
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
-          />
+          <>
+            <video
+              ref={videoRef}
+              src={video.video_url}
+              className="h-full w-full object-cover"
+              loop
+              playsInline
+              muted={globalMuted}
+              poster={video.thumbnail_url || undefined}
+              preload="metadata"
+              onPlay={() => setPlaying(true)}
+              onPause={() => setPlaying(false)}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/30" />
+          </>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/30" />
       </div>
 
       {/* Play/Pause flash */}
       <AnimatePresence>
-        {video.media_type !== "image" && showPlayIcon && (
+        {video.media_type !== "image" && video.media_type !== "gallery" && showPlayIcon && (
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -215,7 +224,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </AnimatePresence>
 
       {/* Mute button */}
-      {video.media_type !== "image" && (
+      {video.media_type !== "image" && video.media_type !== "gallery" && (
         <button
           onClick={toggleMute}
           className="absolute top-16 end-4 z-30 rounded-full bg-background/30 p-2 backdrop-blur-sm safe-top"

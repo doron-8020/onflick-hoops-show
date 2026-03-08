@@ -237,6 +237,7 @@ export type Database = {
           caption: string | null
           comments_count: number
           created_at: string
+          gallery_urls: string[] | null
           id: string
           likes_count: number
           media_type: string
@@ -253,6 +254,7 @@ export type Database = {
           caption?: string | null
           comments_count?: number
           created_at?: string
+          gallery_urls?: string[] | null
           id?: string
           likes_count?: number
           media_type?: string
@@ -269,6 +271,7 @@ export type Database = {
           caption?: string | null
           comments_count?: number
           created_at?: string
+          gallery_urls?: string[] | null
           id?: string
           likes_count?: number
           media_type?: string
