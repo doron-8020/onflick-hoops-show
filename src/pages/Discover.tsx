@@ -100,89 +100,91 @@ const Discover = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <div className="px-4 pt-14 pb-4">
-        <h1 className="font-display text-3xl text-foreground tracking-wide">{t("discover.title")}</h1>
-      </div>
-
-      <div className="px-4 mb-6">
-        <div className="flex items-center gap-3 rounded-xl bg-secondary px-4 py-3">
-          <Search className="h-5 w-5 text-muted-foreground shrink-0" />
-          <input
-            type="text"
-            placeholder={t("discover.searchPlaceholder")}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            dir={isRTL ? "rtl" : "ltr"}
-            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-          />
-          {query && (
-            <button onClick={() => setQuery("")} className="shrink-0 p-0.5">
-              <X className="h-4 w-4 text-muted-foreground" />
-            </button>
-          )}
+      <div className="mx-auto max-w-2xl">
+        <div className="px-4 pt-14 pb-4">
+          <h1 className="font-display text-3xl text-foreground tracking-wide">{t("discover.title")}</h1>
         </div>
-      </div>
 
-      {showResults ? (
-        <div className="px-4 space-y-2">
-          {searching ? (
-            <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
-            </div>
-          ) : players.length > 0 ? (
-            <>
-              <p className="text-xs text-muted-foreground mb-2">
-                {players.length} {t("discover.results")}
-              </p>
-              {players.map((p) => (
-                <PlayerCard key={p.user_id} player={p} />
-              ))}
-            </>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-sm text-muted-foreground">{t("discover.noResults")}</p>
-              <p className="text-xs text-muted-foreground mt-1">{t("discover.tryAnother")}</p>
-            </div>
-          )}
-        </div>
-      ) : (
-        <>
-          <div className="px-4 mb-6">
-            <h2 className="font-display text-xl text-foreground mb-3">{t("discover.trending")}</h2>
-            <div className="flex flex-wrap gap-2">
-              {trendingTags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-secondary px-4 py-2 text-xs font-semibold text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer active:scale-95"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
+        <div className="px-4 mb-6">
+          <div className="flex items-center gap-3 rounded-xl bg-secondary px-4 py-3">
+            <Search className="h-5 w-5 text-muted-foreground shrink-0" />
+            <input
+              type="text"
+              placeholder={t("discover.searchPlaceholder")}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              dir={isRTL ? "rtl" : "ltr"}
+              className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+            />
+            {query && (
+              <button onClick={() => setQuery("")} className="shrink-0 p-0.5">
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button>
+            )}
           </div>
+        </div>
 
-          <div className="px-4">
-            <h2 className="font-display text-xl text-foreground mb-3">{t("discover.topHighlights")}</h2>
-            <div className="grid grid-cols-2 gap-2">
-              {mockVideos.map((video) => (
-                <div key={video.id} className="relative aspect-[9/16] overflow-hidden rounded-xl group">
-                  <img
-                    src={video.thumbnail}
-                    alt={video.caption}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-                  <div className="absolute bottom-2 start-2 end-2">
-                    <p className="text-xs font-semibold text-foreground truncate">{video.player.name}</p>
-                    <p className="text-[10px] text-muted-foreground">{video.views} {t("feed.views")}</p>
+        {showResults ? (
+          <div className="px-4 space-y-2">
+            {searching ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
+              </div>
+            ) : players.length > 0 ? (
+              <>
+                <p className="text-xs text-muted-foreground mb-2">
+                  {players.length} {t("discover.results")}
+                </p>
+                {players.map((p) => (
+                  <PlayerCard key={p.user_id} player={p} />
+                ))}
+              </>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-sm text-muted-foreground">{t("discover.noResults")}</p>
+                <p className="text-xs text-muted-foreground mt-1">{t("discover.tryAnother")}</p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <>
+            <div className="px-4 mb-6">
+              <h2 className="font-display text-xl text-foreground mb-3">{t("discover.trending")}</h2>
+              <div className="flex flex-wrap gap-2">
+                {trendingTags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-secondary px-4 py-2 text-xs font-semibold text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer active:scale-95"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="px-4">
+              <h2 className="font-display text-xl text-foreground mb-3">{t("discover.topHighlights")}</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {mockVideos.map((video) => (
+                  <div key={video.id} className="relative aspect-[9/16] overflow-hidden rounded-xl group">
+                    <img
+                      src={video.thumbnail}
+                      alt={video.caption}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+                    <div className="absolute bottom-2 start-2 end-2">
+                      <p className="text-xs font-semibold text-foreground truncate">{video.player.name}</p>
+                      <p className="text-[10px] text-muted-foreground">{video.views} {t("feed.views")}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
 
       <BottomNav />
     </div>

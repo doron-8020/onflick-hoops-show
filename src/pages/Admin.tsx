@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Shield, Ban, Snowflake, CheckCircle, Trash2, Search, Users,
   BarChart3, Flag, BadgeCheck, Eye, Heart, MessageCircle, Video, TrendingUp,
+  UserPlus, Crown, ShieldCheck,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -43,13 +44,18 @@ interface Analytics {
   totalComments: number;
 }
 
+interface AdminRole {
+  user_id: string;
+  role: "admin" | "moderator" | "user";
+}
+
 const statusConfig = {
   active: { icon: CheckCircle, color: "text-green-500", bg: "bg-green-500/10", label: { he: "פעיל", en: "Active" } },
   frozen: { icon: Snowflake, color: "text-blue-400", bg: "bg-blue-400/10", label: { he: "מוקפא", en: "Frozen" } },
   blocked: { icon: Ban, color: "text-destructive", bg: "bg-destructive/10", label: { he: "חסום", en: "Blocked" } },
 };
 
-type AdminTab = "users" | "moderation" | "analytics" | "verified";
+type AdminTab = "users" | "moderation" | "analytics" | "verified" | "roles";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -60,6 +66,7 @@ const Admin = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [analytics, setAnalytics] = useState<Analytics>({ totalUsers: 0, newVideos24h: 0, totalLikes: 0, totalComments: 0 });
+  const [adminRoles, setAdminRoles] = useState<AdminRole[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "active" | "frozen" | "blocked">("all");
@@ -71,6 +78,7 @@ const Admin = () => {
     fetchUsers();
     fetchReports();
     fetchAnalytics();
+    fetchAdminRoles();
   }, [isAdmin, adminLoading]);
 
   const fetchUsers = async () => {
@@ -81,11 +89,9 @@ const Admin = () => {
   };
 
   const fetchReports = async () => {
-    const { data } = await supabase
-      .from("reports")
+    const { data } = await supabase.from("reports")
       .select("*, videos(title, video_url, thumbnail_url, media_type, user_id)")
-      .eq("status", "pending")
-      .order("created_at", { ascending: false });
+      .eq("status", "pending").order("created_at", { ascending: false });
     if (data) setReports(data as unknown as Report[]);
   };
 
@@ -98,6 +104,11 @@ const Admin = () => {
     const totalLikes = vids?.reduce((s, v) => s + (v.likes_count || 0), 0) || 0;
     const totalComments = vids?.reduce((s, v) => s + (v.comments_count || 0), 0) || 0;
     setAnalytics({ totalUsers: totalUsers || 0, newVideos24h: newVideos24h || 0, totalLikes, totalComments });
+  };
+
+  const fetchAdminRoles = async () => {
+    const { data } = await supabase.from("user_roles").select("user_id, role");
+    if (data) setAdminRoles(data as unknown as AdminRole[]);
   };
 
   const setUserStatus = async (userId: string, status: "active" | "frozen" | "blocked") => {
@@ -131,13 +142,40 @@ const Admin = () => {
     setActionLoading(null);
   };
 
+  const assignRole = async (userId: string, role: "admin" | "moderator" | "user") => {
+    setActionLoading(userId);
+    const { error } = await supabase.from("user_roles").insert({ user_id: userId, role });
+    if (error) {
+      if (error.code === "23505") toast.error(language === "he" ? "לתפקיד זה כבר יש הקצאה" : "Role already assigned");
+      else toast.error(language === "he" ? "שגיאה" : "Error");
+    } else {
+      toast.success(language === "he" ? `${role === "admin" ? "אדמין" : "מנהל תוכן"} הוקצה` : `${role} assigned`);
+      fetchAdminRoles();
+    }
+    setActionLoading(null);
+  };
+
+  const removeRole = async (userId: string, role: "admin" | "moderator" | "user") => {
+    // Prevent removing the primary admin (doron)
+    if (userId === "2a6979e9-de93-41e1-8736-0ef50c99f621" && role === "admin") {
+      toast.error(language === "he" ? "לא ניתן להסיר את האדמין הראשי" : "Cannot remove primary admin");
+      return;
+    }
+    if (!confirm(language === "he" ? "האם להסיר תפקיד זה?" : "Remove this role?")) return;
+    setActionLoading(userId);
+    const { error } = await supabase.from("user_roles").delete().eq("user_id", userId).eq("role", role);
+    if (error) toast.error(language === "he" ? "שגיאה" : "Error");
+    else {
+      toast.success(language === "he" ? "התפקיד הוסר" : "Role removed");
+      fetchAdminRoles();
+    }
+    setActionLoading(null);
+  };
+
   const resolveReport = async (reportId: string) => {
     setActionLoading(reportId);
     const { error } = await supabase.from("reports").update({ status: "resolved", resolved_at: new Date().toISOString(), resolved_by: user?.id }).eq("id", reportId);
-    if (!error) {
-      setReports((prev) => prev.filter((r) => r.id !== reportId));
-      toast.success(language === "he" ? "הדיווח נפתר" : "Report resolved");
-    }
+    if (!error) { setReports((prev) => prev.filter((r) => r.id !== reportId)); toast.success(language === "he" ? "הדיווח נפתר" : "Report resolved"); }
     setActionLoading(null);
   };
 
@@ -160,77 +198,67 @@ const Admin = () => {
   if (adminLoading || (!isAdmin && !adminLoading)) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-pulse-glow rounded-full gradient-fire p-6">
-          <Shield className="h-8 w-8 text-primary-foreground" />
-        </div>
+        <div className="animate-pulse-glow rounded-full gradient-fire p-6"><Shield className="h-8 w-8 text-primary-foreground" /></div>
       </div>
     );
   }
 
   const tabs: { key: AdminTab; icon: typeof Users; label: string }[] = [
     { key: "users", icon: Users, label: t("admin.users") },
+    { key: "roles", icon: Crown, label: language === "he" ? "תפקידים" : "Roles" },
     { key: "moderation", icon: Flag, label: t("admin.moderation") },
     { key: "analytics", icon: BarChart3, label: t("admin.analytics") },
     { key: "verified", icon: BadgeCheck, label: t("admin.verified") },
   ];
 
+  const getUserRole = (userId: string) => adminRoles.filter((r) => r.user_id === userId);
+
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border">
-        <div className="flex items-center gap-3 px-4 py-3">
-          <button onClick={() => navigate(-1)} className="p-1">
-            <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />
-          </button>
-          <Shield className="h-5 w-5 text-primary" />
-          <h1 className="font-display text-xl text-foreground tracking-wide">{t("admin.title")}</h1>
-        </div>
-        {/* Tabs */}
-        <div className="relative flex border-b border-border">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex-1 flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition-colors relative ${
-                activeTab === tab.key ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              <tab.icon className="h-4 w-4" />
-              {tab.label}
-              {activeTab === tab.key && (
-                <motion.div
-                  layoutId="adminTabIndicator"
-                  className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full"
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                />
-              )}
+        <div className="mx-auto max-w-2xl">
+          <div className="flex items-center gap-3 px-4 py-3">
+            <button onClick={() => navigate(-1)} className="p-1">
+              <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />
             </button>
-          ))}
+            <Shield className="h-5 w-5 text-primary" />
+            <h1 className="font-display text-xl text-foreground tracking-wide">{t("admin.title")}</h1>
+          </div>
+          <div className="relative flex overflow-x-auto scrollbar-hide border-b border-border">
+            {tabs.map((tab) => (
+              <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+                className={`flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 text-[10px] font-semibold transition-colors relative ${
+                  activeTab === tab.key ? "text-primary" : "text-muted-foreground"
+                }`}>
+                <tab.icon className="h-4 w-4" />
+                {tab.label}
+                {activeTab === tab.key && (
+                  <motion.div layoutId="adminTabIndicator" className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full"
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }} />
+                )}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="px-4 pt-28 space-y-4">
+      <div className="mx-auto max-w-2xl px-4 pt-28 space-y-4">
         {/* USERS TAB */}
         {activeTab === "users" && (
           <>
             <div className="relative">
               <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+              <input value={search} onChange={(e) => setSearch(e.target.value)}
                 placeholder={language === "he" ? "חפש משתמש..." : "Search user..."}
-                className="w-full rounded-xl bg-card border border-border ps-10 pe-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-              />
+                className="w-full rounded-xl bg-card border border-border ps-10 pe-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {(["all", "active", "frozen", "blocked"] as const).map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
+                <button key={f} onClick={() => setFilter(f)}
                   className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
                     filter === f ? "bg-primary text-primary-foreground" : "bg-card border border-border text-muted-foreground"
-                  }`}
-                >
+                  }`}>
                   {f === "all" ? (language === "he" ? "הכל" : "All") : statusConfig[f].label[language]}
                 </button>
               ))}
@@ -260,6 +288,7 @@ const Admin = () => {
                   const cfg = statusConfig[u.status as keyof typeof statusConfig] || statusConfig.active;
                   const StatusIcon = cfg.icon;
                   const isProcessing = actionLoading === u.user_id;
+                  const roles = getUserRole(u.user_id);
                   return (
                     <div key={u.user_id} className="rounded-xl bg-card border border-border p-4 space-y-3">
                       <div className="flex items-center gap-3">
@@ -273,9 +302,16 @@ const Admin = () => {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <p className="font-semibold text-foreground text-sm truncate">{u.display_name || "Unknown"}</p>
                             {u.verified && <BadgeCheck className="h-4 w-4 text-primary flex-shrink-0" />}
+                            {roles.map((r) => (
+                              <span key={r.role} className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                                r.role === "admin" ? "bg-amber-500/10 text-amber-500" : "bg-purple-500/10 text-purple-500"
+                              }`}>
+                                {r.role === "admin" ? "👑 Admin" : "🛡️ Mod"}
+                              </span>
+                            ))}
                             <span className={`flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${cfg.bg} ${cfg.color}`}>
                               <StatusIcon className="h-3 w-3" />{cfg.label[language]}
                             </span>
@@ -287,7 +323,7 @@ const Admin = () => {
                         </div>
                         <p className="text-[10px] text-muted-foreground text-end">{u.followers_count} {language === "he" ? "עוקבים" : "followers"}</p>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
                         {u.status !== "active" && (
                           <button onClick={() => setUserStatus(u.user_id, "active")} disabled={isProcessing}
                             className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-green-500/10 py-2 text-xs font-semibold text-green-500 disabled:opacity-50">
@@ -316,6 +352,118 @@ const Admin = () => {
                 })}
               </div>
             )}
+          </>
+        )}
+
+        {/* ROLES TAB */}
+        {activeTab === "roles" && (
+          <>
+            <div className="rounded-xl bg-amber-500/10 p-4 flex items-center gap-3">
+              <Crown className="h-6 w-6 text-amber-500" />
+              <div>
+                <p className="font-display text-lg text-foreground">{adminRoles.filter(r => r.role === "admin").length}</p>
+                <p className="text-xs text-muted-foreground">{language === "he" ? "אדמינים" : "Admins"}</p>
+              </div>
+              <div className="ms-4">
+                <p className="font-display text-lg text-foreground">{adminRoles.filter(r => r.role === "moderator").length}</p>
+                <p className="text-xs text-muted-foreground">{language === "he" ? "מנהלי תוכן" : "Moderators"}</p>
+              </div>
+            </div>
+
+            {/* Current roles */}
+            <div>
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                {language === "he" ? "תפקידים פעילים" : "Active Roles"}
+              </h3>
+              <div className="space-y-2">
+                {adminRoles.map((ar) => {
+                  const u = users.find((u) => u.user_id === ar.user_id);
+                  const isPrimary = ar.user_id === "2a6979e9-de93-41e1-8736-0ef50c99f621" && ar.role === "admin";
+                  return (
+                    <div key={`${ar.user_id}-${ar.role}`} className="rounded-xl bg-card border border-border p-3 flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full overflow-hidden flex-shrink-0">
+                        {u?.avatar_url ? (
+                          <img src={u.avatar_url} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          <div className="h-full w-full gradient-fire flex items-center justify-center">
+                            <span className="font-display text-sm text-primary-foreground">{(u?.display_name || "?").charAt(0).toUpperCase()}</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <p className="font-semibold text-foreground text-sm truncate">{u?.display_name || "Unknown"}</p>
+                          {isPrimary && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-500">
+                            {language === "he" ? "ראשי" : "Primary"}
+                          </span>}
+                        </div>
+                        <p className="text-[11px] text-muted-foreground">
+                          {ar.role === "admin" ? "👑 Admin" : "🛡️ Moderator"}
+                        </p>
+                      </div>
+                      {!isPrimary && (
+                        <button onClick={() => removeRole(ar.user_id, ar.role)} disabled={actionLoading === ar.user_id}
+                          className="rounded-lg bg-destructive/10 px-3 py-1.5 text-xs font-semibold text-destructive disabled:opacity-50">
+                          {language === "he" ? "הסר" : "Remove"}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Assign new role */}
+            <div>
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                {language === "he" ? "הקצה תפקיד חדש" : "Assign New Role"}
+              </h3>
+              <div className="relative mb-3">
+                <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input value={search} onChange={(e) => setSearch(e.target.value)}
+                  placeholder={language === "he" ? "חפש משתמש..." : "Search user..."}
+                  className="w-full rounded-xl bg-card border border-border ps-10 pe-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              </div>
+              <div className="space-y-2 max-h-[40vh] overflow-y-auto">
+                {users
+                  .filter((u) => u.user_id !== user?.id && (!search || (u.display_name || "").toLowerCase().includes(search.toLowerCase())))
+                  .map((u) => {
+                    const roles = getUserRole(u.user_id);
+                    const hasAdmin = roles.some((r) => r.role === "admin");
+                    const hasMod = roles.some((r) => r.role === "moderator");
+                    return (
+                      <div key={u.user_id} className="rounded-xl bg-card border border-border p-3 flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-full overflow-hidden flex-shrink-0">
+                          {u.avatar_url ? (
+                            <img src={u.avatar_url} alt="" className="h-full w-full object-cover" />
+                          ) : (
+                            <div className="h-full w-full gradient-fire flex items-center justify-center">
+                              <span className="font-display text-xs text-primary-foreground">{(u.display_name || "?").charAt(0).toUpperCase()}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-foreground text-sm truncate">{u.display_name || "Unknown"}</p>
+                        </div>
+                        <div className="flex gap-1.5">
+                          {!hasMod && (
+                            <button onClick={() => assignRole(u.user_id, "moderator")} disabled={actionLoading === u.user_id}
+                              className="rounded-lg bg-purple-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-purple-500 disabled:opacity-50">
+                              🛡️ {language === "he" ? "מנהל תוכן" : "Mod"}
+                            </button>
+                          )}
+                          {!hasAdmin && (
+                            <button onClick={() => assignRole(u.user_id, "admin")} disabled={actionLoading === u.user_id}
+                              className="rounded-lg bg-amber-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-amber-500 disabled:opacity-50">
+                              👑 {language === "he" ? "אדמין" : "Admin"}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
           </>
         )}
 
@@ -351,9 +499,7 @@ const Admin = () => {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-foreground truncate">{r.videos?.title || "Video"}</p>
                         <p className="text-xs text-muted-foreground">{language === "he" ? "סיבה:" : "Reason:"} {r.reason}</p>
-                        <p className="text-[10px] text-muted-foreground mt-1">
-                          {new Date(r.created_at).toLocaleDateString(language === "he" ? "he-IL" : "en-US")}
-                        </p>
+                        <p className="text-[10px] text-muted-foreground mt-1">{new Date(r.created_at).toLocaleDateString(language === "he" ? "he-IL" : "en-US")}</p>
                       </div>
                     </div>
                     <div className="flex gap-2">
@@ -403,12 +549,9 @@ const Admin = () => {
             </div>
             <div className="relative mb-3">
               <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+              <input value={search} onChange={(e) => setSearch(e.target.value)}
                 placeholder={language === "he" ? "חפש משתמש..." : "Search user..."}
-                className="w-full rounded-xl bg-card border border-border ps-10 pe-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-              />
+                className="w-full rounded-xl bg-card border border-border ps-10 pe-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
             <div className="space-y-2">
               {users
@@ -431,15 +574,10 @@ const Admin = () => {
                       </div>
                       <p className="text-[11px] text-muted-foreground">{u.followers_count} {language === "he" ? "עוקבים" : "followers"}</p>
                     </div>
-                    <button
-                      onClick={() => toggleVerified(u.user_id)}
-                      disabled={actionLoading === u.user_id}
+                    <button onClick={() => toggleVerified(u.user_id)} disabled={actionLoading === u.user_id}
                       className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all disabled:opacity-50 ${
-                        u.verified
-                          ? "bg-secondary text-secondary-foreground"
-                          : "gradient-fire text-primary-foreground shadow-glow"
-                      }`}
-                    >
+                        u.verified ? "bg-secondary text-secondary-foreground" : "gradient-fire text-primary-foreground shadow-glow"
+                      }`}>
                       {u.verified ? t("admin.removeVerified") : t("admin.giveVerified")}
                     </button>
                   </div>

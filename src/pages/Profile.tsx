@@ -111,6 +111,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
+      <div className="mx-auto max-w-lg">
       <div
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-300 ${
           scrolled
@@ -255,6 +256,7 @@ const Profile = () => {
       </div>
 
       <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} profile={profile} onSaved={fetchProfile} />
+      </div>
       <BottomNav />
     </div>
   );

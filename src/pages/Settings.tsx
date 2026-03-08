@@ -152,14 +152,16 @@ const Settings = () => {
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 flex items-center gap-3 px-4 py-3 bg-background/95 backdrop-blur-lg border-b border-border safe-top">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border safe-top">
+        <div className="mx-auto max-w-lg flex items-center gap-3 px-4 py-3">
         <button onClick={() => navigate(-1)} className="p-1">
           <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />
         </button>
         <h1 className="font-display text-xl text-foreground tracking-wide">{t("settings.title")}</h1>
+        </div>
       </div>
 
-      <div className="px-4 pt-16 space-y-6 pb-4">
+      <div className="mx-auto max-w-lg px-4 pt-16 space-y-6 pb-4">
         {/* Account */}
         {user && (
           <Section title={t("settings.account")}>
