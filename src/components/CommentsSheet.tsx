@@ -173,7 +173,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold text-foreground">{name}</span>
                       <span className="text-[10px] text-muted-foreground">
-                        {timeAgo(comment.created_at)}
+                        {timeAgo(comment.created_at, language)}
                       </span>
                     </div>
                     <p className="text-sm text-foreground mt-0.5 break-words">
