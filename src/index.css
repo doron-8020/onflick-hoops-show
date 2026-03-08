@@ -15,7 +15,7 @@
     --popover: 0 0% 8%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 24 95% 53%;
+    --primary: 0 85% 50%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 12%;
@@ -24,7 +24,7 @@
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 55%;
 
-    --accent: 24 95% 53%;
+    --accent: 0 85% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -32,16 +32,16 @@
 
     --border: 0 0% 16%;
     --input: 0 0% 16%;
-    --ring: 24 95% 53%;
+    --ring: 0 85% 50%;
 
     --radius: 0.75rem;
 
     --font-display: 'Bebas Neue', sans-serif;
     --font-body: 'Inter', sans-serif;
 
-    --gradient-fire: linear-gradient(135deg, hsl(24, 95%, 53%), hsl(0, 90%, 55%));
+    --gradient-fire: linear-gradient(135deg, hsl(0, 85%, 50%), hsl(350, 90%, 40%));
     --gradient-dark: linear-gradient(180deg, hsl(0, 0%, 8%), hsl(0, 0%, 3%));
-    --shadow-glow: 0 0 30px hsl(24 95% 53% / 0.3);
+    --shadow-glow: 0 0 30px hsl(0 85% 50% / 0.3);
     --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.5);
   }
 }

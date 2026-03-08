@@ -65,7 +65,10 @@ const Index = () => {
     <div className="relative min-h-screen bg-background">
       {/* Top bar */}
       <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-gradient-to-b from-background via-background/80 to-transparent">
-        <img src={logo} alt="ONFLICK SHOWCASE" className="h-8 w-auto" />
+        <div className="flex items-center gap-1.5">
+          <span className="font-display text-xl tracking-wider text-primary">ONFLICK</span>
+          <span className="font-display text-xl tracking-wider text-foreground">SHOWCASE</span>
+        </div>
         <div className="flex gap-6">
           <button className="text-sm font-semibold text-muted-foreground">Following</button>
           <button className="text-sm font-semibold text-foreground border-b-2 border-primary pb-0.5">For You</button>
