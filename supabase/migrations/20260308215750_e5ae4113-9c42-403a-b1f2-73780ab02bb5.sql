@@ -1,0 +1,1 @@
+ALTER TABLE public.videos ADD COLUMN gallery_urls text[] DEFAULT '{}'::text[];
