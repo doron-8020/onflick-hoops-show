@@ -35,6 +35,35 @@ export const translations = {
   "auth.alreadyRegistered": { he: "המשתמש כבר רשום", en: "User already registered" },
   "auth.nameMinLength": { he: "שם תצוגה חייב להכיל לפחות 2 תווים", en: "Name must be at least 2 characters" },
   "auth.signInToView": { he: "התחבר כדי לצפות בפרופיל שלך", en: "Sign in to view your profile" },
+  "auth.passwordMinLength": { he: "הסיסמה חייבת להכיל לפחות 6 תווים", en: "Password must be at least 6 characters" },
+  "auth.welcome": { he: "ברוך הבא! 🏀", en: "Welcome! 🏀" },
+  "auth.signUpSuccess": { he: "נרשמת בהצלחה! בדוק את האימייל לאימות.", en: "Signed up! Check your email to verify." },
+
+  // Discover
+  "discover.title": { he: "גלה", en: "Discover" },
+  "discover.searchPlaceholder": { he: "חפש שחקנים, תגיות...", en: "Search players, tags..." },
+  "discover.player": { he: "שחקן", en: "Player" },
+  "discover.followersCount": { he: "עוקבים", en: "followers" },
+  "discover.results": { he: "תוצאות", en: "Results" },
+  "discover.noResults": { he: "לא נמצאו תוצאות", en: "No results found" },
+  "discover.tryAnother": { he: "נסה מילת חיפוש אחרת", en: "Try another search term" },
+  "discover.trending": { he: "טרנדים 🔥", en: "Trending 🔥" },
+  "discover.topHighlights": { he: "הדגשות מובילות", en: "Top Highlights" },
+
+  // Notifications
+  "notifications.title": { he: "התראות", en: "Notifications" },
+  "notifications.signInToSee": { he: "התחבר כדי לראות התראות", en: "Sign in to see notifications" },
+  "notifications.empty": { he: "אין התראות עדיין", en: "No notifications yet" },
+  "notifications.emptyDesc": { he: "כשמישהו ירצה את התוכן שלך, זה יופיע כאן", en: "When someone interacts with your content, it will show here" },
+  "notifications.now": { he: "עכשיו", en: "now" },
+  "notifications.min": { he: "ד׳", en: "m" },
+  "notifications.hour": { he: "ש׳", en: "h" },
+  "notifications.days": { he: "ימים", en: "days" },
+  "notifications.weeks": { he: "שבועות", en: "weeks" },
+
+  // Player Profile
+  "profile.playerNotFound": { he: "השחקן לא נמצא", en: "Player not found" },
+  "profile.goBack": { he: "חזור", en: "Go back" },
 
   // Profile
   "profile.followers": { he: "עוקבים", en: "Followers" },
