@@ -50,7 +50,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("הקובץ גדול מדי (מקסימום 5MB)");
+      toast.error(t("editProfile.fileTooLarge"));
       return;
     }
     // FIX #39: Validate image type
