@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import VideoCard from "@/components/VideoCard";
 import BottomNav from "@/components/BottomNav";
 import { mockVideos } from "@/data/mockData";
@@ -35,8 +36,8 @@ const Index = () => {
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<FeedTab>("foryou");
-  const [currentIndex, setCurrentIndex] = useState(0);
   const { user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -44,7 +45,6 @@ const Index = () => {
     fetchVideos();
   }, [user, activeTab]);
 
-  // FIX #1: Track current visible video for autoplay
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
@@ -118,7 +118,6 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen bg-background">
-      {/* FIX #2: Improved top bar with search icon & better spacing */}
       <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-gradient-to-b from-background via-background/80 to-transparent safe-top">
         <button
           onClick={() => navigate("/discover")}
@@ -136,7 +135,7 @@ const Index = () => {
                 : "text-muted-foreground hover:text-foreground/70"
             }`}
           >
-            Following
+            {t("feed.following")}
           </button>
           <button
             onClick={() => setActiveTab("foryou")}
@@ -146,38 +145,35 @@ const Index = () => {
                 : "text-muted-foreground hover:text-foreground/70"
             }`}
           >
-            For You
+            {t("feed.foryou")}
           </button>
         </div>
         <div className="w-7" />
       </div>
 
-      {/* FIX #3: snap-y-mandatory class & proper scroll container */}
       <div
         ref={scrollRef}
         className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
       >
         {loading ? (
-          /* FIX #4: Better loading skeleton */
           <div className="h-[100dvh] flex flex-col items-center justify-center gap-4">
             <div className="animate-pulse-glow rounded-full gradient-fire p-6">
               <span className="font-display text-2xl text-primary-foreground">🏀</span>
             </div>
-            <p className="text-sm text-muted-foreground animate-pulse">Loading highlights...</p>
+            <p className="text-sm text-muted-foreground animate-pulse">{t("feed.loading")}</p>
           </div>
         ) : activeTab === "following" && !user ? (
           <div className="h-[100dvh] flex flex-col items-center justify-center gap-4 px-8 text-center">
-            {/* FIX #5: Login CTA for following tab */}
             <div className="rounded-full bg-secondary p-6 mb-2">
               <Search className="h-10 w-10 text-muted-foreground" />
             </div>
-            <p className="text-lg font-semibold text-foreground">התחבר כדי לראות סרטונים</p>
-            <p className="text-sm text-muted-foreground">עקוב אחרי שחקנים כדי לראות את התוכן שלהם כאן</p>
+            <p className="text-lg font-semibold text-foreground">{t("feed.loginToSee")}</p>
+            <p className="text-sm text-muted-foreground">{t("feed.followToSee")}</p>
             <button
               onClick={() => navigate("/auth")}
               className="mt-2 rounded-xl gradient-fire px-8 py-3 text-sm font-bold text-primary-foreground shadow-glow"
             >
-              התחבר
+              {t("auth.signIn")}
             </button>
           </div>
         ) : activeTab === "following" && !hasRealVideos ? (
@@ -185,13 +181,13 @@ const Index = () => {
             <div className="rounded-full bg-secondary p-6 mb-2">
               <Search className="h-10 w-10 text-muted-foreground" />
             </div>
-            <p className="text-lg font-semibold text-foreground">אין עדיין סרטונים</p>
-            <p className="text-sm text-muted-foreground">עקוב אחרי שחקנים כדי לראות את התוכן שלהם כאן</p>
+            <p className="text-lg font-semibold text-foreground">{t("feed.noVideosYet")}</p>
+            <p className="text-sm text-muted-foreground">{t("feed.followToSee")}</p>
             <button
               onClick={() => navigate("/discover")}
               className="mt-2 rounded-xl bg-secondary px-6 py-2.5 text-sm font-semibold text-foreground"
             >
-              גלה שחקנים
+              {t("feed.discoverPlayers")}
             </button>
           </div>
         ) : hasRealVideos ? (

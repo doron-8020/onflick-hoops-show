@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { Heart, MessageCircle, Share2, Play, Pause, UserPlus, UserCheck, Volume2, VolumeX } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -45,6 +46,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [showPlayIcon, setShowPlayIcon] = useState(false);
   const { user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { isFollowing, toggleFollow, loading: followLoading } = useFollow(video.user_id);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -64,15 +66,13 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     if (error) {
       setLiked(!newLiked);
       setLikes((prev) => (newLiked ? prev - 1 : prev + 1));
-      toast.error("שגיאה בעדכון הלייק");
+      toast.error(t("video.likeError"));
     }
   };
 
-  // FIX #6: Better double-tap detection (prevents single-tap firing on double-tap)
   const handleTap = useCallback(() => {
     const now = Date.now();
     if (now - lastTapRef.current < 300) {
-      // Double tap
       if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current);
       if (!liked) handleLike();
       setShowHeart(true);
@@ -81,7 +81,6 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     } else {
       lastTapRef.current = now;
       tapTimeoutRef.current = setTimeout(() => {
-        // Single tap → toggle play
         const videoEl = videoRef.current;
         if (!videoEl) return;
         if (videoEl.paused) {
@@ -91,14 +90,12 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           videoEl.pause();
           setPlaying(false);
         }
-        // FIX #7: Brief play/pause icon flash
         setShowPlayIcon(true);
         setTimeout(() => setShowPlayIcon(false), 600);
       }, 300);
     }
   }, [liked]);
 
-  // FIX #8: Mute toggle
   const toggleMute = (e: React.MouseEvent) => {
     e.stopPropagation();
     const videoEl = videoRef.current;
@@ -107,7 +104,6 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     setMuted(videoEl.muted);
   };
 
-  // FIX #9: Share via native share API or clipboard
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
     const shareData = {
@@ -119,7 +115,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         await navigator.share(shareData);
       } else {
         await navigator.clipboard.writeText(shareData.url);
-        toast.success("הקישור הועתק!");
+        toast.success(t("video.linkCopied"));
       }
     } catch {
       // User cancelled share
@@ -158,11 +154,10 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
             onPause={() => setPlaying(false)}
           />
         )}
-        {/* FIX #10: Improved gradient for readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/30" />
       </div>
 
-      {/* FIX #7: Play/Pause flash indicator */}
+      {/* Play/Pause flash */}
       {video.media_type !== "image" && showPlayIcon && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
           <div className="rounded-full bg-background/40 p-4 backdrop-blur-sm animate-scale-in">
@@ -182,7 +177,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         </div>
       )}
 
-      {/* FIX #11: Mute button (top right) */}
+      {/* Mute button */}
       {video.media_type !== "image" && (
         <button
           onClick={toggleMute}
@@ -202,7 +197,6 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         className="absolute right-3 bottom-32 flex flex-col items-center gap-5 z-10"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* FIX #12: Avatar above action buttons (TikTok style) */}
         {video.user_id && (
           <button
             onClick={() => navigate(`/player/${video.user_id}`)}
@@ -219,7 +213,6 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
                 </div>
               )}
             </div>
-            {/* FIX #13: Follow badge on avatar */}
             {user && video.user_id && user.id !== video.user_id && !isFollowing && (
               <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 h-5 w-5 rounded-full gradient-fire flex items-center justify-center border-2 border-background">
                 <span className="text-[10px] text-primary-foreground font-bold">+</span>
@@ -260,7 +253,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           </span>
         </button>
 
-        {/* FIX #9: Share with actual functionality */}
+        {/* Share */}
         <button onClick={handleShare} className="flex flex-col items-center gap-1">
           <div className="rounded-full bg-background/30 p-2.5 backdrop-blur-sm">
             <Share2 className="h-7 w-7 text-foreground" />
@@ -291,7 +284,6 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
               </p>
             )}
           </div>
-          {/* FIX #14: Follow button only for non-self, non-followed */}
           {user && video.user_id && user.id !== video.user_id && (
             <button
               onClick={(e) => {
@@ -310,12 +302,11 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
               ) : (
                 <UserPlus className="h-3.5 w-3.5" />
               )}
-              {isFollowing ? "עוקב" : "עקוב"}
+              {isFollowing ? t("video.followingBtn") : t("video.followBtn")}
             </button>
           )}
         </div>
 
-        {/* FIX #15: Caption with "more" truncation */}
         {video.caption && (
           <p className="text-sm text-foreground/90 mb-2 line-clamp-2">{video.caption}</p>
         )}
@@ -330,9 +321,8 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           </div>
         )}
 
-        {/* FIX #16: View count with eye icon feel */}
         <p className="mt-2 text-xs text-foreground/50">
-          {formatNumber(video.views_count)} צפיות
+          {formatNumber(video.views_count)} {t("feed.views")}
         </p>
       </div>
 

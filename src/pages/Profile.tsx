@@ -5,17 +5,12 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
 import EditProfileDialog from "@/components/EditProfileDialog";
 
 type TabKey = "videos" | "private" | "saved";
-
-const TABS: { key: TabKey; icon: typeof Grid3X3; label: string }[] = [
-  { key: "videos", icon: Grid3X3, label: "Videos" },
-  { key: "private", icon: Lock, label: "Private" },
-  { key: "saved", icon: Bookmark, label: "Saved" },
-];
 
 const formatCount = (n: number) => {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
@@ -25,6 +20,7 @@ const formatCount = (n: number) => {
 
 const Profile = () => {
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
   const [videos, setVideos] = useState<any[]>([]);
@@ -32,11 +28,15 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("videos");
   const [scrolled, setScrolled] = useState(false);
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
-    videos: null,
-    private: null,
-    saved: null,
+    videos: null, private: null, saved: null,
   });
   const tabBarRef = useRef<HTMLDivElement>(null);
+
+  const TABS: { key: TabKey; icon: typeof Grid3X3; label: string }[] = [
+    { key: "videos", icon: Grid3X3, label: "Videos" },
+    { key: "private", icon: Lock, label: t("profile.privateVideos") },
+    { key: "saved", icon: Bookmark, label: t("profile.saved") },
+  ];
 
   useEffect(() => {
     if (!user) return;
@@ -44,7 +44,6 @@ const Profile = () => {
     fetchVideos();
   }, [user]);
 
-  // Sticky top bar on scroll
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -72,28 +71,24 @@ const Profile = () => {
     [videos]
   );
 
-  // Calculate underline position
   const underlineStyle = useMemo(() => {
     const el = tabRefs.current[activeTab];
     const bar = tabBarRef.current;
     if (!el || !bar) return { left: 0, width: 0 };
     const barRect = bar.getBoundingClientRect();
     const elRect = el.getBoundingClientRect();
-    return {
-      left: elRect.left - barRect.left,
-      width: elRect.width,
-    };
+    return { left: elRect.left - barRect.left, width: elRect.width };
   }, [activeTab]);
 
   if (!user) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-8 pb-24">
-        <p className="font-display text-2xl text-foreground mb-4">Sign In to View Profile</p>
+        <p className="font-display text-2xl text-foreground mb-4">{t("auth.signInToView")}</p>
         <button
           onClick={() => navigate("/auth")}
           className="rounded-xl gradient-fire px-8 py-3 text-sm font-bold text-primary-foreground shadow-glow"
         >
-          Sign In
+          {t("auth.signIn")}
         </button>
         <BottomNav />
       </div>
@@ -105,7 +100,6 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* ─── Sticky Top Nav ─── */}
       <div
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-300 ${
           scrolled
@@ -123,14 +117,12 @@ const Profile = () => {
         >
           {displayName}
         </h1>
-        <button className="p-1">
+        <button onClick={() => navigate("/settings")} className="p-1">
           <Settings className="h-5 w-5 text-foreground" />
         </button>
       </div>
 
-      {/* ─── Profile Header ─── */}
       <div className="flex flex-col items-center px-4 pt-16 pb-2">
-        {/* Avatar */}
         <div className="relative mb-3">
           <div className="h-24 w-24 rounded-full overflow-hidden ring-2 ring-primary/30 ring-offset-2 ring-offset-background">
             {profile?.avatar_url ? (
@@ -145,17 +137,15 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Name & Handle */}
         <h2 className="font-display text-2xl text-foreground tracking-wide">{displayName}</h2>
         <p className="text-sm text-muted-foreground mb-3">{handle}</p>
 
-        {/* Stats Row */}
         <div className="flex gap-0 mb-4">
           {[
-            { value: profile?.following_count || 0, label: "Following" },
-            { value: profile?.followers_count || 0, label: "Followers" },
-            { value: totalLikes, label: "Likes" },
-          ].map((stat, i) => (
+            { value: profile?.following_count || 0, label: t("profile.following") },
+            { value: profile?.followers_count || 0, label: t("profile.followers") },
+            { value: totalLikes, label: t("profile.likes") },
+          ].map((stat) => (
             <div key={stat.label} className="flex flex-col items-center px-6">
               <span className="font-display text-xl text-foreground leading-tight">
                 {formatCount(stat.value)}
@@ -165,29 +155,26 @@ const Profile = () => {
           ))}
         </div>
 
-        {/* Action Buttons */}
         <div className="flex gap-2 w-full max-w-xs mb-4">
           <button
             onClick={() => setEditOpen(true)}
             className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground transition-colors hover:bg-secondary/80"
           >
-            Edit profile
+            {t("profile.editProfile")}
           </button>
           <button className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground transition-colors hover:bg-secondary/80">
-            Share profile
+            {t("profile.shareProfile")}
           </button>
           <button className="rounded-md bg-secondary px-3 py-2 transition-colors hover:bg-secondary/80">
             <UserPlus className="h-4 w-4 text-foreground" />
           </button>
         </div>
 
-        {/* Bio */}
         {(profile?.bio || profile?.position || profile?.team) && (
           <div className="w-full max-w-xs text-center space-y-1 mb-2">
             {profile?.position && (
               <p className="text-xs font-semibold text-foreground">
-                {profile.position}
-                {profile.team ? ` · ${profile.team}` : ""}
+                {profile.position}{profile.team ? ` · ${profile.team}` : ""}
               </p>
             )}
             {profile?.bio && (
@@ -197,7 +184,6 @@ const Profile = () => {
         )}
       </div>
 
-      {/* ─── Content Tabs ─── */}
       <div ref={tabBarRef} className="relative flex border-b border-border sticky top-[52px] z-40 bg-background">
         {TABS.map((tab) => {
           const isActive = activeTab === tab.key;
@@ -216,100 +202,54 @@ const Profile = () => {
             </button>
           );
         })}
-        {/* Sliding underline */}
         <div
           className="absolute bottom-0 h-0.5 bg-foreground transition-all duration-300 ease-out"
           style={{ left: underlineStyle.left, width: underlineStyle.width }}
         />
       </div>
 
-      {/* ─── Tab Content ─── */}
       <div className="min-h-[40vh]">
         {activeTab === "videos" && (
           <>
             {videos.length > 0 ? (
               <div className="grid grid-cols-3 gap-px">
                 {videos.map((video) => (
-                  <div
-                    key={video.id}
-                    className="relative aspect-[9/16] overflow-hidden bg-secondary group"
-                  >
+                  <div key={video.id} className="relative aspect-[9/16] overflow-hidden bg-secondary group">
                     {video.media_type === "image" ? (
-                      <img
-                        src={video.video_url}
-                        className="h-full w-full object-cover"
-                        alt=""
-                        loading="lazy"
-                      />
+                      <img src={video.video_url} className="h-full w-full object-cover" alt="" loading="lazy" />
                     ) : (
-                      <video
-                        src={video.video_url}
-                        className="h-full w-full object-cover"
-                        muted
-                        playsInline
-                        preload="metadata"
-                      />
+                      <video src={video.video_url} className="h-full w-full object-cover" muted playsInline preload="metadata" />
                     )}
-                    {/* Play count overlay */}
                     <div className="absolute bottom-1 left-1 flex items-center gap-0.5 pointer-events-none">
                       <Play className="h-3 w-3 text-primary-foreground" fill="currentColor" />
                       <span className="text-[10px] font-semibold text-primary-foreground drop-shadow-md">
                         {formatCount(video.views_count || 0)}
                       </span>
                     </div>
-                    {/* Hover overlay */}
                     <div className="absolute inset-0 bg-background/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 ))}
               </div>
             ) : (
-              <EmptyTabState
-                icon={Grid3X3}
-                title="No videos yet"
-                subtitle="Upload your first highlight to get started"
-              />
+              <EmptyTabState icon={Grid3X3} title={t("profile.noVideos")} subtitle={t("profile.uploadFirst")} />
             )}
           </>
         )}
-
         {activeTab === "private" && (
-          <EmptyTabState
-            icon={Lock}
-            title="Private videos"
-            subtitle="Only you can see liked videos"
-          />
+          <EmptyTabState icon={Lock} title={t("profile.privateVideos")} subtitle={t("profile.onlyYou")} />
         )}
-
         {activeTab === "saved" && (
-          <EmptyTabState
-            icon={Bookmark}
-            title="Saved"
-            subtitle="Save highlights to view them later"
-          />
+          <EmptyTabState icon={Bookmark} title={t("profile.saved")} subtitle={t("profile.saveHighlights")} />
         )}
       </div>
 
-      <EditProfileDialog
-        open={editOpen}
-        onOpenChange={setEditOpen}
-        profile={profile}
-        onSaved={fetchProfile}
-      />
-
+      <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} profile={profile} onSaved={fetchProfile} />
       <BottomNav />
     </div>
   );
 };
 
-const EmptyTabState = ({
-  icon: Icon,
-  title,
-  subtitle,
-}: {
-  icon: typeof Grid3X3;
-  title: string;
-  subtitle: string;
-}) => (
+const EmptyTabState = ({ icon: Icon, title, subtitle }: { icon: typeof Grid3X3; title: string; subtitle: string }) => (
   <div className="flex flex-col items-center justify-center py-20 px-8">
     <div className="rounded-full border-2 border-muted-foreground/30 p-5 mb-4">
       <Icon className="h-8 w-8 text-muted-foreground/50" />

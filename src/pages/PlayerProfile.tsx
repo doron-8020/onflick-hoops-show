@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
 import BottomNav from "@/components/BottomNav";
 
@@ -27,6 +28,7 @@ const PlayerProfile = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [profile, setProfile] = useState<any>(null);
   const [videos, setVideos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,8 +91,8 @@ const PlayerProfile = () => {
   if (!profile) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
-        <p className="text-foreground font-semibold">Player not found</p>
-        <button onClick={() => navigate(-1)} className="text-primary text-sm">Go back</button>
+        <p className="text-foreground font-semibold">{t("profile.playerNotFound")}</p>
+        <button onClick={() => navigate(-1)} className="text-primary text-sm">{t("profile.goBack")}</button>
         <BottomNav />
       </div>
     );
@@ -101,7 +103,6 @@ const PlayerProfile = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Sticky Top Nav */}
       <div
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-300 ${
           scrolled ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-card" : "bg-transparent"
@@ -118,7 +119,6 @@ const PlayerProfile = () => {
         </button>
       </div>
 
-      {/* Profile Header */}
       <div className="flex flex-col items-center px-4 pt-16 pb-2">
         <div className="relative mb-3">
           <div className="h-24 w-24 rounded-full overflow-hidden ring-2 ring-primary/30 ring-offset-2 ring-offset-background">
@@ -137,12 +137,11 @@ const PlayerProfile = () => {
         <h2 className="font-display text-2xl text-foreground tracking-wide">{displayName}</h2>
         <p className="text-sm text-muted-foreground mb-3">{handle}</p>
 
-        {/* Stats */}
         <div className="flex gap-0 mb-4">
           {[
-            { value: profile.following_count || 0, label: "Following" },
-            { value: profile.followers_count || 0, label: "Followers" },
-            { value: totalLikes, label: "Likes" },
+            { value: profile.following_count || 0, label: t("profile.following") },
+            { value: profile.followers_count || 0, label: t("profile.followers") },
+            { value: totalLikes, label: t("profile.likes") },
           ].map((stat) => (
             <div key={stat.label} className="flex flex-col items-center px-6">
               <span className="font-display text-xl text-foreground leading-tight">{formatCount(stat.value)}</span>
@@ -151,14 +150,13 @@ const PlayerProfile = () => {
           ))}
         </div>
 
-        {/* Action buttons */}
         <div className="flex gap-2 w-full max-w-xs mb-4">
           {isOwnProfile ? (
             <button
               onClick={() => navigate("/profile")}
               className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground"
             >
-              Edit profile
+              {t("profile.editProfile")}
             </button>
           ) : (
             <>
@@ -172,16 +170,15 @@ const PlayerProfile = () => {
                 }`}
               >
                 {isFollowing ? <UserCheck className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
-                {isFollowing ? "Following" : "Follow"}
+                {isFollowing ? t("video.followingBtn") : t("profile.follow")}
               </button>
               <button className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground">
-                Message
+                {t("profile.message")}
               </button>
             </>
           )}
         </div>
 
-        {/* Bio */}
         {(profile.bio || profile.position || profile.team) && (
           <div className="w-full max-w-xs text-center space-y-1 mb-2">
             {profile.position && (
@@ -194,7 +191,6 @@ const PlayerProfile = () => {
         )}
       </div>
 
-      {/* Tabs */}
       <div ref={tabBarRef} className="relative flex border-b border-border sticky top-[52px] z-40 bg-background">
         {TABS.map((tab) => (
           <button
@@ -212,7 +208,6 @@ const PlayerProfile = () => {
         />
       </div>
 
-      {/* Content */}
       <div className="min-h-[40vh]">
         {activeTab === "videos" && (
           videos.length > 0 ? (
@@ -238,7 +233,7 @@ const PlayerProfile = () => {
               <div className="rounded-full border-2 border-muted-foreground/30 p-5 mb-4">
                 <Grid3X3 className="h-8 w-8 text-muted-foreground/50" />
               </div>
-              <p className="text-foreground font-semibold mb-1">No videos yet</p>
+              <p className="text-foreground font-semibold mb-1">{t("profile.noVideos")}</p>
             </div>
           )
         )}
@@ -247,7 +242,7 @@ const PlayerProfile = () => {
             <div className="rounded-full border-2 border-muted-foreground/30 p-5 mb-4">
               <Lock className="h-8 w-8 text-muted-foreground/50" />
             </div>
-            <p className="text-foreground font-semibold">Private</p>
+            <p className="text-foreground font-semibold">{t("profile.privateVideos")}</p>
           </div>
         )}
         {activeTab === "saved" && (
@@ -255,7 +250,7 @@ const PlayerProfile = () => {
             <div className="rounded-full border-2 border-muted-foreground/30 p-5 mb-4">
               <Bookmark className="h-8 w-8 text-muted-foreground/50" />
             </div>
-            <p className="text-foreground font-semibold">Saved</p>
+            <p className="text-foreground font-semibold">{t("profile.saved")}</p>
           </div>
         )}
       </div>

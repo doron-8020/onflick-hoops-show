@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Camera, Video, Image, Upload, X, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 
 const Create = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t, isRTL } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -22,13 +24,13 @@ const Create = () => {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-8 pb-24">
         <Camera className="h-16 w-16 text-muted-foreground mb-4" />
-        <p className="font-display text-2xl text-foreground mb-2">יש להתחבר</p>
-        <p className="text-sm text-muted-foreground text-center mb-6">עליך להתחבר כדי להעלות תוכן</p>
+        <p className="font-display text-2xl text-foreground mb-2">{t("create.signInRequired")}</p>
+        <p className="text-sm text-muted-foreground text-center mb-6">{t("create.signInDesc")}</p>
         <button
           onClick={() => navigate("/auth")}
           className="rounded-xl gradient-fire px-8 py-3 text-sm font-bold text-primary-foreground shadow-glow"
         >
-          התחבר
+          {t("auth.signIn")}
         </button>
         <BottomNav />
       </div>
@@ -43,11 +45,11 @@ const Create = () => {
     const isImage = file.type.startsWith("image/");
 
     if (!isVideo && !isImage) {
-      toast.error("יש לבחור קובץ תמונה או וידאו");
+      toast.error(t("create.invalidFile"));
       return;
     }
     if (file.size > 100 * 1024 * 1024) {
-      toast.error("גודל הקובץ חייב להיות עד 100MB");
+      toast.error(t("create.fileTooLarge"));
       return;
     }
 
@@ -58,7 +60,7 @@ const Create = () => {
 
   const handleUpload = async () => {
     if (!selectedFile || !title.trim()) {
-      toast.error("יש להוסיף כותרת ולבחור קובץ");
+      toast.error(t("create.addTitleAndFile"));
       return;
     }
 
@@ -91,10 +93,10 @@ const Create = () => {
 
       if (insertError) throw insertError;
 
-      toast.success("הועלה בהצלחה! 🔥");
+      toast.success(t("create.success"));
       navigate("/");
     } catch (error: any) {
-      toast.error(error.message || "ההעלאה נכשלה");
+      toast.error(error.message || t("create.uploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -106,18 +108,17 @@ const Create = () => {
         <button onClick={() => navigate(-1)}>
           <X className="h-6 w-6 text-foreground" />
         </button>
-        <h1 className="font-display text-2xl text-foreground">העלאת תוכן</h1>
+        <h1 className="font-display text-2xl text-foreground">{t("create.title")}</h1>
         <div className="w-6" />
       </div>
 
       <div className="flex-1 px-4 space-y-4">
-        {/* Media preview or selector */}
         {previewUrl ? (
           <div className="relative w-full aspect-[9/16] max-h-[40vh] rounded-2xl overflow-hidden bg-secondary">
             {mediaType === "video" ? (
               <video src={previewUrl} className="h-full w-full object-cover" controls playsInline />
             ) : (
-              <img src={previewUrl} className="h-full w-full object-cover" alt="תצוגה מקדימה" />
+              <img src={previewUrl} className="h-full w-full object-cover" alt="" />
             )}
             <button
               onClick={() => { setSelectedFile(null); setPreviewUrl(null); }}
@@ -134,46 +135,39 @@ const Create = () => {
             <div className="gradient-fire rounded-full p-4 shadow-glow">
               <Upload className="h-8 w-8 text-primary-foreground" />
             </div>
-            <p className="font-display text-lg text-foreground">לחץ לבחירת קובץ</p>
+            <p className="font-display text-lg text-foreground">{t("create.selectFile")}</p>
             <div className="flex gap-4 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1"><Video className="h-3.5 w-3.5" /> וידאו</span>
-              <span className="flex items-center gap-1"><Image className="h-3.5 w-3.5" /> תמונה</span>
+              <span className="flex items-center gap-1"><Video className="h-3.5 w-3.5" /> {t("create.video")}</span>
+              <span className="flex items-center gap-1"><Image className="h-3.5 w-3.5" /> {t("create.image")}</span>
             </div>
-            <p className="text-xs text-muted-foreground">עד 100MB</p>
+            <p className="text-xs text-muted-foreground">{t("create.upTo100MB")}</p>
           </button>
         )}
 
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="video/*,image/*"
-          onChange={handleFileSelect}
-          className="hidden"
-        />
+        <input ref={fileInputRef} type="file" accept="video/*,image/*" onChange={handleFileSelect} className="hidden" />
 
-        {/* Form fields */}
         <input
           type="text"
-          placeholder="כותרת *"
+          placeholder={t("create.titleField")}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          dir="rtl"
+          dir={isRTL ? "rtl" : "ltr"}
           className="w-full rounded-xl bg-secondary px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary"
         />
         <textarea
-          placeholder="תיאור (אופציונלי)"
+          placeholder={t("create.descField")}
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
           rows={2}
-          dir="rtl"
+          dir={isRTL ? "rtl" : "ltr"}
           className="w-full rounded-xl bg-secondary px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary resize-none"
         />
         <input
           type="text"
-          placeholder="תגיות (מופרדות בפסיק: כדורסל, חטיפה, טריפל)"
+          placeholder={t("create.tagsField")}
           value={tags}
           onChange={(e) => setTags(e.target.value)}
-          dir="rtl"
+          dir={isRTL ? "rtl" : "ltr"}
           className="w-full rounded-xl bg-secondary px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary"
         />
 
@@ -183,15 +177,9 @@ const Create = () => {
           className="w-full rounded-xl gradient-fire py-3.5 text-sm font-bold text-primary-foreground shadow-glow disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
         >
           {uploading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              מעלה...
-            </>
+            <><Loader2 className="h-4 w-4 animate-spin" />{t("create.uploading")}</>
           ) : (
-            <>
-              <Upload className="h-4 w-4" />
-              פרסם 🔥
-            </>
+            <><Upload className="h-4 w-4" />{t("create.publish")}</>
           )}
         </button>
       </div>

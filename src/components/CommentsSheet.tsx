@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Send, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
@@ -43,6 +44,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const { user } = useAuth();
+  const { t, isRTL } = useLanguage();
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -135,7 +137,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
 
         <SheetHeader className="px-4 pb-2 border-b border-border">
           <SheetTitle className="text-center text-sm">
-            תגובות ({comments.length})
+            {t("comments.title")} ({comments.length})
           </SheetTitle>
         </SheetHeader>
 
@@ -146,7 +148,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
             </div>
           ) : comments.length === 0 ? (
             <p className="text-center text-muted-foreground text-sm py-8">
-              אין תגובות עדיין. היה הראשון להגיב! 💬
+              {t("comments.empty")}
             </p>
           ) : (
             comments.map((comment) => {
@@ -201,10 +203,10 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
           <Input
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            placeholder="הוסף תגובה..."
+            placeholder={user ? t("comments.placeholder") : t("comments.signInToComment")}
             className="flex-1 text-sm bg-secondary"
-            dir="rtl"
-            disabled={submitting}
+            dir={isRTL ? "rtl" : "ltr"}
+            disabled={submitting || !user}
             maxLength={500}
           />
           <Button
