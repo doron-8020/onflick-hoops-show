@@ -145,7 +145,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
               onChange={handleFileChange}
             />
           </button>
-          <p className="text-xs text-muted-foreground">לחץ לשינוי תמונה</p>
+          <p className="text-xs text-muted-foreground">{t("editProfile.changePhoto")}</p>
 
           <div className="w-full space-y-3">
             <div>
