@@ -142,6 +142,19 @@ export const translations = {
 
   // Follow
   "follow.error": { he: "שגיאה", en: "Error" },
+
+  // PWA Install
+  "install.title": { he: "התקן את ONFLICK", en: "Install ONFLICK" },
+  "install.description": { he: "הוסף את האפליקציה למסך הבית לגישה מהירה והתראות בזמן אמת", en: "Add the app to your home screen for quick access and real-time notifications" },
+  "install.benefit1": { he: "גישה מהירה מהמסך הראשי", en: "Quick access from home screen" },
+  "install.benefit2": { he: "התראות על לייקים, תגובות ועוקבים חדשים", en: "Notifications for likes, comments and new followers" },
+  "install.benefit3": { he: "חוויה מלאה כמו אפליקציה", en: "Full app-like experience" },
+  "install.installButton": { he: "התקן עכשיו 🔥", en: "Install Now 🔥" },
+  "install.notNow": { he: "לא עכשיו", en: "Not now" },
+  "install.iosTitle": { he: "להתקנה באייפון:", en: "To install on iPhone:" },
+  "install.iosStep1": { he: "לחץ על כפתור השיתוף בתחתית הדפדפן", en: "Tap the Share button at the bottom of the browser" },
+  "install.iosStep2": { he: 'בחר "הוסף למסך הבית"', en: 'Select "Add to Home Screen"' },
+  "install.browserMenu": { he: "פתח את תפריט הדפדפן ובחר \"הוסף למסך הבית\"", en: "Open browser menu and select \"Add to Home Screen\"" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;
