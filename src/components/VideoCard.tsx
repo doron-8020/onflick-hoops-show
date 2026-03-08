@@ -167,6 +167,8 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
         <p className="mt-2 text-xs text-muted-foreground">{formatNumber(video.views_count)} views</p>
       </div>
+
+      <CommentsSheet videoId={video.id} open={commentsOpen} onOpenChange={setCommentsOpen} />
     </div>
   );
 };
