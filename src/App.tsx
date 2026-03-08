@@ -15,6 +15,7 @@ import Auth from "./pages/Auth";
 import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import AppShell from "./components/AppShell";
 
 const queryClient = new QueryClient();
 
@@ -27,17 +28,19 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <AuthProvider>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/discover" element={<Discover />} />
-                <Route path="/create" element={<Create />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/player/:userId" element={<PlayerProfile />} />
-                <Route path="/notifications" element={<Notifications />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <AppShell>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/discover" element={<Discover />} />
+                  <Route path="/create" element={<Create />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/player/:userId" element={<PlayerProfile />} />
+                  <Route path="/notifications" element={<Notifications />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </AppShell>
             </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>

@@ -34,6 +34,7 @@ const Auth = () => {
       if (isLogin) {
         await signIn(email, password);
         toast.success(t("auth.welcome"));
+        localStorage.setItem("show-install-prompt", "true");
         navigate("/");
       } else {
         await signUp(email, password, displayName.trim());
@@ -143,6 +144,7 @@ const Auth = () => {
 
         <button
           onClick={async () => {
+            localStorage.setItem("show-install-prompt", "true");
             const { error } = await lovable.auth.signInWithOAuth("google", {
               redirect_uri: window.location.origin,
             });
