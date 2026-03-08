@@ -63,6 +63,42 @@ export type Database = {
           },
         ]
       }
+      follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "follows_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -110,6 +146,8 @@ export type Database = {
           bio: string | null
           created_at: string
           display_name: string | null
+          followers_count: number
+          following_count: number
           id: string
           position: string | null
           team: string | null
@@ -121,6 +159,8 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string | null
+          followers_count?: number
+          following_count?: number
           id?: string
           position?: string | null
           team?: string | null
@@ -132,6 +172,8 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string | null
+          followers_count?: number
+          following_count?: number
           id?: string
           position?: string | null
           team?: string | null
