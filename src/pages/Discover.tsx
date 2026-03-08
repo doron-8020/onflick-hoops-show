@@ -39,7 +39,7 @@ const PlayerCard = ({ player }: { player: PlayerProfile }) => {
       </div>
       {!isSelf && user && (
         <button
-          onClick={toggleFollow}
+          onClick={(e) => { e.stopPropagation(); toggleFollow(); }}
           disabled={loading}
           className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all shrink-0 ${
             isFollowing
