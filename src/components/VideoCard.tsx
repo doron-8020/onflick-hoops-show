@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Heart, MessageCircle, Share2, Play, Pause, BadgeCheck } from "lucide-react";
+import { Heart, MessageCircle, Share2, Play, UserPlus, UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFollow } from "@/hooks/useFollow";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import CommentsSheet from "./CommentsSheet";
