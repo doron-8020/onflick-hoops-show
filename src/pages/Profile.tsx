@@ -1,32 +1,35 @@
 import { useEffect, useState } from "react";
-import { Settings, Grid3X3, Bookmark, BadgeCheck, LogOut } from "lucide-react";
+import { Grid3X3, Bookmark, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
+import EditProfileDialog from "@/components/EditProfileDialog";
 
 const Profile = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
   const [videos, setVideos] = useState<any[]>([]);
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     if (!user) return;
-    
-    const fetchProfile = async () => {
-      const { data } = await supabase.from("profiles").select("*").eq("user_id", user.id).single();
-      setProfile(data);
-    };
-    
-    const fetchVideos = async () => {
-      const { data } = await supabase.from("videos").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
-      setVideos(data || []);
-    };
-
     fetchProfile();
     fetchVideos();
   }, [user]);
+
+  const fetchProfile = async () => {
+    if (!user) return;
+    const { data } = await supabase.from("profiles").select("*").eq("user_id", user.id).single();
+    setProfile(data);
+  };
+
+  const fetchVideos = async () => {
+    if (!user) return;
+    const { data } = await supabase.from("videos").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
+    setVideos(data || []);
+  };
 
   if (!user) {
     return (
@@ -55,10 +58,17 @@ const Profile = () => {
       </div>
 
       <div className="flex flex-col items-center px-4 pb-6">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full gradient-fire font-display text-3xl text-primary-foreground mb-3">
-          {(profile?.display_name || "P").charAt(0).toUpperCase()}
+        <div className="h-20 w-20 rounded-full overflow-hidden gradient-fire flex items-center justify-center mb-3">
+          {profile?.avatar_url ? (
+            <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
+          ) : (
+            <span className="font-display text-3xl text-primary-foreground">
+              {(profile?.display_name || "P").charAt(0).toUpperCase()}
+            </span>
+          )}
         </div>
         <h2 className="font-display text-2xl text-foreground mb-1">{profile?.display_name || "Player"}</h2>
+        {profile?.bio && <p className="text-sm text-muted-foreground mb-1 text-center max-w-xs">{profile.bio}</p>}
         {profile?.position && (
           <p className="text-sm text-muted-foreground mb-4">{profile.position}{profile.team ? ` · ${profile.team}` : ""}</p>
         )}
@@ -79,11 +89,14 @@ const Profile = () => {
         </div>
 
         <div className="flex gap-3 w-full max-w-xs">
-          <button className="flex-1 rounded-xl gradient-fire py-2.5 text-sm font-semibold text-primary-foreground shadow-glow">
-            Edit Profile
+          <button
+            onClick={() => setEditOpen(true)}
+            className="flex-1 rounded-xl gradient-fire py-2.5 text-sm font-semibold text-primary-foreground shadow-glow"
+          >
+            עריכת פרופיל
           </button>
           <button className="flex-1 rounded-xl bg-secondary py-2.5 text-sm font-semibold text-secondary-foreground">
-            Share
+            שיתוף
           </button>
         </div>
       </div>
@@ -101,15 +114,26 @@ const Profile = () => {
         <div className="grid grid-cols-3 gap-0.5 px-0.5">
           {videos.map((video) => (
             <div key={video.id} className="relative aspect-[9/16] overflow-hidden bg-secondary">
-              <video src={video.video_url} className="h-full w-full object-cover" muted playsInline />
+              {video.media_type === "image" ? (
+                <img src={video.video_url} className="h-full w-full object-cover" alt="" />
+              ) : (
+                <video src={video.video_url} className="h-full w-full object-cover" muted playsInline />
+              )}
             </div>
           ))}
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-16 px-8">
-          <p className="text-muted-foreground text-sm text-center">No highlights yet. Upload your first one!</p>
+          <p className="text-muted-foreground text-sm text-center">אין עדיין הדגשות. העלה את הראשונה!</p>
         </div>
       )}
+
+      <EditProfileDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        profile={profile}
+        onSaved={fetchProfile}
+      />
 
       <BottomNav />
     </div>
