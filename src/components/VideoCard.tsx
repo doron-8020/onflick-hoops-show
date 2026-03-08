@@ -108,8 +108,8 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
       </div>
 
-      {/* Play/Pause indicator */}
-      {!playing && (
+      {/* Play/Pause indicator (video only) */}
+      {video.media_type !== "image" && !playing && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="rounded-full bg-background/30 p-4 backdrop-blur-sm">
             <Play className="h-12 w-12 text-foreground/80" fill="currentColor" />
