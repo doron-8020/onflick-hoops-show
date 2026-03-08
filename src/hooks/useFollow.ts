@@ -45,7 +45,7 @@ export const useFollow = (targetUserId: string | undefined) => {
         setIsFollowing(true);
       }
     } catch (e: any) {
-      toast.error(e.message || "שגיאה");
+      toast.error(e.message || t("follow.error"));
     } finally {
       setLoading(false);
     }

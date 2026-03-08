@@ -200,10 +200,10 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
             {saving ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                שומר...
+                {t("editProfile.saving")}
               </span>
             ) : (
-              "שמור"
+              t("editProfile.save")
             )}
           </button>
         </div>
