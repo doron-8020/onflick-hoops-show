@@ -59,10 +59,10 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-4 left-4 p-2 rounded-full hover:bg-secondary transition-colors safe-top"
+        className="absolute top-4 start-4 p-2 rounded-full hover:bg-secondary transition-colors safe-top"
         aria-label="Go back"
       >
-        <ArrowLeft className="h-5 w-5 text-foreground" />
+        <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />
       </button>
 
       <div className="w-full max-w-sm">
