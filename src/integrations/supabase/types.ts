@@ -142,67 +142,124 @@ export type Database = {
       }
       profiles: {
         Row: {
+          apg: number | null
           avatar_url: string | null
           bio: string | null
           comment_privacy: string
+          comparison_player: string | null
           created_at: string
           display_name: string | null
+          dob: string | null
+          dominant_hand: string | null
           followers_count: number
           following_count: number
+          ft_pct: number | null
+          gpa: number | null
+          graduation_year: number | null
+          height_cm: number | null
+          highlights_link: string | null
           id: string
+          league: string | null
           notify_comments: boolean
           notify_followers: boolean
           notify_likes: boolean
           notify_messages: boolean
           position: string | null
+          ppg: number | null
           private_profile: boolean
+          rpg: number | null
+          secondary_position: string | null
+          sprint_20m_sec: number | null
           status: Database["public"]["Enums"]["user_status"]
           team: string | null
+          three_pt_pct: number | null
+          top_traits: string | null
           updated_at: string
           user_id: string
           verified: boolean
+          vertical_leap_cm: number | null
+          weight_kg: number | null
+          wingspan_cm: number | null
         }
         Insert: {
+          apg?: number | null
           avatar_url?: string | null
           bio?: string | null
           comment_privacy?: string
+          comparison_player?: string | null
           created_at?: string
           display_name?: string | null
+          dob?: string | null
+          dominant_hand?: string | null
           followers_count?: number
           following_count?: number
+          ft_pct?: number | null
+          gpa?: number | null
+          graduation_year?: number | null
+          height_cm?: number | null
+          highlights_link?: string | null
           id?: string
+          league?: string | null
           notify_comments?: boolean
           notify_followers?: boolean
           notify_likes?: boolean
           notify_messages?: boolean
           position?: string | null
+          ppg?: number | null
           private_profile?: boolean
+          rpg?: number | null
+          secondary_position?: string | null
+          sprint_20m_sec?: number | null
           status?: Database["public"]["Enums"]["user_status"]
           team?: string | null
+          three_pt_pct?: number | null
+          top_traits?: string | null
           updated_at?: string
           user_id: string
           verified?: boolean
+          vertical_leap_cm?: number | null
+          weight_kg?: number | null
+          wingspan_cm?: number | null
         }
         Update: {
+          apg?: number | null
           avatar_url?: string | null
           bio?: string | null
           comment_privacy?: string
+          comparison_player?: string | null
           created_at?: string
           display_name?: string | null
+          dob?: string | null
+          dominant_hand?: string | null
           followers_count?: number
           following_count?: number
+          ft_pct?: number | null
+          gpa?: number | null
+          graduation_year?: number | null
+          height_cm?: number | null
+          highlights_link?: string | null
           id?: string
+          league?: string | null
           notify_comments?: boolean
           notify_followers?: boolean
           notify_likes?: boolean
           notify_messages?: boolean
           position?: string | null
+          ppg?: number | null
           private_profile?: boolean
+          rpg?: number | null
+          secondary_position?: string | null
+          sprint_20m_sec?: number | null
           status?: Database["public"]["Enums"]["user_status"]
           team?: string | null
+          three_pt_pct?: number | null
+          top_traits?: string | null
           updated_at?: string
           user_id?: string
           verified?: boolean
+          vertical_leap_cm?: number | null
+          weight_kg?: number | null
+          wingspan_cm?: number | null
         }
         Relationships: []
       }
