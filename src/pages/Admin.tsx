@@ -46,7 +46,7 @@ interface Analytics {
 
 interface AdminRole {
   user_id: string;
-  role: string;
+  role: "admin" | "moderator" | "user";
 }
 
 const statusConfig = {
