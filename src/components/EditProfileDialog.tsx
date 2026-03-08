@@ -149,7 +149,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
 
           <div className="w-full space-y-3">
             <div>
-              <Label className="text-muted-foreground text-xs">שם תצוגה *</Label>
+              <Label className="text-muted-foreground text-xs">{t("editProfile.displayName")}</Label>
               <Input
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
