@@ -50,7 +50,7 @@ const VideoCardMock = ({ video }: VideoCardMockProps) => {
         </div>
       )}
 
-      <div className="absolute right-3 bottom-32 flex flex-col items-center gap-5">
+      <div className="absolute end-3 bottom-32 flex flex-col items-center gap-5">
         <button onClick={handleLike} className="flex flex-col items-center gap-1">
           <div className={`rounded-full p-2.5 ${liked ? "bg-primary/20" : "bg-background/30 backdrop-blur-sm"}`}>
             <Heart className={`h-7 w-7 transition-all ${liked ? "text-primary scale-110" : "text-foreground"}`} fill={liked ? "currentColor" : "none"} />
