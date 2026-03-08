@@ -190,7 +190,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
       {/* Play/Pause flash */}
       <AnimatePresence>
-        {video.media_type !== "image" && showPlayIcon && (
+        {video.media_type !== "image" && video.media_type !== "gallery" && showPlayIcon && (
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
