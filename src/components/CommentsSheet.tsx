@@ -137,7 +137,8 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
 
         <SheetHeader className="px-4 pb-2 border-b border-border">
           <SheetTitle className="text-center text-sm">
-            תגובות ({comments.length})
+            {t("comments.title")} ({comments.length})
+          </SheetTitle>
           </SheetTitle>
         </SheetHeader>
 
