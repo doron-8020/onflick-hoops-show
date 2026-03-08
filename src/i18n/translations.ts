@@ -97,6 +97,10 @@ export const translations = {
   "create.invalidFile": { he: "יש לבחור קובץ תמונה או וידאו", en: "Select an image or video file" },
   "create.fileTooLarge": { he: "גודל הקובץ חייב להיות עד 100MB", en: "File size must be under 100MB" },
   "create.uploadFailed": { he: "ההעלאה נכשלה", en: "Upload failed" },
+  "create.maxImages": { he: "מקסימום", en: "Maximum" },
+  "create.images": { he: "תמונות", en: "images" },
+  "create.addMore": { he: "הוסף עוד", en: "Add more" },
+  "create.upTo20Images": { he: "עד 20 תמונות בגלריה", en: "Up to 20 images gallery" },
 
   // Settings
   "settings.title": { he: "הגדרות", en: "Settings" },
