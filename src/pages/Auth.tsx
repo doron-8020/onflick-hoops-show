@@ -144,6 +144,7 @@ const Auth = () => {
 
         <button
           onClick={async () => {
+            localStorage.setItem("show-install-prompt", "true");
             const { error } = await lovable.auth.signInWithOAuth("google", {
               redirect_uri: window.location.origin,
             });
