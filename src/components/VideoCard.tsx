@@ -181,7 +181,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       {video.media_type !== "image" && (
         <button
           onClick={toggleMute}
-          className="absolute top-16 right-4 z-30 rounded-full bg-background/30 p-2 backdrop-blur-sm"
+          className="absolute top-16 end-4 z-30 rounded-full bg-background/30 p-2 backdrop-blur-sm"
           aria-label={muted ? "Unmute" : "Mute"}
         >
           {muted ? (
