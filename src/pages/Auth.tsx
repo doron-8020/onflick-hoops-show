@@ -14,6 +14,7 @@ const Auth = () => {
   const [displayName, setDisplayName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showInstall, setShowInstall] = useState(false);
   const { signIn, signUp } = useAuth();
   const { t, isRTL } = useLanguage();
   const navigate = useNavigate();
