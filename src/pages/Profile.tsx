@@ -10,6 +10,7 @@ const Profile = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
+  const [editOpen, setEditOpen] = useState(false);
   const [videos, setVideos] = useState<any[]>([]);
 
   useEffect(() => {
