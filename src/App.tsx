@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Discover from "./pages/Discover";
 import Create from "./pages/Create";
 import Profile from "./pages/Profile";
+import PlayerProfile from "./pages/PlayerProfile";
 import Auth from "./pages/Auth";
 import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/discover" element={<Discover />} />
             <Route path="/create" element={<Create />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/player/:userId" element={<PlayerProfile />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="*" element={<NotFound />} />

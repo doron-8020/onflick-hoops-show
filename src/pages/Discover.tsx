@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, UserPlus, UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,11 +18,15 @@ interface PlayerProfile {
 
 const PlayerCard = ({ player }: { player: PlayerProfile }) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { isFollowing, toggleFollow, loading } = useFollow(player.user_id);
   const isSelf = user?.id === player.user_id;
 
   return (
-    <div className="flex items-center gap-3 rounded-xl bg-secondary p-3">
+    <div
+      className="flex items-center gap-3 rounded-xl bg-secondary p-3 cursor-pointer transition-colors hover:bg-secondary/80"
+      onClick={() => navigate(`/player/${player.user_id}`)}
+    >
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full gradient-fire font-display text-lg text-primary-foreground">
         {(player.display_name || "P").charAt(0).toUpperCase()}
       </div>
@@ -34,7 +39,7 @@ const PlayerCard = ({ player }: { player: PlayerProfile }) => {
       </div>
       {!isSelf && user && (
         <button
-          onClick={toggleFollow}
+          onClick={(e) => { e.stopPropagation(); toggleFollow(); }}
           disabled={loading}
           className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all shrink-0 ${
             isFollowing
