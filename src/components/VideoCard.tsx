@@ -1,11 +1,13 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Heart, MessageCircle, Share2, Play, Pause, UserPlus, UserCheck, Volume2, VolumeX } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useMute } from "@/contexts/MuteContext";
 import { useFollow } from "@/hooks/useFollow";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import CommentsSheet from "./CommentsSheet";
 
 interface VideoCardProps {
@@ -37,44 +39,64 @@ const formatNumber = (n: number) => {
   return n.toString();
 };
 
+/** Trigger haptic vibration if available */
+const haptic = (ms = 30) => {
+  try {
+    if ("vibrate" in navigator) navigator.vibrate(ms);
+  } catch {}
+};
+
 const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => {
   const [liked, setLiked] = useState(initialLiked);
   const [likes, setLikes] = useState(video.likes_count);
   const [showHeart, setShowHeart] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(true);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [showPlayIcon, setShowPlayIcon] = useState(false);
   const { user } = useAuth();
   const { t } = useLanguage();
+  const { globalMuted, setGlobalMuted } = useMute();
   const navigate = useNavigate();
   const { isFollowing, toggleFollow, loading: followLoading } = useFollow(video.user_id);
   const videoRef = useRef<HTMLVideoElement>(null);
   const tapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastTapRef = useRef<number>(0);
 
-  const handleLike = async () => {
+  // Sync global mute state
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = globalMuted;
+    }
+  }, [globalMuted]);
+
+  // Optimistic like handler
+  const handleLike = useCallback(async () => {
     if (!user) {
       navigate("/auth");
       return;
     }
     const newLiked = !liked;
+    // Optimistic update
     setLiked(newLiked);
     setLikes((prev) => (newLiked ? prev + 1 : prev - 1));
+    haptic(newLiked ? 40 : 20);
 
     const { error } = await supabase.rpc("toggle_video_like", { p_video_id: video.id });
     if (error) {
+      // Rollback
       setLiked(!newLiked);
       setLikes((prev) => (newLiked ? prev - 1 : prev + 1));
       toast.error(t("video.likeError"));
     }
-  };
+  }, [liked, user, video.id, t, navigate]);
 
   const handleTap = useCallback(() => {
     const now = Date.now();
     if (now - lastTapRef.current < 300) {
+      // Double tap
       if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current);
       if (!liked) handleLike();
+      else haptic(40);
       setShowHeart(true);
       setTimeout(() => setShowHeart(false), 800);
       lastTapRef.current = 0;
@@ -94,14 +116,15 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         setTimeout(() => setShowPlayIcon(false), 600);
       }, 300);
     }
-  }, [liked]);
+  }, [liked, handleLike]);
 
   const toggleMute = (e: React.MouseEvent) => {
     e.stopPropagation();
     const videoEl = videoRef.current;
     if (!videoEl) return;
-    videoEl.muted = !videoEl.muted;
-    setMuted(videoEl.muted);
+    const newMuted = !videoEl.muted;
+    videoEl.muted = newMuted;
+    setGlobalMuted(newMuted);
   };
 
   const handleShare = async (e: React.MouseEvent) => {
@@ -127,8 +150,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
   return (
     <div
-      data-video-card
-      className="relative h-[100dvh] w-full snap-start snap-always"
+      className="relative h-full w-full"
       onClick={video.media_type !== "image" ? handleTap : undefined}
     >
       {/* Media */}
@@ -147,7 +169,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
             className="h-full w-full object-cover"
             loop
             playsInline
-            muted={muted}
+            muted={globalMuted}
             poster={video.thumbnail_url || undefined}
             preload="metadata"
             onPlay={() => setPlaying(true)}
@@ -158,33 +180,48 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </div>
 
       {/* Play/Pause flash */}
-      {video.media_type !== "image" && showPlayIcon && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-          <div className="rounded-full bg-background/40 p-4 backdrop-blur-sm animate-scale-in">
-            {playing ? (
-              <Play className="h-10 w-10 text-primary-foreground" fill="currentColor" />
-            ) : (
-              <Pause className="h-10 w-10 text-primary-foreground" fill="currentColor" />
-            )}
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {video.media_type !== "image" && showPlayIcon && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
+          >
+            <div className="rounded-full bg-background/40 p-4 backdrop-blur-sm">
+              {playing ? (
+                <Play className="h-10 w-10 text-primary-foreground" fill="currentColor" />
+              ) : (
+                <Pause className="h-10 w-10 text-primary-foreground" fill="currentColor" />
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Double tap heart */}
-      {showHeart && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-          <Heart className="h-24 w-24 text-primary animate-float-up" fill="currentColor" />
-        </div>
-      )}
+      <AnimatePresence>
+        {showHeart && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.2 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.5, y: -60 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
+          >
+            <Heart className="h-28 w-28 text-primary drop-shadow-lg" fill="currentColor" />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Mute button */}
       {video.media_type !== "image" && (
         <button
           onClick={toggleMute}
-          className="absolute top-16 end-4 z-30 rounded-full bg-background/30 p-2 backdrop-blur-sm"
-          aria-label={muted ? "Unmute" : "Mute"}
+          className="absolute top-16 end-4 z-30 rounded-full bg-background/30 p-2 backdrop-blur-sm safe-top"
+          aria-label={globalMuted ? "Unmute" : "Mute"}
         >
-          {muted ? (
+          {globalMuted ? (
             <VolumeX className="h-4 w-4 text-foreground/80" />
           ) : (
             <Volume2 className="h-4 w-4 text-foreground/80" />
@@ -223,9 +260,11 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
         {/* Like */}
         <button onClick={handleLike} className="flex flex-col items-center gap-1">
-          <div
+          <motion.div
+            whileTap={{ scale: 1.3 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
             className={`rounded-full p-2.5 transition-all duration-200 ${
-              liked ? "bg-primary/20 scale-110" : "bg-background/30 backdrop-blur-sm"
+              liked ? "bg-primary/20" : "bg-background/30 backdrop-blur-sm"
             }`}
           >
             <Heart
@@ -234,7 +273,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
               }`}
               fill={liked ? "currentColor" : "none"}
             />
-          </div>
+          </motion.div>
           <span className="text-xs font-semibold text-foreground drop-shadow-md">
             {formatNumber(likes)}
           </span>
@@ -265,7 +304,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </div>
 
       {/* Bottom info */}
-      <div className="absolute bottom-20 start-0 end-16 p-4">
+      <div className="absolute bottom-20 start-0 end-16 p-4 safe-bottom">
         <div className="mb-3 flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <span

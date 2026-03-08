@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { MuteProvider } from "@/contexts/MuteContext";
+import OfflineBanner from "@/components/OfflineBanner";
 import Index from "./pages/Index";
 import Discover from "./pages/Discover";
 import Create from "./pages/Create";
@@ -24,28 +26,31 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AuthProvider>
-              <AppShell>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/discover" element={<Discover />} />
-                  <Route path="/create" element={<Create />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/player/:userId" element={<PlayerProfile />} />
-                  <Route path="/notifications" element={<Notifications />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </AppShell>
-            </AuthProvider>
-          </BrowserRouter>
-        </TooltipProvider>
+        <MuteProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <OfflineBanner />
+            <BrowserRouter>
+              <AuthProvider>
+                <AppShell>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/discover" element={<Discover />} />
+                    <Route path="/create" element={<Create />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/player/:userId" element={<PlayerProfile />} />
+                    <Route path="/notifications" element={<Notifications />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </AppShell>
+              </AuthProvider>
+            </BrowserRouter>
+          </TooltipProvider>
+        </MuteProvider>
       </LanguageProvider>
     </ThemeProvider>
   </QueryClientProvider>
