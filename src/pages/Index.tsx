@@ -19,6 +19,7 @@ interface VideoWithProfile {
   comments_count: number;
   shares_count: number;
   views_count: number;
+  media_type: string;
   profiles: {
     display_name: string | null;
     avatar_url: string | null;

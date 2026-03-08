@@ -17,6 +17,7 @@ interface VideoCardProps {
     comments_count: number;
     shares_count: number;
     views_count: number;
+    media_type?: string;
     profiles?: {
       display_name: string | null;
       avatar_url: string | null;
@@ -86,21 +87,29 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       onDoubleClick={handleDoubleTap}
       onClick={togglePlay}
     >
-      {/* Video */}
+      {/* Media */}
       <div className="absolute inset-0">
-        <video
-          src={video.video_url}
-          className="h-full w-full object-cover"
-          loop
-          playsInline
-          muted
-          poster={video.thumbnail_url || undefined}
-        />
+        {video.media_type === "image" ? (
+          <img
+            src={video.video_url}
+            className="h-full w-full object-cover"
+            alt={video.caption || ""}
+          />
+        ) : (
+          <video
+            src={video.video_url}
+            className="h-full w-full object-cover"
+            loop
+            playsInline
+            muted
+            poster={video.thumbnail_url || undefined}
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
       </div>
 
-      {/* Play/Pause indicator */}
-      {!playing && (
+      {/* Play/Pause indicator (video only) */}
+      {video.media_type !== "image" && !playing && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="rounded-full bg-background/30 p-4 backdrop-blur-sm">
             <Play className="h-12 w-12 text-foreground/80" fill="currentColor" />

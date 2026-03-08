@@ -176,6 +176,7 @@ export type Database = {
           created_at: string
           id: string
           likes_count: number
+          media_type: string
           shares_count: number
           tags: string[] | null
           thumbnail_url: string | null
@@ -191,6 +192,7 @@ export type Database = {
           created_at?: string
           id?: string
           likes_count?: number
+          media_type?: string
           shares_count?: number
           tags?: string[] | null
           thumbnail_url?: string | null
@@ -206,6 +208,7 @@ export type Database = {
           created_at?: string
           id?: string
           likes_count?: number
+          media_type?: string
           shares_count?: number
           tags?: string[] | null
           thumbnail_url?: string | null
