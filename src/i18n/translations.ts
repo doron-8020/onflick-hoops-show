@@ -64,6 +64,8 @@ export const translations = {
   // Player Profile
   "profile.playerNotFound": { he: "השחקן לא נמצא", en: "Player not found" },
   "profile.goBack": { he: "חזור", en: "Go back" },
+  "profile.follow": { he: "עקוב", en: "Follow" },
+  "profile.message": { he: "הודעה", en: "Message" },
 
   // Profile
   "profile.followers": { he: "עוקבים", en: "Followers" },
