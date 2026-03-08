@@ -224,7 +224,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </AnimatePresence>
 
       {/* Mute button */}
-      {video.media_type !== "image" && (
+      {video.media_type !== "image" && video.media_type !== "gallery" && (
         <button
           onClick={toggleMute}
           className="absolute top-16 end-4 z-30 rounded-full bg-background/30 p-2 backdrop-blur-sm safe-top"
