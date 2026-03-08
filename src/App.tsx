@@ -14,6 +14,7 @@ import PlayerProfile from "./pages/PlayerProfile";
 import Auth from "./pages/Auth";
 import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import AppShell from "./components/AppShell";
 
@@ -37,6 +38,7 @@ const App = () => (
                   <Route path="/player/:userId" element={<PlayerProfile />} />
                   <Route path="/notifications" element={<Notifications />} />
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/admin" element={<Admin />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
