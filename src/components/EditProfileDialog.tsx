@@ -101,7 +101,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
 
       if (error) throw error;
 
-      toast.success("הפרופיל עודכן בהצלחה");
+      toast.success(t("editProfile.success"));
       onSaved();
       onOpenChange(false);
     } catch (e: any) {
