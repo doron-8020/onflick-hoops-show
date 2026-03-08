@@ -120,7 +120,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
 
   const handleDelete = async (commentId: string) => {
     const { error } = await supabase.from("comments").delete().eq("id", commentId);
-    if (error) toast.error("שגיאה במחיקת התגובה");
+    if (error) toast.error(t("comments.deleteError"));
   };
 
   return (
