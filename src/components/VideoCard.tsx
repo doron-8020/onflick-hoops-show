@@ -157,28 +157,35 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     >
       {/* Media */}
       <div className="absolute inset-0">
-        {video.media_type === "image" ? (
-          <img
-            src={video.video_url}
-            className="h-full w-full object-cover"
-            alt={video.caption || "Highlight"}
-            loading="lazy"
-          />
+        {video.media_type === "gallery" && video.gallery_urls && video.gallery_urls.length > 0 ? (
+          <GalleryCarousel urls={video.gallery_urls} alt={video.caption || "Gallery"} />
+        ) : video.media_type === "image" ? (
+          <>
+            <img
+              src={video.video_url}
+              className="h-full w-full object-cover"
+              alt={video.caption || "Highlight"}
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/30" />
+          </>
         ) : (
-          <video
-            ref={videoRef}
-            src={video.video_url}
-            className="h-full w-full object-cover"
-            loop
-            playsInline
-            muted={globalMuted}
-            poster={video.thumbnail_url || undefined}
-            preload="metadata"
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
-          />
+          <>
+            <video
+              ref={videoRef}
+              src={video.video_url}
+              className="h-full w-full object-cover"
+              loop
+              playsInline
+              muted={globalMuted}
+              poster={video.thumbnail_url || undefined}
+              preload="metadata"
+              onPlay={() => setPlaying(true)}
+              onPause={() => setPlaying(false)}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/30" />
+          </>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/30" />
       </div>
 
       {/* Play/Pause flash */}
