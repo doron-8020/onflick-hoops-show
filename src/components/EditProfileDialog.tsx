@@ -116,7 +116,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
       <DialogContent className="max-w-sm bg-background border-border" dir={isRTL ? "rtl" : "ltr"}>
         <DialogHeader>
           <DialogTitle className="text-foreground font-display text-xl">
-            עריכת פרופיל
+            {t("editProfile.title")}
           </DialogTitle>
         </DialogHeader>
 
