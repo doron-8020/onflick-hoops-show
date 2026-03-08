@@ -155,7 +155,7 @@ const Admin = () => {
     setActionLoading(null);
   };
 
-  const removeRole = async (userId: string, role: string) => {
+  const removeRole = async (userId: string, role: "admin" | "moderator" | "user") => {
     // Prevent removing the primary admin (doron)
     if (userId === "2a6979e9-de93-41e1-8736-0ef50c99f621" && role === "admin") {
       toast.error(language === "he" ? "לא ניתן להסיר את האדמין הראשי" : "Cannot remove primary admin");
