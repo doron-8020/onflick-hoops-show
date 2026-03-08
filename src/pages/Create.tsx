@@ -9,7 +9,7 @@ import BottomNav from "@/components/BottomNav";
 
 const Create = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { t, isRTL } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
