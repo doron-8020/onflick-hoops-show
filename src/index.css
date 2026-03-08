@@ -55,11 +55,26 @@
     @apply bg-background text-foreground;
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
+    /* FIX #32: Prevent overscroll bounce */
+    overscroll-behavior: none;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     letter-spacing: 0.02em;
+  }
+
+  /* FIX #33: Prevent text selection on interactive elements */
+  button, a {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  /* FIX #34: Smooth focus styles */
+  input:focus-visible, textarea:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px hsl(var(--ring));
+    border-radius: var(--radius);
   }
 }
 
@@ -99,11 +114,45 @@
     display: none;
   }
 
+  /* FIX #35: Proper snap scroll */
   .snap-mandatory {
     scroll-snap-type: y mandatory;
   }
 
   .snap-start {
     scroll-snap-align: start;
+  }
+
+  /* FIX #17: Safe area utilities */
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* FIX #36: Scale-in animation for badges and icons */
+  @keyframes scale-in-center {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-scale-in {
+    animation: scale-in-center 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  }
+
+  /* FIX #37: Line clamp utility */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
