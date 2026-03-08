@@ -30,6 +30,21 @@ const Profile = () => {
     fetchVideos();
   }, [user]);
 
+  const refreshProfile = async () => {
+    if (!user) return;
+    const { data } = await supabase.from("profiles").select("*").eq("user_id", user.id).single();
+    setProfile(data);
+  };
+    
+    const fetchVideos = async () => {
+      const { data } = await supabase.from("videos").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
+      setVideos(data || []);
+    };
+
+    fetchProfile();
+    fetchVideos();
+  }, [user]);
+
   if (!user) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-8 pb-24">
