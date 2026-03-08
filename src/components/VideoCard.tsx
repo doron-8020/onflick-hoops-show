@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import CommentsSheet from "./CommentsSheet";
 
 interface VideoCardProps {
   video: {
@@ -37,6 +38,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   const [likes, setLikes] = useState(video.likes_count);
   const [showHeart, setShowHeart] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -122,7 +124,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           <span className="text-xs font-semibold text-foreground">{formatNumber(likes)}</span>
         </button>
 
-        <button className="flex flex-col items-center gap-1">
+        <button onClick={() => setCommentsOpen(true)} className="flex flex-col items-center gap-1">
           <div className="rounded-full bg-background/30 p-2.5 backdrop-blur-sm">
             <MessageCircle className="h-7 w-7 text-foreground" />
           </div>
@@ -165,6 +167,8 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
         <p className="mt-2 text-xs text-muted-foreground">{formatNumber(video.views_count)} views</p>
       </div>
+
+      <CommentsSheet videoId={video.id} open={commentsOpen} onOpenChange={setCommentsOpen} />
     </div>
   );
 };
