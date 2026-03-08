@@ -256,6 +256,7 @@ const Profile = () => {
       </div>
 
       <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} profile={profile} onSaved={fetchProfile} />
+      </div>
       <BottomNav />
     </div>
   );

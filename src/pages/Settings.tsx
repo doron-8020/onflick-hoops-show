@@ -158,9 +158,10 @@ const Settings = () => {
           <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />
         </button>
         <h1 className="font-display text-xl text-foreground tracking-wide">{t("settings.title")}</h1>
+        </div>
       </div>
 
-      <div className="px-4 pt-16 space-y-6 pb-4">
+      <div className="mx-auto max-w-lg px-4 pt-16 space-y-6 pb-4">
         {/* Account */}
         {user && (
           <Section title={t("settings.account")}>

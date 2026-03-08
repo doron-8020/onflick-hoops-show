@@ -185,6 +185,7 @@ const Discover = () => {
           </div>
         </>
       )}
+      </div>
 
       <BottomNav />
     </div>
