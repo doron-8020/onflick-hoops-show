@@ -43,6 +43,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   const [commentsOpen, setCommentsOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { isFollowing, toggleFollow, loading: followLoading } = useFollow(video.user_id);
 
   const handleLike = async () => {
     if (!user) {
