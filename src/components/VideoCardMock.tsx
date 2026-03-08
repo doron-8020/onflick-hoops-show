@@ -71,7 +71,7 @@ const VideoCardMock = ({ video }: VideoCardMockProps) => {
         </button>
       </div>
 
-      <div className="absolute bottom-20 left-0 right-16 p-4">
+      <div className="absolute bottom-20 start-0 end-16 p-4">
         <div className="mb-3 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full gradient-fire font-display text-lg text-primary-foreground">
             {video.player.name.charAt(0)}
