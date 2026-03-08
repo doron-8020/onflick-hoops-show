@@ -4,12 +4,14 @@ import { ArrowLeft, Sun, Moon, Globe, LogOut } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 
 const Settings = () => {
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const { user, signOut } = useAuth();
   const [signingOut, setSigningOut] = useState(false);
@@ -44,35 +46,21 @@ const Settings = () => {
           <h2 className="font-display text-lg text-foreground mb-3 tracking-wide">
             {t("settings.appearance")}
           </h2>
-          <div className="rounded-xl bg-card border border-border overflow-hidden divide-y divide-border">
-            <button
-              onClick={() => setTheme("dark")}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 transition-colors ${
-                theme === "dark" ? "bg-primary/10" : ""
-              }`}
-            >
-              <Moon className="h-5 w-5 text-foreground" />
-              <span className="flex-1 text-sm text-foreground text-start">
-                {t("settings.darkMode")}
-              </span>
-              {theme === "dark" && (
-                <div className="h-2.5 w-2.5 rounded-full bg-primary" />
+          <div className="rounded-xl bg-card border border-border p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {theme === "dark" ? (
+                <Moon className="h-5 w-5 text-foreground" />
+              ) : (
+                <Sun className="h-5 w-5 text-foreground" />
               )}
-            </button>
-            <button
-              onClick={() => setTheme("light")}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 transition-colors ${
-                theme === "light" ? "bg-primary/10" : ""
-              }`}
-            >
-              <Sun className="h-5 w-5 text-foreground" />
-              <span className="flex-1 text-sm text-foreground text-start">
-                {t("settings.lightMode")}
-              </span>
-              {theme === "light" && (
-                <div className="h-2.5 w-2.5 rounded-full bg-primary" />
-              )}
-            </button>
+              <Label className="text-sm text-foreground">
+                {theme === "dark" ? t("settings.darkMode") : t("settings.lightMode")}
+              </Label>
+            </div>
+            <Switch
+              checked={theme === "dark"}
+              onCheckedChange={toggleTheme}
+            />
           </div>
         </section>
 
@@ -81,35 +69,17 @@ const Settings = () => {
           <h2 className="font-display text-lg text-foreground mb-3 tracking-wide">
             {t("settings.language")}
           </h2>
-          <div className="rounded-xl bg-card border border-border overflow-hidden divide-y divide-border">
-            <button
-              onClick={() => setLanguage("he")}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 transition-colors ${
-                language === "he" ? "bg-primary/10" : ""
-              }`}
-            >
+          <div className="rounded-xl bg-card border border-border p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
               <Globe className="h-5 w-5 text-foreground" />
-              <span className="flex-1 text-sm text-foreground text-start">
+              <Label className="text-sm text-foreground">
                 {t("settings.hebrew")}
-              </span>
-              {language === "he" && (
-                <div className="h-2.5 w-2.5 rounded-full bg-primary" />
-              )}
-            </button>
-            <button
-              onClick={() => setLanguage("en")}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 transition-colors ${
-                language === "en" ? "bg-primary/10" : ""
-              }`}
-            >
-              <Globe className="h-5 w-5 text-foreground" />
-              <span className="flex-1 text-sm text-foreground text-start">
-                {t("settings.english")}
-              </span>
-              {language === "en" && (
-                <div className="h-2.5 w-2.5 rounded-full bg-primary" />
-              )}
-            </button>
+              </Label>
+            </div>
+            <Switch
+              checked={language === "he"}
+              onCheckedChange={(checked) => setLanguage(checked ? "he" : "en")}
+            />
           </div>
         </section>
 
