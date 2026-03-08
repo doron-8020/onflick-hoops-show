@@ -105,7 +105,7 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
       onSaved();
       onOpenChange(false);
     } catch (e: any) {
-      toast.error(e.message || "שגיאה בעדכון הפרופיל");
+      toast.error(e.message || t("editProfile.error"));
     } finally {
       setSaving(false);
     }
