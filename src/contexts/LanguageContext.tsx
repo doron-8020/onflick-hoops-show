@@ -11,9 +11,14 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguageState] = useState<Language>(
-    () => (localStorage.getItem("app-language") as Language) || "he"
-  );
+  const [language, setLanguageState] = useState<Language>(() => {
+    const saved = localStorage.getItem("app-language") as Language;
+    const lang = saved || "he";
+    // Set dir/lang on initial load
+    document.documentElement.dir = lang === "he" ? "rtl" : "ltr";
+    document.documentElement.lang = lang;
+    return lang;
+  });
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
