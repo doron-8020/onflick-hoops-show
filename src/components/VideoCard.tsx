@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Heart, MessageCircle, Share2, Play, Pause, BadgeCheck } from "lucide-react";
+import { Heart, MessageCircle, Share2, Play, UserPlus, UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFollow } from "@/hooks/useFollow";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import CommentsSheet from "./CommentsSheet";
@@ -9,6 +10,7 @@ import CommentsSheet from "./CommentsSheet";
 interface VideoCardProps {
   video: {
     id: string;
+    user_id?: string;
     video_url: string;
     thumbnail_url: string | null;
     caption: string | null;
@@ -42,6 +44,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   const [commentsOpen, setCommentsOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { isFollowing, toggleFollow, loading: followLoading } = useFollow(video.user_id);
 
   const handleLike = async () => {
     if (!user) {
@@ -162,6 +165,20 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
               </p>
             )}
           </div>
+          {user && video.user_id && user.id !== video.user_id && (
+            <button
+              onClick={(e) => { e.stopPropagation(); toggleFollow(); }}
+              disabled={followLoading}
+              className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
+                isFollowing
+                  ? "bg-secondary text-secondary-foreground"
+                  : "gradient-fire text-primary-foreground shadow-glow"
+              }`}
+            >
+              {isFollowing ? <UserCheck className="h-3.5 w-3.5" /> : <UserPlus className="h-3.5 w-3.5" />}
+              {isFollowing ? "עוקב" : "עקוב"}
+            </button>
+          )}
         </div>
 
         {video.caption && <p className="text-sm text-foreground mb-2">{video.caption}</p>}
