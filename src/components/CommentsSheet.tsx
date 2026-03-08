@@ -103,7 +103,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
     });
 
     if (error) {
-      toast.error("שגיאה בשליחת התגובה");
+      toast.error(t("comments.sendError"));
     } else {
       setNewComment("");
       setTimeout(
