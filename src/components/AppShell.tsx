@@ -29,6 +29,23 @@ const AppShell = ({ children }: AppShellProps) => {
     }
   }, [user, location.pathname]);
 
+  // iOS: periodic install reminder (every 7 days) to prevent session loss
+  useEffect(() => {
+    if (!user) return;
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches || (window.navigator as any).standalone === true;
+    if (isStandalone) return;
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (!isIOS) return;
+    const lastReminder = localStorage.getItem("ios-install-reminder");
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+    if (lastReminder && Date.now() - parseInt(lastReminder) < sevenDays) return;
+    const timer = setTimeout(() => {
+      setShowInstallPrompt(true);
+      localStorage.setItem("ios-install-reminder", Date.now().toString());
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [user]);
+
   // Block/freeze enforcement
   if (user && (userStatus === "blocked" || userStatus === "frozen") && location.pathname !== "/auth") {
     const isBlocked = userStatus === "blocked";
