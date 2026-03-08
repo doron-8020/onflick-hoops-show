@@ -87,16 +87,24 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       onDoubleClick={handleDoubleTap}
       onClick={togglePlay}
     >
-      {/* Video */}
+      {/* Media */}
       <div className="absolute inset-0">
-        <video
-          src={video.video_url}
-          className="h-full w-full object-cover"
-          loop
-          playsInline
-          muted
-          poster={video.thumbnail_url || undefined}
-        />
+        {video.media_type === "image" ? (
+          <img
+            src={video.video_url}
+            className="h-full w-full object-cover"
+            alt={video.caption || ""}
+          />
+        ) : (
+          <video
+            src={video.video_url}
+            className="h-full w-full object-cover"
+            loop
+            playsInline
+            muted
+            poster={video.thumbnail_url || undefined}
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
       </div>
 
