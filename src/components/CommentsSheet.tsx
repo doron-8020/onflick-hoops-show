@@ -149,7 +149,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
             </div>
           ) : comments.length === 0 ? (
             <p className="text-center text-muted-foreground text-sm py-8">
-              אין תגובות עדיין. היה הראשון להגיב! 💬
+              {t("comments.empty")}
             </p>
           ) : (
             comments.map((comment) => {
