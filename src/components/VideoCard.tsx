@@ -24,6 +24,7 @@ interface VideoCardProps {
     shares_count: number;
     views_count: number;
     media_type?: string;
+    gallery_urls?: string[] | null;
     profiles?: {
       display_name: string | null;
       avatar_url: string | null;
