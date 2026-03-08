@@ -109,7 +109,7 @@ const PlayerProfile = () => {
         }`}
       >
         <button onClick={() => navigate(-1)} className="p-1">
-          <ArrowLeft className="h-5 w-5 text-foreground" />
+          <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />
         </button>
         <h1 className={`font-display text-lg text-foreground tracking-wide transition-opacity duration-300 ${scrolled ? "opacity-100" : "opacity-0"}`}>
           {displayName}
