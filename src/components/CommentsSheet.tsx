@@ -34,7 +34,7 @@ const timeAgo = (dateStr: string) => {
   if (hrs < 24) return `${hrs}ש׳`;
   const days = Math.floor(hrs / 24);
   if (days < 7) return `${days}י׳`;
-  return `${Math.floor(days / 7)}ש׳`;
+  return `${Math.floor(days / 7)}שב׳`;
 };
 
 const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
@@ -52,19 +52,30 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
 
     const channel = supabase
       .channel(`comments-${videoId}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "comments", filter: `video_id=eq.${videoId}` }, () => {
-        fetchComments();
-      })
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "comments",
+          filter: `video_id=eq.${videoId}`,
+        },
+        () => fetchComments()
+      )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [open, videoId]);
 
   const fetchComments = async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("comments")
-      .select("id, content, created_at, user_id, profiles!comments_user_id_fkey(display_name, avatar_url)")
+      .select(
+        "id, content, created_at, user_id, profiles!comments_user_id_fkey(display_name, avatar_url)"
+      )
       .eq("video_id", videoId)
       .order("created_at", { ascending: true });
 
@@ -93,7 +104,14 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
       toast.error("שגיאה בשליחת התגובה");
     } else {
       setNewComment("");
-      setTimeout(() => scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" }), 100);
+      setTimeout(
+        () =>
+          scrollRef.current?.scrollTo({
+            top: scrollRef.current.scrollHeight,
+            behavior: "smooth",
+          }),
+        100
+      );
     }
     setSubmitting(false);
   };
@@ -105,8 +123,17 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[70vh] rounded-t-2xl flex flex-col p-0">
-        <SheetHeader className="px-4 pt-4 pb-2 border-b border-border">
+      <SheetContent
+        side="bottom"
+        className="h-[70vh] rounded-t-2xl flex flex-col p-0 bg-background"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* FIX #21: Drag handle for sheet */}
+        <div className="flex justify-center pt-3 pb-1">
+          <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
+        </div>
+
+        <SheetHeader className="px-4 pb-2 border-b border-border">
           <SheetTitle className="text-center text-sm">
             תגובות ({comments.length})
           </SheetTitle>
@@ -126,22 +153,38 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
               const name = comment.profiles?.display_name || "אנונימי";
               return (
                 <div key={comment.id} className="flex gap-3 group">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted font-display text-xs text-muted-foreground">
-                    {name.charAt(0).toUpperCase()}
+                  {/* FIX #22: Show avatar in comments */}
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full overflow-hidden bg-muted">
+                    {comment.profiles?.avatar_url ? (
+                      <img
+                        src={comment.profiles.avatar_url}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <span className="font-display text-xs text-muted-foreground">
+                        {name.charAt(0).toUpperCase()}
+                      </span>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold text-foreground">{name}</span>
-                      <span className="text-[10px] text-muted-foreground">{timeAgo(comment.created_at)}</span>
+                      <span className="text-[10px] text-muted-foreground">
+                        {timeAgo(comment.created_at)}
+                      </span>
                     </div>
-                    <p className="text-sm text-foreground mt-0.5 break-words">{comment.content}</p>
+                    <p className="text-sm text-foreground mt-0.5 break-words">
+                      {comment.content}
+                    </p>
                   </div>
                   {user?.id === comment.user_id && (
                     <button
                       onClick={() => handleDelete(comment.id)}
                       className="opacity-0 group-hover:opacity-100 transition-opacity self-start mt-1"
+                      aria-label="Delete comment"
                     >
-                      <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+                      <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive transition-colors" />
                     </button>
                   )}
                 </div>
@@ -150,16 +193,26 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
           )}
         </div>
 
-        <form onSubmit={handleSubmit} className="flex gap-2 px-4 py-3 border-t border-border bg-background">
+        {/* FIX #23: Safe area for input on mobile */}
+        <form
+          onSubmit={handleSubmit}
+          className="flex gap-2 px-4 py-3 border-t border-border bg-background pb-[env(safe-area-inset-bottom,12px)]"
+        >
           <Input
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="הוסף תגובה..."
-            className="flex-1 text-sm"
+            className="flex-1 text-sm bg-secondary"
             dir="rtl"
             disabled={submitting}
+            maxLength={500}
           />
-          <Button type="submit" size="icon" disabled={submitting || !newComment.trim()}>
+          <Button
+            type="submit"
+            size="icon"
+            disabled={submitting || !newComment.trim()}
+            className="shrink-0"
+          >
             <Send className="h-4 w-4" />
           </Button>
         </form>

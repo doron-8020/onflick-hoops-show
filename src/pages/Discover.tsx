@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, UserPlus, UserCheck } from "lucide-react";
+import { Search, UserPlus, UserCheck, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFollow } from "@/hooks/useFollow";
@@ -21,17 +21,27 @@ const PlayerCard = ({ player }: { player: PlayerProfile }) => {
   const navigate = useNavigate();
   const { isFollowing, toggleFollow, loading } = useFollow(player.user_id);
   const isSelf = user?.id === player.user_id;
+  const displayName = player.display_name || "Player";
 
   return (
     <div
-      className="flex items-center gap-3 rounded-xl bg-secondary p-3 cursor-pointer transition-colors hover:bg-secondary/80"
+      className="flex items-center gap-3 rounded-xl bg-secondary p-3 cursor-pointer transition-all hover:bg-secondary/80 active:scale-[0.98]"
       onClick={() => navigate(`/player/${player.user_id}`)}
     >
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full gradient-fire font-display text-lg text-primary-foreground">
-        {(player.display_name || "P").charAt(0).toUpperCase()}
+      {/* FIX #30: Show avatar in search results */}
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full overflow-hidden">
+        {player.avatar_url ? (
+          <img src={player.avatar_url} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <div className="h-full w-full gradient-fire flex items-center justify-center">
+            <span className="font-display text-lg text-primary-foreground">
+              {displayName.charAt(0).toUpperCase()}
+            </span>
+          </div>
+        )}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-foreground text-sm truncate">{player.display_name || "Player"}</p>
+        <p className="font-semibold text-foreground text-sm truncate">{displayName}</p>
         <p className="text-xs text-muted-foreground truncate">
           {[player.position, player.team].filter(Boolean).join(" · ") || "שחקן"}
         </p>
@@ -39,7 +49,10 @@ const PlayerCard = ({ player }: { player: PlayerProfile }) => {
       </div>
       {!isSelf && user && (
         <button
-          onClick={(e) => { e.stopPropagation(); toggleFollow(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleFollow();
+          }}
           disabled={loading}
           className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all shrink-0 ${
             isFollowing
@@ -47,7 +60,11 @@ const PlayerCard = ({ player }: { player: PlayerProfile }) => {
               : "gradient-fire text-primary-foreground shadow-glow"
           }`}
         >
-          {isFollowing ? <UserCheck className="h-3.5 w-3.5" /> : <UserPlus className="h-3.5 w-3.5" />}
+          {isFollowing ? (
+            <UserCheck className="h-3.5 w-3.5" />
+          ) : (
+            <UserPlus className="h-3.5 w-3.5" />
+          )}
           {isFollowing ? "עוקב" : "עקוב"}
         </button>
       )}
@@ -92,10 +109,10 @@ const Discover = () => {
         <h1 className="font-display text-3xl text-foreground tracking-wide">גלה</h1>
       </div>
 
-      {/* Search */}
+      {/* FIX #31: Search with clear button */}
       <div className="px-4 mb-6">
         <div className="flex items-center gap-3 rounded-xl bg-secondary px-4 py-3">
-          <Search className="h-5 w-5 text-muted-foreground" />
+          <Search className="h-5 w-5 text-muted-foreground shrink-0" />
           <input
             type="text"
             placeholder="חפש שחקנים, עמדות, קבוצות..."
@@ -104,17 +121,34 @@ const Discover = () => {
             dir="rtl"
             className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
           />
+          {query && (
+            <button onClick={() => setQuery("")} className="shrink-0 p-0.5">
+              <X className="h-4 w-4 text-muted-foreground" />
+            </button>
+          )}
         </div>
       </div>
 
       {showResults ? (
         <div className="px-4 space-y-2">
           {searching ? (
-            <p className="text-center text-sm text-muted-foreground py-8">מחפש...</p>
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
+            </div>
           ) : players.length > 0 ? (
-            players.map((p) => <PlayerCard key={p.user_id} player={p} />)
+            <>
+              <p className="text-xs text-muted-foreground mb-2">
+                {players.length} תוצאות
+              </p>
+              {players.map((p) => (
+                <PlayerCard key={p.user_id} player={p} />
+              ))}
+            </>
           ) : (
-            <p className="text-center text-sm text-muted-foreground py-8">לא נמצאו תוצאות</p>
+            <div className="text-center py-12">
+              <p className="text-sm text-muted-foreground">לא נמצאו תוצאות</p>
+              <p className="text-xs text-muted-foreground mt-1">נסה לחפש שם אחר</p>
+            </div>
           )}
         </div>
       ) : (
@@ -126,7 +160,7 @@ const Discover = () => {
               {trendingTags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full bg-secondary px-4 py-2 text-xs font-semibold text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
+                  className="rounded-full bg-secondary px-4 py-2 text-xs font-semibold text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer active:scale-95"
                 >
                   #{tag}
                 </span>
@@ -139,12 +173,24 @@ const Discover = () => {
             <h2 className="font-display text-xl text-foreground mb-3">הדגשות מובילות</h2>
             <div className="grid grid-cols-2 gap-2">
               {mockVideos.map((video) => (
-                <div key={video.id} className="relative aspect-[9/16] overflow-hidden rounded-xl">
-                  <img src={video.thumbnail} alt={video.caption} className="h-full w-full object-cover" />
+                <div
+                  key={video.id}
+                  className="relative aspect-[9/16] overflow-hidden rounded-xl group"
+                >
+                  <img
+                    src={video.thumbnail}
+                    alt={video.caption}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
                   <div className="absolute bottom-2 left-2 right-2">
-                    <p className="text-xs font-semibold text-foreground truncate">{video.player.name}</p>
-                    <p className="text-[10px] text-muted-foreground">{video.views} views</p>
+                    <p className="text-xs font-semibold text-foreground truncate">
+                      {video.player.name}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {video.views} צפיות
+                    </p>
                   </div>
                 </div>
               ))}
