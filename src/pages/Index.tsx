@@ -9,7 +9,7 @@ import VideoCardMock from "@/components/VideoCardMock";
 import PullToRefresh from "@/components/PullToRefresh";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import FeedHeader from "@/components/FeedHeader";
 
 interface VideoWithProfile {
   id: string;
