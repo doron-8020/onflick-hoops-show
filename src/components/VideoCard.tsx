@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import CommentsSheet from "./CommentsSheet";
 import GalleryCarousel from "./GalleryCarousel";
-import SoundWheel from "./SoundWheel";
 import SpinningSoundIcon from "./SpinningSoundIcon";
 
 interface VideoCardProps {
