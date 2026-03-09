@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, UserPlus, UserCheck, X } from "lucide-react";
+import { Search, UserPlus, UserCheck, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
 import { trendingTags, mockVideos } from "@/data/mockData";
 import BottomNav from "@/components/BottomNav";
+import FeedHeader from "@/components/FeedHeader";
 
 interface PlayerProfile {
   user_id: string;
