@@ -18,6 +18,7 @@ import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
 import Admin from "./pages/Admin";
 import RoleOnboarding from "./pages/RoleOnboarding";
+import Blog from "./pages/Blog";
 import NotFound from "./pages/NotFound";
 import AppShell from "./components/AppShell";
 
