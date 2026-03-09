@@ -211,6 +211,27 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         className="absolute start-3 bottom-32 flex flex-col items-center gap-4 z-10"
         onClick={(e) => e.stopPropagation()}
       >
+        {video.user_id && (
+          <button onClick={() => navigate(`/player/${video.user_id}`)} className="relative mb-1">
+            <div className="h-11 w-11 rounded-full overflow-hidden ring-2 ring-primary/50 ring-offset-1 ring-offset-background">
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <div className="h-full w-full gradient-fire flex items-center justify-center">
+                  <span className="font-display text-sm text-primary-foreground">
+                    {displayName.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              )}
+            </div>
+            {user && video.user_id && user.id !== video.user_id && !isFollowing && (
+              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 h-5 w-5 rounded-full gradient-fire flex items-center justify-center border-2 border-background">
+                <span className="text-[10px] text-primary-foreground font-bold">+</span>
+              </div>
+            )}
+          </button>
+        )}
+
         <BasketballLikeButton liked={liked} count={likes} onLike={handleLike} />
 
         <button onClick={() => setCommentsOpen(true)} className="flex flex-col items-center gap-0.5">
@@ -239,30 +260,6 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
             {t("video.share")}
           </span>
         </button>
-      </div>
-
-      {/* Avatar - right side */}
-      <div className="absolute end-3 bottom-44 z-10" onClick={(e) => e.stopPropagation()}>
-        {video.user_id && (
-          <button onClick={() => navigate(`/player/${video.user_id}`)} className="relative">
-            <div className="h-12 w-12 rounded-full overflow-hidden ring-2 ring-primary/50 ring-offset-1 ring-offset-background">
-              {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
-              ) : (
-                <div className="h-full w-full gradient-fire flex items-center justify-center">
-                  <span className="font-display text-sm text-primary-foreground">
-                    {displayName.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-              )}
-            </div>
-            {user && video.user_id && user.id !== video.user_id && !isFollowing && (
-              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 h-5 w-5 rounded-full gradient-fire flex items-center justify-center border-2 border-background">
-                <span className="text-[10px] text-primary-foreground font-bold">+</span>
-              </div>
-            )}
-          </button>
-        )}
       </div>
 
       {/* Bottom info */}
