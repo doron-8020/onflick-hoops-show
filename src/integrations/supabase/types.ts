@@ -140,6 +140,30 @@ export type Database = {
           },
         ]
       }
+      profile_views: {
+        Row: {
+          created_at: string
+          id: string
+          viewed_on: string
+          viewed_user_id: string
+          viewer_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          viewed_on?: string
+          viewed_user_id: string
+          viewer_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          viewed_on?: string
+          viewed_user_id?: string
+          viewer_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           apg: number | null
@@ -322,6 +346,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_types: {
+        Row: {
+          created_at: string
+          id: string
+          type: Database["public"]["Enums"]["user_type"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          type: Database["public"]["Enums"]["user_type"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          type?: Database["public"]["Enums"]["user_type"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       video_likes: {
         Row: {
           created_at: string
@@ -431,6 +479,13 @@ export type Database = {
       }
       admin_toggle_verified: { Args: { p_user_id: string }; Returns: boolean }
       delete_own_account: { Args: never; Returns: undefined }
+      get_profile_view_stats: {
+        Args: { p_user_id: string }
+        Returns: {
+          viewer_type: Database["public"]["Enums"]["user_type"]
+          views: number
+        }[]
+      }
       get_user_status: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["user_status"]
@@ -442,11 +497,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      record_profile_view: {
+        Args: { p_viewed_user_id: string }
+        Returns: undefined
+      }
       toggle_video_like: { Args: { p_video_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
       user_status: "active" | "frozen" | "blocked"
+      user_type: "player" | "coach" | "scout" | "professional"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -576,6 +636,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "moderator", "user"],
       user_status: ["active", "frozen", "blocked"],
+      user_type: ["player", "coach", "scout", "professional"],
     },
   },
 } as const

@@ -11,7 +11,7 @@ interface AppShellProps {
 }
 
 const AppShell = ({ children }: AppShellProps) => {
-  const { user, userStatus, signOut } = useAuth();
+  const { user, userStatus, signOut, userType, userTypeLoading } = useAuth();
   const { language } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
@@ -19,6 +19,24 @@ const AppShell = ({ children }: AppShellProps) => {
 
   // Activate badge count on home screen icon
   useBadgeCount();
+
+  // Onboarding: require role selection for authenticated users
+  useEffect(() => {
+    if (!user) return;
+    if (userTypeLoading) return;
+
+    const path = location.pathname;
+    const onRoleOnboarding = path === "/onboarding/role";
+    const onAuth = path === "/auth";
+
+    if (!userType && !onRoleOnboarding && !onAuth) {
+      navigate("/onboarding/role", { replace: true });
+    }
+
+    if (userType && onRoleOnboarding) {
+      navigate("/", { replace: true });
+    }
+  }, [user, userType, userTypeLoading, location.pathname, navigate]);
 
   // Show install prompt after login redirect
   useEffect(() => {
@@ -51,11 +69,11 @@ const AppShell = ({ children }: AppShellProps) => {
     const isBlocked = userStatus === "blocked";
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center">
-        <div className={`rounded-full p-6 mb-4 ${isBlocked ? "bg-destructive/10" : "bg-blue-400/10"}`}>
+        <div className={`rounded-full p-6 mb-4 ${isBlocked ? "bg-destructive/10" : "bg-accent/10"}`}>
           {isBlocked ? (
             <Ban className="h-12 w-12 text-destructive" />
           ) : (
-            <Snowflake className="h-12 w-12 text-blue-400" />
+            <Snowflake className="h-12 w-12 text-accent" />
           )}
         </div>
         <h1 className="font-display text-2xl text-foreground mb-2">
@@ -84,12 +102,10 @@ const AppShell = ({ children }: AppShellProps) => {
   return (
     <>
       {children}
-      <InstallPrompt
-        show={showInstallPrompt}
-        onClose={() => setShowInstallPrompt(false)}
-      />
+      <InstallPrompt show={showInstallPrompt} onClose={() => setShowInstallPrompt(false)} />
     </>
   );
 };
 
 export default AppShell;
+

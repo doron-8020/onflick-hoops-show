@@ -17,6 +17,7 @@ import Auth from "./pages/Auth";
 import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
 import Admin from "./pages/Admin";
+import RoleOnboarding from "./pages/RoleOnboarding";
 import NotFound from "./pages/NotFound";
 import AppShell from "./components/AppShell";
 
@@ -44,6 +45,7 @@ const App = () => (
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/auth" element={<Auth />} />
+                    <Route path="/onboarding/role" element={<RoleOnboarding />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </AppShell>
@@ -57,3 +59,4 @@ const App = () => (
 );
 
 export default App;
+

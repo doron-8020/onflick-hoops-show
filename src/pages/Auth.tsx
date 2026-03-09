@@ -6,15 +6,18 @@ import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
+type UserType = "player" | "coach" | "scout" | "professional";
+
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [userType, setUserType] = useState<UserType>("player");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
-  const { t, isRTL } = useLanguage();
+  const { t, isRTL, language } = useLanguage();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,7 +40,7 @@ const Auth = () => {
         localStorage.setItem("show-install-prompt", "true");
         navigate("/");
       } else {
-        await signUp(email, password, displayName.trim());
+        await signUp(email, password, displayName.trim(), userType);
         toast.success(t("auth.signUpSuccess"));
         // Don't navigate - user needs to verify email first
       }
@@ -53,6 +56,19 @@ const Auth = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const roleLabel = (type: UserType) => {
+    if (language === "he") {
+      if (type === "player") return "שחקן";
+      if (type === "coach") return "מאמן";
+      if (type === "scout") return "סקאוט";
+      return "בעל מקצוע";
+    }
+    if (type === "player") return "Player";
+    if (type === "coach") return "Coach";
+    if (type === "scout") return "Scout";
+    return "Professional";
   };
 
   return (
@@ -73,17 +89,45 @@ const Auth = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
-            <input
-              type="text"
-              placeholder={t("auth.displayName")}
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              required={!isLogin}
-              maxLength={50}
-              dir={isRTL ? "rtl" : "ltr"}
-              className="w-full rounded-xl bg-secondary px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary transition-shadow"
-            />
+            <>
+              <input
+                type="text"
+                placeholder={t("auth.displayName")}
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                required={!isLogin}
+                maxLength={50}
+                dir={isRTL ? "rtl" : "ltr"}
+                className="w-full rounded-xl bg-secondary px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary transition-shadow"
+              />
+
+              <div className="rounded-xl bg-secondary p-2">
+                <p className="px-2 pb-2 text-xs font-semibold text-muted-foreground">
+                  {t("auth.role") || (language === "he" ? "סוג חשבון" : "Account type")}
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {(["player", "coach", "scout", "professional"] as UserType[]).map((type) => {
+                    const active = userType === type;
+                    return (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setUserType(type)}
+                        className={`rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
+                          active
+                            ? "gradient-fire text-primary-foreground shadow-glow"
+                            : "bg-background/40 text-foreground hover:bg-background/60"
+                        }`}
+                      >
+                        {roleLabel(type)}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
           )}
+
           <input
             type="email"
             placeholder={t("auth.email")}
@@ -161,14 +205,9 @@ const Auth = () => {
           {t("auth.googleSignIn")}
         </button>
 
-        <button
-          onClick={() => setIsLogin(!isLogin)}
-          className="mt-4 w-full text-center text-sm text-muted-foreground"
-        >
+        <button onClick={() => setIsLogin(!isLogin)} className="mt-4 w-full text-center text-sm text-muted-foreground">
           {isLogin ? t("auth.noAccount") + " " : t("auth.hasAccount") + " "}
-          <span className="text-primary font-semibold">
-            {isLogin ? t("auth.signUp") : t("auth.signIn")}
-          </span>
+          <span className="text-primary font-semibold">{isLogin ? t("auth.signUp") : t("auth.signIn")}</span>
         </button>
       </div>
     </div>
