@@ -276,8 +276,8 @@ const Settings = () => {
 
         {/* Support */}
         <Section title={t("settings.support")}>
-          <Row icon={FileText} iconColor="bg-slate-500/10 text-slate-500" label={t("settings.terms")} onClick={() => toast.info(language === "he" ? "בקרוב" : "Coming soon")} />
-          <Row icon={FileText} iconColor="bg-slate-500/10 text-slate-500" label={t("settings.privacyPolicy")} onClick={() => toast.info(language === "he" ? "בקרוב" : "Coming soon")} />
+          <Row icon={FileText} iconColor="bg-slate-500/10 text-slate-500" label={t("settings.terms")} onClick={() => navigate("/terms")} />
+          <Row icon={FileText} iconColor="bg-slate-500/10 text-slate-500" label={t("settings.privacyPolicy")} onClick={() => navigate("/privacy")} />
           <Row icon={HardDrive} iconColor="bg-cyan-500/10 text-cyan-500" label={t("settings.clearCache")} desc={t("settings.clearCacheDesc")} onClick={handleClearCache} />
         </Section>
 
