@@ -1,5 +1,4 @@
-import { ArrowLeft, Phone, Mail, MessageCircle, ExternalLink } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Phone, Mail, MessageCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
@@ -20,9 +19,17 @@ const SocialIcon = ({ platform }: { platform: string }) => {
   );
 };
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay: i * 0.1, ease: "easeOut" },
+  }),
+};
+
 const Onflick = () => {
-  const navigate = useNavigate();
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const isHe = language === "he";
 
   const contactLinks = [
@@ -42,7 +49,7 @@ const Onflick = () => {
       icon: <Mail className="h-5 w-5" />,
       label: isHe ? "אימייל" : "Email",
       href: "mailto:info@onflick.com",
-      color: "bg-orange-600 hover:bg-orange-700",
+      color: "bg-[hsl(25,85%,50%)] hover:bg-[hsl(25,85%,45%)]",
     },
   ];
 
@@ -54,57 +61,196 @@ const Onflick = () => {
     { platform: "x", label: "X", href: "https://x.com/onflick" },
   ];
 
+  const bulletPoints = isHe
+    ? [
+        "בניית נוכחות מקצועית ברשת",
+        "יצירת היילייטים לשחקנים",
+        "תיעוד משחקים ואירועים",
+        "הצגת הקבוצה בצורה מקצועית",
+      ]
+    : [
+        "Building a professional online presence",
+        "Creating player highlights",
+        "Documenting games and events",
+        "Showcasing the team professionally",
+      ];
+
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-24" dir={isHe ? "rtl" : "ltr"}>
       <FeedHeader />
 
       <div className="mx-auto max-w-lg px-4 pt-16">
         {/* Hero */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial="hidden"
+          animate="visible"
+          custom={0}
+          variants={fadeUp}
           className="text-center py-10"
         >
-          <h1 className="font-display text-5xl tracking-tight text-foreground mb-2">
+          <h1 className="font-display text-6xl tracking-tight text-foreground mb-2">
             <span className="text-destructive">ON</span>FLICK
           </h1>
-          <div className="h-1 w-16 mx-auto rounded-full bg-destructive mb-6" />
-          <p className="text-lg text-muted-foreground leading-relaxed max-w-sm mx-auto">
-            {isHe
-              ? "הבמה הדיגיטלית של כדורסלני העתיד. שתף הדגשות, בנה פרופיל אתלטי, ותן לסקאוטים ולמאמנים למצוא אותך."
-              : "The digital stage for future basketball stars. Share highlights, build your athletic profile, and let scouts & coaches find you."}
+          <div className="h-1 w-20 mx-auto rounded-full bg-destructive mb-4" />
+          <p className="font-display text-lg text-muted-foreground tracking-wide">
+            {isHe ? "צילום שמספר את המשחק" : "Photography that tells the game"}
           </p>
         </motion.div>
 
-        {/* Features */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="grid grid-cols-2 gap-3 mb-8"
-        >
-          {[
-            { emoji: "🎬", title: isHe ? "הדגשות" : "Highlights", desc: isHe ? "שתף את הרגעים הטובים" : "Share your best moments" },
-            { emoji: "📊", title: isHe ? "פרופיל אתלטי" : "Athletic Profile", desc: isHe ? "נתונים ומדדים" : "Stats & measurements" },
-            { emoji: "🔍", title: isHe ? "סקאוטינג" : "Scouting", desc: isHe ? "חשיפה לסקאוטים" : "Get discovered" },
-            { emoji: "🏀", title: isHe ? "קהילה" : "Community", desc: isHe ? "התחבר לשחקנים" : "Connect with players" },
-          ].map((feature, i) => (
-            <div key={i} className="rounded-xl bg-card border border-border p-4 text-center">
-              <span className="text-2xl mb-2 block">{feature.emoji}</span>
-              <p className="font-semibold text-foreground text-sm">{feature.title}</p>
-              <p className="text-xs text-muted-foreground mt-1">{feature.desc}</p>
+        {/* Main content - beautifully styled */}
+        <div className="space-y-8">
+          {/* Intro */}
+          <motion.div initial="hidden" animate="visible" custom={1} variants={fadeUp}>
+            <div className="rounded-2xl bg-card border border-border p-6">
+              <p className="text-sm leading-7 text-foreground/90">
+                {isHe
+                  ? "ONFLICK היא חברת מדיה המתמחה ביצירת תוכן מקצועי לכדורסל. המטרה שלה פשוטה: להפוך רגעים אמיתיים מהמגרש לתוכן שמספר סיפור — של שחקן, של קבוצה, ושל משחק."
+                  : "ONFLICK is a media company specializing in creating professional basketball content. Its goal is simple: to turn real moments from the court into content that tells a story — of a player, a team, and a game."}
+              </p>
             </div>
-          ))}
+          </motion.div>
+
+          {/* Origin */}
+          <motion.div initial="hidden" animate="visible" custom={2} variants={fadeUp}>
+            <div className="rounded-2xl bg-gradient-to-br from-card to-secondary/50 border border-border p-6">
+              <div className="flex items-start gap-3 mb-3">
+                <span className="text-2xl">🏀</span>
+                <h3 className="font-display text-xl text-foreground">
+                  {isHe ? "מהפרקט" : "From the Court"}
+                </h3>
+              </div>
+              <p className="text-sm leading-7 text-foreground/80">
+                {isHe
+                  ? "החברה הוקמה מתוך עולם הכדורסל עצמו. לא מתוך סטודיו פרסומי, אלא מתוך היכרות עמוקה עם מה שקורה על הפרקט: הקצב, הרגעים הקטנים, והדקות שבהן משחק משתנה."
+                  : "The company was born from the basketball world itself. Not from an advertising studio, but from a deep familiarity with what happens on the court: the rhythm, the small moments, and the minutes where a game changes."}
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Focus */}
+          <motion.div initial="hidden" animate="visible" custom={3} variants={fadeUp}>
+            <div className="rounded-2xl bg-card border border-border p-6">
+              <p className="text-sm leading-7 text-foreground/90">
+                {isHe
+                  ? "ONFLICK מתמקדת בצילום משחקים, יצירת היילייטים ותוכן דיגיטלי שמאפשר לקבוצות ולשחקנים להציג את עצמם בצורה מקצועית ברשת."
+                  : "ONFLICK focuses on game photography, creating highlights, and digital content that allows teams and players to present themselves professionally online."}
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Philosophy - accent card */}
+          <motion.div initial="hidden" animate="visible" custom={4} variants={fadeUp}>
+            <div className="rounded-2xl gradient-fire p-[1px]">
+              <div className="rounded-2xl bg-card p-6">
+                <p className="font-display text-lg text-center text-foreground leading-relaxed">
+                  {isHe
+                    ? "\"כדורסל אמיתי צריך להיראות כמו שהוא מרגיש על המגרש.\""
+                    : "\"Real basketball should look the way it feels on the court.\""}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Real moments */}
+          <motion.div initial="hidden" animate="visible" custom={5} variants={fadeUp}>
+            <div className="rounded-2xl bg-card border border-border p-6">
+              <p className="text-sm leading-7 text-foreground/80 mb-4">
+                {isHe
+                  ? "לכן הצילום מתמקד ברגעים האמיתיים של המשחק:"
+                  : "That's why the photography focuses on the real moments of the game:"}
+              </p>
+              <div className="space-y-3">
+                {(isHe
+                  ? [
+                      "🏀 דריבל שמפרק הגנה",
+                      "🎯 זריקה שנכנסת בשנייה האחרונה",
+                      "💥 הטבעה שמשנה את האווירה באולם",
+                    ]
+                  : [
+                      "🏀 A dribble that breaks the defense",
+                      "🎯 A shot that goes in at the last second",
+                      "💥 A dunk that changes the arena's energy",
+                    ]
+                ).map((item, i) => (
+                  <p key={i} className="text-sm text-foreground/90 font-medium">{item}</p>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Bullet points */}
+          <motion.div initial="hidden" animate="visible" custom={6} variants={fadeUp}>
+            <div className="rounded-2xl bg-secondary/50 border border-border p-6">
+              <h3 className="font-display text-lg text-foreground mb-4">
+                {isHe ? "התוכן שנוצר משמש:" : "The content serves:"}
+              </h3>
+              <div className="space-y-3">
+                {bulletPoints.map((point, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="h-2 w-2 rounded-full bg-destructive shrink-0" />
+                    <p className="text-sm text-foreground/85">{point}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Community */}
+          <motion.div initial="hidden" animate="visible" custom={7} variants={fadeUp}>
+            <div className="rounded-2xl bg-card border border-border p-6">
+              <div className="flex items-start gap-3 mb-3">
+                <span className="text-2xl">🤝</span>
+                <h3 className="font-display text-xl text-foreground">
+                  {isHe ? "קהילה" : "Community"}
+                </h3>
+              </div>
+              <p className="text-sm leading-7 text-foreground/80">
+                {isHe
+                  ? "מעבר לצילום עצמו, ONFLICK פועלת גם כמותג בתוך קהילת הכדורסל. החברה מארגנת אירועי משחקים פתוחים (Open Run), ימי צילום מיוחדים ותוכן שמחבר בין שחקנים, קבוצות ואוהבי כדורסל."
+                  : "Beyond photography, ONFLICK also operates as a brand within the basketball community. The company organizes open run events, special photo days, and content that connects players, teams, and basketball fans."}
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Closing statement - fire border */}
+          <motion.div initial="hidden" animate="visible" custom={8} variants={fadeUp}>
+            <div className="rounded-2xl gradient-fire p-[1px]">
+              <div className="rounded-2xl bg-background p-6 text-center">
+                <p className="text-sm leading-7 text-foreground/80 mb-3">
+                  {isHe
+                    ? "כישרון יש להרבה שחקנים. אבל כדי שיראו אותו — צריך גם לדעת להציג אותו."
+                    : "Many players have talent. But for it to be seen — you also need to know how to present it."}
+                </p>
+                <p className="font-display text-2xl text-destructive">
+                  {isHe
+                    ? "ובדיוק שם ONFLICK נכנסת למשחק."
+                    : "And that's exactly where ONFLICK enters the game."}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Features grid */}
+        <motion.div initial="hidden" animate="visible" custom={9} variants={fadeUp} className="mt-10 mb-8">
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { emoji: "🎬", title: isHe ? "הדגשות" : "Highlights", desc: isHe ? "שתף את הרגעים הטובים" : "Share your best moments" },
+              { emoji: "📊", title: isHe ? "פרופיל אתלטי" : "Athletic Profile", desc: isHe ? "נתונים ומדדים" : "Stats & measurements" },
+              { emoji: "🔍", title: isHe ? "סקאוטינג" : "Scouting", desc: isHe ? "חשיפה לסקאוטים" : "Get discovered" },
+              { emoji: "🏀", title: isHe ? "קהילה" : "Community", desc: isHe ? "התחבר לשחקנים" : "Connect with players" },
+            ].map((feature, i) => (
+              <div key={i} className="rounded-xl bg-card border border-border p-4 text-center">
+                <span className="text-2xl mb-2 block">{feature.emoji}</span>
+                <p className="font-semibold text-foreground text-sm">{feature.title}</p>
+                <p className="text-xs text-muted-foreground mt-1">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
         </motion.div>
 
         {/* Contact */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mb-8"
-        >
+        <motion.div initial="hidden" animate="visible" custom={10} variants={fadeUp} className="mb-8">
           <h2 className="font-display text-xl text-foreground mb-4 text-center">
             {isHe ? "צור קשר" : "Contact Us"}
           </h2>
@@ -125,12 +271,7 @@ const Onflick = () => {
         </motion.div>
 
         {/* Social media */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mb-8"
-        >
+        <motion.div initial="hidden" animate="visible" custom={11} variants={fadeUp} className="mb-8">
           <h2 className="font-display text-xl text-foreground mb-4 text-center">
             {isHe ? "עקבו אחרינו" : "Follow Us"}
           </h2>
@@ -150,7 +291,7 @@ const Onflick = () => {
           </div>
         </motion.div>
 
-        {/* Footer text */}
+        {/* Footer */}
         <div className="text-center pb-8">
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} ONFLICK. {isHe ? "כל הזכויות שמורות." : "All rights reserved."}
