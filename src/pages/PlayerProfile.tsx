@@ -372,11 +372,16 @@ const PlayerAboutSection = ({ profile }: { profile: any }) => {
               {section.title}
             </h3>
             <div className="grid gap-3">
-              {items.map((item) => (
+                  {items.map((item: any) => (
                 <div key={item.label} className="bg-card rounded-lg border border-border p-3 space-y-1">
                   <p className="text-xs text-muted-foreground uppercase tracking-wide">{item.label}</p>
                   {item.isLink && item.value ? (
-                    <a href={String(item.value)} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline break-all">
+                    <a
+                      href={item.linkPrefix ? `${item.linkPrefix}${String(item.value).replace('@', '')}` : String(item.value)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-primary hover:underline break-all"
+                    >
                       {item.value}
                     </a>
                   ) : (
