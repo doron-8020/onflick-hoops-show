@@ -254,16 +254,13 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           <span className="text-[11px] font-semibold text-foreground drop-shadow-md">0</span>
         </button>
 
-        <button onClick={handleShare} className="flex flex-col items-center gap-0.5">
+        <button onClick={handleShare} className="flex flex-col items-center">
           <Share2 className="h-7 w-7 text-foreground drop-shadow-md" />
-          <span className="text-[11px] font-semibold text-foreground drop-shadow-md">
-            {t("video.share")}
-          </span>
         </button>
       </div>
 
       {/* Bottom info */}
-      <div className="absolute bottom-20 start-0 end-16 p-4 safe-bottom">
+      <div className="absolute bottom-20 start-14 end-4 p-4 safe-bottom">
         <div className="mb-3 flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <span
