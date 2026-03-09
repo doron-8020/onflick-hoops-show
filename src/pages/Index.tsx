@@ -129,16 +129,22 @@ const Index = () => {
               <Search className="h-5 w-5 text-foreground" />
             </button>
             <div className="relative flex gap-5">
-              {["following", "foryou", "explore", "blog"].map((tab) => (
-                <button key={tab} onClick={() => handleTabClick(tab)}
-                  className={`relative text-sm font-semibold transition-all duration-200 pb-1 ${activeTab === tab ? "text-foreground" : "text-muted-foreground hover:text-foreground/70"}`}>
-                  {t(`feed.${tab}`)}
-                  {activeTab === tab && (
-                    <motion.div layoutId="feedTabIndicator" className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-primary rounded-full"
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }} />
-                  )}
-                </button>
-              ))}
+              {["following", "foryou", "explore", "blog"].map((tab) => {
+                const isActive = (tab === "following" || tab === "foryou") && activeTab === tab;
+                return (
+                  <button key={tab} onClick={() => handleTabClick(tab)}
+                    className={`relative text-sm font-semibold transition-all duration-200 pb-1 ${isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground/70"}`}>
+                    {tab === "following" && t("feed.following")}
+                    {tab === "foryou" && t("feed.foryou")}
+                    {tab === "explore" && t("feed.explore")}
+                    {tab === "blog" && t("feed.blog")}
+                    {isActive && (
+                      <motion.div layoutId="feedTabIndicator" className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-primary rounded-full"
+                        transition={{ type: "spring", stiffness: 500, damping: 30 }} />
+                    )}
+                  </button>
+                );
+              })}
             </div>
             <div className="w-7" />
           </div>

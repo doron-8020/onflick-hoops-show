@@ -19,6 +19,7 @@ export const translations = {
   "feed.noVideosYet": { he: "אין עדיין סרטונים", en: "No videos yet" },
   "feed.discoverPlayers": { he: "גלה שחקנים", en: "Discover players" },
   "feed.views": { he: "צפיות", en: "views" },
+  "feed.playerData": { he: "נתונים", en: "Data" },
 
   // Auth
   "auth.signIn": { he: "התחבר", en: "Sign In" },
