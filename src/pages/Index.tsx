@@ -8,7 +8,7 @@ import { mockVideos } from "@/data/mockData";
 import VideoCardMock from "@/components/VideoCardMock";
 import PullToRefresh from "@/components/PullToRefresh";
 import { Search } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import FeedHeader from "@/components/FeedHeader";
 
 interface VideoWithProfile {
@@ -42,11 +42,14 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [activeTab, setActiveTab] = useState<FeedTab>("foryou");
+  const [activeTab, setActiveTab] = useState<FeedTab>(() =>
+    new URLSearchParams(window.location.search).get("tab") === "following" ? "following" : "foryou"
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const fetchVideos = useCallback(async (cursor?: string, append = false) => {
@@ -76,6 +79,12 @@ const Index = () => {
     setLoading(false);
     setLoadingMore(false);
   }, [user, activeTab]);
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    const next: FeedTab = tab === "following" ? "following" : "foryou";
+    setActiveTab((prev) => (prev === next ? prev : next));
+  }, [searchParams]);
 
   useEffect(() => { setHasMore(true); fetchVideos(); }, [fetchVideos]);
 

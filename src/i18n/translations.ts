@@ -13,6 +13,7 @@ export const translations = {
   "feed.foryou": { he: "פור יו", en: "For You" },
   "feed.explore": { he: "סייר", en: "Explore" },
   "feed.blog": { he: "בלוג", en: "Blog" },
+  "feed.onflick": { he: "אונפליק", en: "ONFLICK" },
   "feed.loading": { he: "טוען הדגשות...", en: "Loading highlights..." },
   "feed.loginToSee": { he: "התחבר כדי לראות סרטונים", en: "Sign in to see videos" },
   "feed.followToSee": { he: "עקוב אחרי שחקנים כדי לראות את התוכן שלהם כאן", en: "Follow players to see their content here" },
@@ -69,6 +70,7 @@ export const translations = {
   "profile.playerNotFound": { he: "השחקן לא נמצא", en: "Player not found" },
   "profile.goBack": { he: "חזור", en: "Go back" },
   "profile.follow": { he: "עקוב", en: "Follow" },
+  "profile.aboutMeBtn": { he: "אודותי", en: "ABOUT ME" },
   "profile.message": { he: "הודעה", en: "Message" },
 
   // Profile

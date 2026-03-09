@@ -186,7 +186,7 @@ const PlayerProfile = () => {
                 onClick={() => setActiveTab("about")}
                 className="flex-1 rounded-lg bg-destructive/90 py-2 text-sm font-bold text-destructive-foreground shadow-lg"
               >
-                {t("feed.playerData")}
+                {t("profile.aboutMeBtn")}
               </button>
               <button
                 onClick={toggleFollow}

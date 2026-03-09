@@ -8,17 +8,19 @@ const FeedHeader = () => {
   const location = useLocation();
   const { t } = useLanguage();
 
-  const getActiveTab = () => {
-    if (location.pathname === "/") return "foryou";
+  const activeTab = (() => {
+    if (location.pathname === "/") {
+      const tab = new URLSearchParams(location.search).get("tab");
+      return tab === "following" ? "following" : "foryou";
+    }
     if (location.pathname === "/discover") return "explore";
     if (location.pathname === "/blog") return "blog";
     return "";
-  };
-
-  const activeTab = getActiveTab();
+  })();
 
   const handleTabClick = (tab: string) => {
     if (tab === "foryou") navigate("/");
+    if (tab === "following") navigate("/?tab=following");
     if (tab === "explore") navigate("/discover");
     if (tab === "blog") navigate("/blog");
   };
@@ -33,8 +35,9 @@ const FeedHeader = () => {
         >
           <Search className="h-5 w-5 text-foreground" />
         </button>
-        <div className="relative flex gap-5">
-          {["foryou", "explore", "blog"].map((tab) => {
+
+        <div className="relative flex items-center gap-5">
+          {(["foryou", "following", "explore", "blog"] as const).map((tab) => {
             const isActive = activeTab === tab;
             return (
               <button
@@ -45,8 +48,10 @@ const FeedHeader = () => {
                 }`}
               >
                 {tab === "foryou" && t("feed.foryou")}
+                {tab === "following" && t("feed.following")}
                 {tab === "explore" && t("feed.explore")}
                 {tab === "blog" && t("feed.blog")}
+
                 {isActive && (
                   <motion.div
                     layoutId="feedTabIndicator"
@@ -57,7 +62,15 @@ const FeedHeader = () => {
               </button>
             );
           })}
+
+          <button
+            onClick={() => navigate("/")}
+            className="ms-2 rounded-full gradient-fire px-3 py-1 text-xs font-bold text-primary-foreground shadow-glow"
+          >
+            {t("feed.onflick")}
+          </button>
         </div>
+
         <div className="w-7" />
       </div>
     </div>
@@ -65,3 +78,4 @@ const FeedHeader = () => {
 };
 
 export default FeedHeader;
+
