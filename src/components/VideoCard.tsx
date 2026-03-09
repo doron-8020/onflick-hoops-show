@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Heart, MessageCircle, Share2, Play, Pause, UserPlus, UserCheck } from "lucide-react";
+import BasketballLikeButton from "./BasketballLikeButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -235,21 +236,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           </button>
         )}
 
-        <button onClick={handleLike} className="flex flex-col items-center gap-1">
-          <motion.div
-            whileTap={{ scale: 1.3 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            className={`rounded-full p-2.5 transition-all duration-200 ${
-              liked ? "bg-primary/20" : "bg-background/30 backdrop-blur-sm"
-            }`}
-          >
-            <Heart
-              className={`h-7 w-7 transition-all duration-200 ${liked ? "text-primary" : "text-foreground"}`}
-              fill={liked ? "currentColor" : "none"}
-            />
-          </motion.div>
-          <span className="text-xs font-semibold text-foreground drop-shadow-md">{formatNumber(likes)}</span>
-        </button>
+        <BasketballLikeButton liked={liked} count={likes} onLike={handleLike} />
 
         <button onClick={() => setCommentsOpen(true)} className="flex flex-col items-center gap-1">
           <div className="rounded-full bg-background/30 p-2.5 backdrop-blur-sm">

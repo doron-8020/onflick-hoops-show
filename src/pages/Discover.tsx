@@ -223,6 +223,10 @@ const Discover = () => {
   const showSearch = query.trim().length >= 2;
   const isFullScreen = selectedIndex !== null;
 
+  // Pinterest-style: assign random heights for masonry feel
+  const heightClasses = ["aspect-[9/12]", "aspect-[9/16]", "aspect-[9/14]", "aspect-[9/11]"];
+  const getHeightClass = (index: number) => heightClasses[index % heightClasses.length];
+
   return (
     <div className="relative min-h-screen bg-background">
       <div className="mx-auto w-full max-w-lg relative h-full">
@@ -300,14 +304,14 @@ const Discover = () => {
           </div>
         )}
 
-        {/* Grid view (main) */}
+        {/* Pinterest-style masonry grid (main) */}
         {!isFullScreen && (
           <div ref={gridRef} className="pt-14 pb-20 h-[100dvh] overflow-y-auto scrollbar-hide">
             {/* Search bar */}
-            <div className="px-2 py-3">
+            <div className="px-3 py-3">
               <div
                 onClick={() => document.getElementById("search-input")?.focus()}
-                className="flex items-center gap-3 rounded-xl bg-secondary px-4 py-3 cursor-text"
+                className="flex items-center gap-3 rounded-2xl bg-secondary px-4 py-3 cursor-text"
               >
                 <Search className="h-5 w-5 text-muted-foreground shrink-0" />
                 <input
@@ -323,11 +327,11 @@ const Discover = () => {
             </div>
 
             {/* Trending header */}
-            <div className="px-3 pb-2">
+            <div className="px-4 pb-3">
               <h2 className="text-lg font-bold text-foreground">{t("discover.trending")}</h2>
             </div>
 
-            {/* Video grid */}
+            {/* Pinterest masonry grid */}
             {loading ? (
               <div className="flex items-center justify-center py-20">
                 <div className="animate-pulse-glow rounded-full gradient-fire p-6">
@@ -336,16 +340,52 @@ const Discover = () => {
               </div>
             ) : videos.length > 0 ? (
               <>
-                <div className="grid grid-cols-3 gap-[2px] px-[2px]">
+                <div className="columns-2 gap-2 px-2">
                   {videos.map((video, index) => (
-                    <VideoThumbnail
+                    <div
                       key={video.id}
-                      thumbnailUrl={video.thumbnail_url}
-                      videoUrl={video.video_url}
-                      viewsCount={video.views_count}
-                      mediaType={video.media_type}
+                      className="mb-2 break-inside-avoid overflow-hidden rounded-xl bg-card cursor-pointer group"
                       onClick={() => openFullScreen(index)}
-                    />
+                    >
+                      {/* Thumbnail with variable height */}
+                      <div className={`relative w-full overflow-hidden ${getHeightClass(index)}`}>
+                        <img
+                          src={video.thumbnail_url || (video.media_type === "image" ? video.video_url : "/placeholder.svg")}
+                          alt={video.caption || ""}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        {/* Gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                        {/* Views badge */}
+                        <div className="absolute bottom-2 left-2 flex items-center gap-1 text-white/90 text-[11px] font-medium">
+                          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                          {video.views_count >= 1000 ? `${(video.views_count / 1000).toFixed(1)}K` : video.views_count}
+                        </div>
+                      </div>
+                      {/* Card info */}
+                      <div className="p-2.5">
+                        {video.caption && (
+                          <p className="text-xs text-foreground line-clamp-2 leading-relaxed">{video.caption}</p>
+                        )}
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className="h-5 w-5 rounded-full overflow-hidden shrink-0">
+                            {video.profiles?.avatar_url ? (
+                              <img src={video.profiles.avatar_url} alt="" className="h-full w-full object-cover" />
+                            ) : (
+                              <div className="h-full w-full gradient-fire flex items-center justify-center">
+                                <span className="text-[8px] text-primary-foreground font-bold">
+                                  {(video.profiles?.display_name || "P").charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          <span className="text-[11px] text-muted-foreground truncate">
+                            {video.profiles?.display_name || "Player"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
                 {loadingMore && (
