@@ -80,6 +80,12 @@ const Index = () => {
     setLoadingMore(false);
   }, [user, activeTab]);
 
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    const next: FeedTab = tab === "following" ? "following" : "foryou";
+    setActiveTab((prev) => (prev === next ? prev : next));
+  }, [searchParams]);
+
   useEffect(() => { setHasMore(true); fetchVideos(); }, [fetchVideos]);
 
   const loadMore = useCallback(() => {

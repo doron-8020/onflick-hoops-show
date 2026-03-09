@@ -70,6 +70,7 @@ export const translations = {
   "profile.playerNotFound": { he: "השחקן לא נמצא", en: "Player not found" },
   "profile.goBack": { he: "חזור", en: "Go back" },
   "profile.follow": { he: "עקוב", en: "Follow" },
+  "profile.aboutMeBtn": { he: "אודותי", en: "ABOUT ME" },
   "profile.message": { he: "הודעה", en: "Message" },
 
   // Profile
