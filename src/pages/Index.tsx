@@ -49,6 +49,7 @@ const Index = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const fetchVideos = useCallback(async (cursor?: string, append = false) => {
