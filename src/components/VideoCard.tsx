@@ -234,28 +234,18 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         <BasketballLikeButton liked={liked} count={likes} onLike={handleLike} />
 
         <button onClick={() => setCommentsOpen(true)} className="flex flex-col items-center gap-1">
-          <div className="rounded-full bg-background/30 p-2.5 backdrop-blur-sm">
-            <MessageCircle className="h-7 w-7 text-foreground" />
-          </div>
-          <span className="text-xs font-semibold text-foreground drop-shadow-md">
+          <MessageCircle className="h-6 w-6 text-foreground drop-shadow-md" />
+          <span className="text-[10px] font-semibold text-foreground drop-shadow-md">
             {formatNumber(video.comments_count)}
           </span>
         </button>
 
         <button onClick={handleShare} className="flex flex-col items-center gap-1">
-          <div className="rounded-full bg-background/30 p-2.5 backdrop-blur-sm">
-            <Share2 className="h-7 w-7 text-foreground" />
-          </div>
-          <span className="text-xs font-semibold text-foreground drop-shadow-md">
+          <Share2 className="h-6 w-6 text-foreground drop-shadow-md" />
+          <span className="text-[10px] font-semibold text-foreground drop-shadow-md">
             {formatNumber(video.shares_count)}
           </span>
         </button>
-
-        {isVideo && (
-          <div className="flex flex-col items-center gap-1">
-            <SpinningSoundIcon imageUrl={profile?.avatar_url} />
-          </div>
-        )}
       </div>
 
       {/* Bottom info */}
