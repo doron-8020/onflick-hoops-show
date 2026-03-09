@@ -31,7 +31,7 @@ const PlayerCard = ({ player }: { player: PlayerProfile }) => {
   return (
     <div
       className="flex items-center gap-3 rounded-xl bg-secondary p-3 cursor-pointer transition-all hover:bg-secondary/80 active:scale-[0.98]"
-      onClick={() => navigate(`/player/${player.user_id}`)}
+      onClick={handleClick}
     >
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full overflow-hidden">
         {player.avatar_url ? (
