@@ -179,9 +179,9 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           >
             <div className="rounded-full bg-background/40 p-4 backdrop-blur-sm">
               {playing ? (
-                <Play className="h-10 w-10 text-primary-foreground" fill="currentColor" />
-              ) : (
                 <Pause className="h-10 w-10 text-primary-foreground" fill="currentColor" />
+              ) : (
+                <Play className="h-10 w-10 text-primary-foreground" fill="currentColor" />
               )}
             </div>
           </motion.div>
