@@ -171,6 +171,7 @@ const Profile = () => {
         <div className="flex gap-2 w-full max-w-xs mb-4">
           <button
             onClick={() => setEditOpen(true)}
+            data-edit-profile
             className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground transition-colors hover:bg-secondary/80"
           >
             {t("profile.editProfile")}
