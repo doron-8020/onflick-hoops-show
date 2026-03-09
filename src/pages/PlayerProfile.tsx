@@ -7,6 +7,7 @@ import {
   Lock,
   MoreHorizontal,
   Play,
+  User,
   UserCheck,
   UserPlus,
 } from "lucide-react";
