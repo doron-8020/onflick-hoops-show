@@ -97,6 +97,10 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
       setGpa(profile.gpa?.toString() || "");
       setComparisonPlayer(profile.comparison_player || "");
       setBio(profile.bio || "");
+      setSocialInstagram(profile.social_instagram || "");
+      setSocialTiktok(profile.social_tiktok || "");
+      setSocialFacebook(profile.social_facebook || "");
+      setSocialYoutube(profile.social_youtube || "");
       setAvatarPreview(profile.avatar_url || null);
       setAvatarFile(null);
     }
