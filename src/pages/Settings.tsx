@@ -33,6 +33,7 @@ const Settings = () => {
   const { isAdmin } = useAdmin();
   const [signingOut, setSigningOut] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [settings, setSettings] = useState<UserSettings>({
     private_profile: false,
