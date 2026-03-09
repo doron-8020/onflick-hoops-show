@@ -535,6 +535,53 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
                     {bio.length}/300
                   </p>
                 </div>
+
+                {/* Social Media */}
+                <div className="border-t border-border pt-3 mt-3">
+                  <p className="text-sm font-semibold text-foreground mb-3">{t("editProfile.socialMedia")}</p>
+                  <div className="space-y-3">
+                    <div>
+                      <Label className="text-muted-foreground text-xs">{t("editProfile.instagram")}</Label>
+                      <Input
+                        value={socialInstagram}
+                        onChange={(e) => setSocialInstagram(e.target.value)}
+                        placeholder="@username"
+                        maxLength={50}
+                        className="bg-secondary border-border text-foreground"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-muted-foreground text-xs">{t("editProfile.tiktok")}</Label>
+                      <Input
+                        value={socialTiktok}
+                        onChange={(e) => setSocialTiktok(e.target.value)}
+                        placeholder="@username"
+                        maxLength={50}
+                        className="bg-secondary border-border text-foreground"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-muted-foreground text-xs">{t("editProfile.facebook")}</Label>
+                      <Input
+                        value={socialFacebook}
+                        onChange={(e) => setSocialFacebook(e.target.value)}
+                        placeholder="username"
+                        maxLength={50}
+                        className="bg-secondary border-border text-foreground"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-muted-foreground text-xs">{t("editProfile.youtube")}</Label>
+                      <Input
+                        value={socialYoutube}
+                        onChange={(e) => setSocialYoutube(e.target.value)}
+                        placeholder="@channel"
+                        maxLength={50}
+                        className="bg-secondary border-border text-foreground"
+                      />
+                    </div>
+                  </div>
+                </div>
               </TabsContent>
             </Tabs>
           </div>
