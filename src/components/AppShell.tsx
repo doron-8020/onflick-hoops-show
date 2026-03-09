@@ -11,7 +11,7 @@ interface AppShellProps {
 }
 
 const AppShell = ({ children }: AppShellProps) => {
-  const { user, userStatus, signOut } = useAuth();
+  const { user, userStatus, signOut, userType, userTypeLoading } = useAuth();
   const { language } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
@@ -19,6 +19,24 @@ const AppShell = ({ children }: AppShellProps) => {
 
   // Activate badge count on home screen icon
   useBadgeCount();
+
+  // Onboarding: require role selection for authenticated users
+  useEffect(() => {
+    if (!user) return;
+    if (userTypeLoading) return;
+
+    const path = location.pathname;
+    const onRoleOnboarding = path === "/onboarding/role";
+    const onAuth = path === "/auth";
+
+    if (!userType && !onRoleOnboarding && !onAuth) {
+      navigate("/onboarding/role", { replace: true });
+    }
+
+    if (userType && onRoleOnboarding) {
+      navigate("/", { replace: true });
+    }
+  }, [user, userType, userTypeLoading, location.pathname, navigate]);
 
   // Show install prompt after login redirect
   useEffect(() => {
@@ -84,12 +102,10 @@ const AppShell = ({ children }: AppShellProps) => {
   return (
     <>
       {children}
-      <InstallPrompt
-        show={showInstallPrompt}
-        onClose={() => setShowInstallPrompt(false)}
-      />
+      <InstallPrompt show={showInstallPrompt} onClose={() => setShowInstallPrompt(false)} />
     </>
   );
 };
 
 export default AppShell;
+
