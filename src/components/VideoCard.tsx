@@ -254,11 +254,8 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           <span className="text-[11px] font-semibold text-foreground drop-shadow-md">0</span>
         </button>
 
-        <button onClick={handleShare} className="flex flex-col items-center gap-0.5">
+        <button onClick={handleShare} className="flex flex-col items-center">
           <Share2 className="h-7 w-7 text-foreground drop-shadow-md" />
-          <span className="text-[11px] font-semibold text-foreground drop-shadow-md">
-            {t("video.share")}
-          </span>
         </button>
       </div>
 
