@@ -1,12 +1,14 @@
+import { forwardRef } from "react";
 import { Music2 } from "lucide-react";
 
 type Props = {
   imageUrl?: string | null;
 };
 
-const SpinningSoundIcon = ({ imageUrl }: Props) => {
+const SpinningSoundIcon = forwardRef<HTMLDivElement, Props>(({ imageUrl }, ref) => {
   return (
     <div
+      ref={ref}
       className="relative h-11 w-11 rounded-full bg-background/30 backdrop-blur-sm ring-1 ring-border/60 overflow-hidden motion-safe:animate-spin motion-reduce:animate-none motion-safe:[animation-duration:4.5s]"
       aria-hidden="true"
     >
@@ -20,6 +22,8 @@ const SpinningSoundIcon = ({ imageUrl }: Props) => {
       <div className="absolute inset-0 rounded-full ring-2 ring-background/60" />
     </div>
   );
-};
+});
+
+SpinningSoundIcon.displayName = "SpinningSoundIcon";
 
 export default SpinningSoundIcon;
