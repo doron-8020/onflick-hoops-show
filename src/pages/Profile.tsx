@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
 import EditProfileDialog from "@/components/EditProfileDialog";
 
-type TabKey = "videos" | "private" | "saved";
+type TabKey = "videos" | "private" | "saved" | "about";
 
 const formatCount = (n: number) => {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
