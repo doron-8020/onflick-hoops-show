@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   Bookmark,
   Grid3X3,
+  Info,
   Lock,
   MoreHorizontal,
   Play,
