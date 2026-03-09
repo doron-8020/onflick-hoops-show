@@ -72,6 +72,8 @@ export const translations = {
   "profile.followers": { he: "עוקבים", en: "Followers" },
   "profile.following": { he: "עוקב", en: "Following" },
   "profile.likes": { he: "לייקים", en: "Likes" },
+  "profile.coachViews": { he: "צפיות מאמנים", en: "Coach views" },
+  "profile.scoutViews": { he: "צפיות סקאוטים", en: "Scout views" },
   "profile.editProfile": { he: "ערוך פרופיל", en: "Edit Profile" },
   "profile.shareProfile": { he: "שתף פרופיל", en: "Share Profile" },
   "profile.noVideos": { he: "אין סרטונים עדיין", en: "No videos yet" },
