@@ -179,6 +179,9 @@ export const translations = {
   // VideoCard
   "video.likeError": { he: "שגיאה בעדכון הלייק", en: "Error updating like" },
   "video.linkCopied": { he: "הקישור הועתק!", en: "Link copied!" },
+  "video.saved": { he: "נשמר!", en: "Saved!" },
+  "video.unsaved": { he: "הוסר מהשמורים", en: "Removed from saved" },
+  "video.share": { he: "שיתוף", en: "Share" },
   "video.followBtn": { he: "עקוב", en: "Follow" },
   "video.followingBtn": { he: "עוקב", en: "Following" },
 
