@@ -185,8 +185,9 @@ const PlayerProfile = () => {
             <>
               <button
                 onClick={() => setActiveTab("about")}
-                className="flex-1 rounded-lg bg-destructive/90 py-2 text-sm font-bold text-destructive-foreground shadow-lg"
+                className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-destructive/90 py-2 text-sm font-bold text-destructive-foreground shadow-lg"
               >
+                <Info className="h-4 w-4" />
                 {t("profile.aboutMeBtn")}
               </button>
               <button
