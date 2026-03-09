@@ -8,7 +8,7 @@ import { mockVideos } from "@/data/mockData";
 import VideoCardMock from "@/components/VideoCardMock";
 import PullToRefresh from "@/components/PullToRefresh";
 import { Search } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import FeedHeader from "@/components/FeedHeader";
 
 interface VideoWithProfile {
