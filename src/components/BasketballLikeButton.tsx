@@ -33,7 +33,7 @@ const BasketballLikeButton = ({ liked, count, onLike }: BasketballLikeButtonProp
       <motion.div
         whileTap={{ scale: 1.3 }}
         transition={{ type: "spring", stiffness: 400, damping: 10 }}
-        className="relative h-12 w-12"
+        className="relative h-9 w-9"
       >
         {/* Basketball SVG */}
         <motion.svg

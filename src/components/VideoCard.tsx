@@ -206,14 +206,46 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
       {/* Sound wheel removed */}
 
-      {/* Right side actions */}
+      {/* Left side actions (RTL) */}
       <div
-        className="absolute end-3 bottom-28 flex flex-col items-center gap-3 z-10"
+        className="absolute start-3 bottom-32 flex flex-col items-center gap-4 z-10"
         onClick={(e) => e.stopPropagation()}
       >
+        <BasketballLikeButton liked={liked} count={likes} onLike={handleLike} />
+
+        <button onClick={() => setCommentsOpen(true)} className="flex flex-col items-center gap-0.5">
+          <MessageCircle className="h-7 w-7 text-foreground drop-shadow-md" fill="none" />
+          <span className="text-[11px] font-semibold text-foreground drop-shadow-md">
+            {formatNumber(video.comments_count)}
+          </span>
+        </button>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setSaved(!saved);
+            haptic(20);
+            toast.success(saved ? t("video.unsaved") : t("video.saved"));
+          }}
+          className="flex flex-col items-center gap-0.5"
+        >
+          <Bookmark className={`h-7 w-7 drop-shadow-md ${saved ? "text-primary fill-primary" : "text-foreground"}`} />
+          <span className="text-[11px] font-semibold text-foreground drop-shadow-md">0</span>
+        </button>
+
+        <button onClick={handleShare} className="flex flex-col items-center gap-0.5">
+          <Share2 className="h-7 w-7 text-foreground drop-shadow-md" />
+          <span className="text-[11px] font-semibold text-foreground drop-shadow-md">
+            {t("video.share")}
+          </span>
+        </button>
+      </div>
+
+      {/* Avatar - right side */}
+      <div className="absolute end-3 bottom-44 z-10" onClick={(e) => e.stopPropagation()}>
         {video.user_id && (
-          <button onClick={() => navigate(`/player/${video.user_id}`)} className="relative mb-1">
-            <div className="h-11 w-11 rounded-full overflow-hidden ring-2 ring-primary/50 ring-offset-1 ring-offset-background">
+          <button onClick={() => navigate(`/player/${video.user_id}`)} className="relative">
+            <div className="h-12 w-12 rounded-full overflow-hidden ring-2 ring-primary/50 ring-offset-1 ring-offset-background">
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
               ) : (
@@ -231,22 +263,6 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
             )}
           </button>
         )}
-
-        <BasketballLikeButton liked={liked} count={likes} onLike={handleLike} />
-
-        <button onClick={() => setCommentsOpen(true)} className="flex flex-col items-center gap-1">
-          <MessageCircle className="h-6 w-6 text-foreground drop-shadow-md" />
-          <span className="text-[10px] font-semibold text-foreground drop-shadow-md">
-            {formatNumber(video.comments_count)}
-          </span>
-        </button>
-
-        <button onClick={handleShare} className="flex flex-col items-center gap-1">
-          <Share2 className="h-6 w-6 text-foreground drop-shadow-md" />
-          <span className="text-[10px] font-semibold text-foreground drop-shadow-md">
-            {formatNumber(video.shares_count)}
-          </span>
-        </button>
       </div>
 
       {/* Bottom info */}
