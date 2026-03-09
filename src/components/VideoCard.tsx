@@ -203,8 +203,6 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         )}
       </AnimatePresence>
 
-      {/* Sound wheel removed */}
-
       {/* Left side actions (RTL) */}
       <div
         className="absolute start-3 bottom-20 flex flex-col items-center gap-4 z-10"
