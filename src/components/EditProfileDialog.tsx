@@ -194,14 +194,14 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md bg-background border-border max-h-[90vh] p-0" dir={isRTL ? "rtl" : "ltr"}>
-        <DialogHeader className="px-6 pt-6">
+      <DialogContent className="max-w-md bg-background border-border h-[90vh] flex flex-col p-0" dir={isRTL ? "rtl" : "ltr"}>
+        <DialogHeader className="px-6 pt-6 flex-shrink-0">
           <DialogTitle className="text-foreground font-display text-xl">
             {t("editProfile.title")}
           </DialogTitle>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[calc(90vh-140px)]">
+        <ScrollArea className="flex-1 overflow-auto">
           <div className="px-6 pb-6">
             {/* Avatar */}
             <div className="flex flex-col items-center gap-2 mb-6">
