@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Search, Users, Compass } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
@@ -15,6 +15,7 @@ const FeedHeader = () => {
     }
     if (location.pathname === "/discover") return "explore";
     if (location.pathname === "/blog") return "blog";
+    if (location.pathname === "/onflick") return "onflick";
     return "";
   })();
 
@@ -23,7 +24,16 @@ const FeedHeader = () => {
     if (tab === "following") navigate("/?tab=following");
     if (tab === "explore") navigate("/discover");
     if (tab === "blog") navigate("/blog");
+    if (tab === "onflick") navigate("/onflick");
   };
+
+  const tabs = [
+    { key: "foryou", label: t("feed.foryou") },
+    { key: "following", icon: Users, ariaLabel: t("feed.following") },
+    { key: "explore", icon: Compass, ariaLabel: t("feed.explore") },
+    { key: "blog", label: t("feed.blog") },
+    { key: "onflick", label: t("feed.onflick"), isAccent: true },
+  ] as const;
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 safe-top">
@@ -36,39 +46,45 @@ const FeedHeader = () => {
           <Search className="h-5 w-5 text-foreground" />
         </button>
 
-        <div className="relative flex items-center gap-5">
-          {(["foryou", "following", "explore", "blog"] as const).map((tab) => {
-            const isActive = activeTab === tab;
+        <div className="relative flex items-center gap-4">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.key;
+            const Icon = "icon" in tab ? tab.icon : null;
+            const isAccent = "isAccent" in tab && tab.isAccent;
+
             return (
               <button
-                key={tab}
-                onClick={() => handleTabClick(tab)}
+                key={tab.key}
+                onClick={() => handleTabClick(tab.key)}
                 className={`relative text-sm font-semibold transition-all duration-200 pb-1 ${
-                  isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground/70"
+                  isAccent
+                    ? isActive
+                      ? "text-destructive"
+                      : "text-destructive/70 hover:text-destructive"
+                    : isActive
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground/70"
                 }`}
+                aria-label={"ariaLabel" in tab ? tab.ariaLabel : undefined}
               >
-                {tab === "foryou" && t("feed.foryou")}
-                {tab === "following" && t("feed.following")}
-                {tab === "explore" && t("feed.explore")}
-                {tab === "blog" && t("feed.blog")}
+                {Icon ? (
+                  <Icon className="h-4.5 w-4.5" />
+                ) : (
+                  "label" in tab ? tab.label : null
+                )}
 
                 {isActive && (
                   <motion.div
                     layoutId="feedTabIndicator"
-                    className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-primary rounded-full"
+                    className={`absolute -bottom-0.5 left-0 right-0 h-0.5 rounded-full ${
+                      isAccent ? "bg-destructive" : "bg-primary"
+                    }`}
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   />
                 )}
               </button>
             );
           })}
-
-          <button
-            onClick={() => navigate("/")}
-            className="ms-2 rounded-full gradient-fire px-3 py-1 text-xs font-bold text-primary-foreground shadow-glow"
-          >
-            {t("feed.onflick")}
-          </button>
         </div>
 
         <div className="w-7" />
@@ -78,4 +94,3 @@ const FeedHeader = () => {
 };
 
 export default FeedHeader;
-

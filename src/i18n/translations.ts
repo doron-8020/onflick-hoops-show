@@ -260,6 +260,13 @@ export const translations = {
   // Follow
   "follow.error": { he: "שגיאה", en: "Error" },
 
+  // Social Media
+  "editProfile.socialMedia": { he: "רשתות חברתיות", en: "Social Media" },
+  "editProfile.instagram": { he: "אינסטגרם", en: "Instagram" },
+  "editProfile.tiktok": { he: "טיק טוק", en: "TikTok" },
+  "editProfile.facebook": { he: "פייסבוק", en: "Facebook" },
+  "editProfile.youtube": { he: "יוטיוב", en: "YouTube" },
+
   // PWA Install
   "install.title": { he: "התקן את ONFLICK", en: "Install ONFLICK" },
   "install.description": { he: "הוסף את האפליקציה למסך הבית לגישה מהירה והתראות בזמן אמת", en: "Add the app to your home screen for quick access and real-time notifications" },
