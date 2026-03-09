@@ -64,6 +64,12 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
   const [comparisonPlayer, setComparisonPlayer] = useState("");
   const [bio, setBio] = useState("");
   
+  // Social Media
+  const [socialInstagram, setSocialInstagram] = useState("");
+  const [socialTiktok, setSocialTiktok] = useState("");
+  const [socialFacebook, setSocialFacebook] = useState("");
+  const [socialYoutube, setSocialYoutube] = useState("");
+  
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
