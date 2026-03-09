@@ -33,7 +33,7 @@ interface VideoWithProfile {
   } | null;
 }
 
-type FeedTab = "foryou" | "following";
+type FeedTab = "following" | "foryou";
 const PAGE_SIZE = 10;
 
 const Index = () => {

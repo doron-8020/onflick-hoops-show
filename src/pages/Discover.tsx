@@ -104,14 +104,9 @@ const Discover = () => {
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="mx-auto max-w-2xl">
-        <div className="px-4 pt-14 pb-4 flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-1">
-            <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />
-          </button>
-          <h1 className="font-display text-3xl text-foreground tracking-wide">{t("discover.title")}</h1>
-        </div>
+        <FeedHeader />
 
-        <div className="px-4 mb-6">
+        <div className="px-4 pt-16 mb-6">
           <div className="flex items-center gap-3 rounded-xl bg-secondary px-4 py-3">
             <Search className="h-5 w-5 text-muted-foreground shrink-0" />
             <input

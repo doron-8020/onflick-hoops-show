@@ -14,36 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blog_posts: {
         Row: {
           author_id: string
+          comments_count: number
           content: string
           cover_image_url: string | null
           created_at: string
           id: string
+          likes_count: number
           published: boolean
+          shares_count: number
           title: string
           updated_at: string
+          views_count: number
         }
         Insert: {
           author_id: string
+          comments_count?: number
           content: string
           cover_image_url?: string | null
           created_at?: string
           id?: string
+          likes_count?: number
           published?: boolean
+          shares_count?: number
           title: string
           updated_at?: string
+          views_count?: number
         }
         Update: {
           author_id?: string
+          comments_count?: number
           content?: string
           cover_image_url?: string | null
           created_at?: string
           id?: string
+          likes_count?: number
           published?: boolean
+          shares_count?: number
           title?: string
           updated_at?: string
+          views_count?: number
         }
         Relationships: []
       }
@@ -534,6 +575,7 @@ export type Database = {
         Args: { p_viewed_user_id: string }
         Returns: undefined
       }
+      toggle_blog_like: { Args: { p_post_id: string }; Returns: boolean }
       toggle_video_like: { Args: { p_video_id: string }; Returns: boolean }
     }
     Enums: {
