@@ -69,11 +69,11 @@ const AppShell = ({ children }: AppShellProps) => {
     const isBlocked = userStatus === "blocked";
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center">
-        <div className={`rounded-full p-6 mb-4 ${isBlocked ? "bg-destructive/10" : "bg-blue-400/10"}`}>
+        <div className={`rounded-full p-6 mb-4 ${isBlocked ? "bg-destructive/10" : "bg-accent/10"}`}>
           {isBlocked ? (
             <Ban className="h-12 w-12 text-destructive" />
           ) : (
-            <Snowflake className="h-12 w-12 text-blue-400" />
+            <Snowflake className="h-12 w-12 text-accent" />
           )}
         </div>
         <h1 className="font-display text-2xl text-foreground mb-2">

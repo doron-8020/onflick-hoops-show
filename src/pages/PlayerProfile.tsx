@@ -1,8 +1,14 @@
-import { useEffect, useState, useRef, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-  Grid3X3, Lock, Bookmark, ArrowLeft, Play,
-  UserPlus, UserCheck, MoreHorizontal,
+  ArrowLeft,
+  Bookmark,
+  Grid3X3,
+  Lock,
+  MoreHorizontal,
+  Play,
+  UserCheck,
+  UserPlus,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -37,7 +43,9 @@ const PlayerProfile = () => {
   const { isFollowing, toggleFollow, loading: followLoading } = useFollow(userId);
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
-    videos: null, private: null, saved: null,
+    videos: null,
+    private: null,
+    saved: null,
   });
   const tabBarRef = useRef<HTMLDivElement>(null);
 
@@ -58,16 +66,23 @@ const PlayerProfile = () => {
     fetchData();
   }, [userId]);
 
+  // Record anonymous coach/scout views (server-side guard)
+  useEffect(() => {
+    if (!user || !userId) return;
+    if (user.id === userId) return;
+    (supabase as any)
+      .rpc("record_profile_view", { p_viewed_user_id: userId })
+      .then(() => {})
+      .catch(() => {});
+  }, [user, userId]);
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const totalLikes = useMemo(
-    () => videos.reduce((sum, v) => sum + (v.likes_count || 0), 0),
-    [videos]
-  );
+  const totalLikes = useMemo(() => videos.reduce((sum, v) => sum + (v.likes_count || 0), 0), [videos]);
 
   const underlineStyle = useMemo(() => {
     const el = tabRefs.current[activeTab];
@@ -92,7 +107,9 @@ const PlayerProfile = () => {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
         <p className="text-foreground font-semibold">{t("profile.playerNotFound")}</p>
-        <button onClick={() => navigate(-1)} className="text-primary text-sm">{t("profile.goBack")}</button>
+        <button onClick={() => navigate(-1)} className="text-primary text-sm">
+          {t("profile.goBack")}
+        </button>
         <BottomNav />
       </div>
     );
@@ -111,7 +128,11 @@ const PlayerProfile = () => {
         <button onClick={() => navigate(-1)} className="p-1">
           <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />
         </button>
-        <h1 className={`font-display text-lg text-foreground tracking-wide transition-opacity duration-300 ${scrolled ? "opacity-100" : "opacity-0"}`}>
+        <h1
+          className={`font-display text-lg text-foreground tracking-wide transition-opacity duration-300 ${
+            scrolled ? "opacity-100" : "opacity-0"
+          }`}
+        >
           {displayName}
         </h1>
         <button className="p-1">
@@ -126,9 +147,7 @@ const PlayerProfile = () => {
               <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
             ) : (
               <div className="h-full w-full gradient-fire flex items-center justify-center">
-                <span className="font-display text-4xl text-primary-foreground">
-                  {displayName.charAt(0).toUpperCase()}
-                </span>
+                <span className="font-display text-4xl text-primary-foreground">{displayName.charAt(0).toUpperCase()}</span>
               </div>
             )}
           </div>
@@ -164,17 +183,13 @@ const PlayerProfile = () => {
                 onClick={toggleFollow}
                 disabled={followLoading}
                 className={`flex-1 flex items-center justify-center gap-1.5 rounded-md py-2 text-sm font-semibold transition-all ${
-                  isFollowing
-                    ? "bg-secondary text-foreground"
-                    : "gradient-fire text-primary-foreground shadow-glow"
+                  isFollowing ? "bg-secondary text-foreground" : "gradient-fire text-primary-foreground shadow-glow"
                 }`}
               >
                 {isFollowing ? <UserCheck className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
                 {isFollowing ? t("video.followingBtn") : t("profile.follow")}
               </button>
-              <button className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground">
-                {t("profile.message")}
-              </button>
+              <button className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground">{t("profile.message")}</button>
             </>
           )}
         </div>
@@ -183,7 +198,8 @@ const PlayerProfile = () => {
           <div className="w-full max-w-xs text-center space-y-1 mb-2">
             {profile.position && (
               <p className="text-xs font-semibold text-foreground">
-                {profile.position}{profile.team ? ` · ${profile.team}` : ""}
+                {profile.position}
+                {profile.team ? ` · ${profile.team}` : ""}
               </p>
             )}
             {profile.bio && <p className="text-sm text-muted-foreground leading-snug">{profile.bio}</p>}
@@ -195,11 +211,15 @@ const PlayerProfile = () => {
         {TABS.map((tab) => (
           <button
             key={tab.key}
-            ref={(el) => { tabRefs.current[tab.key] = el; }}
+            ref={(el) => {
+              tabRefs.current[tab.key] = el;
+            }}
             onClick={() => setActiveTab(tab.key)}
             className="flex-1 flex justify-center py-3 transition-colors"
           >
-            <tab.icon className={`h-5 w-5 transition-colors duration-200 ${activeTab === tab.key ? "text-foreground" : "text-muted-foreground"}`} />
+            <tab.icon
+              className={`h-5 w-5 transition-colors duration-200 ${activeTab === tab.key ? "text-foreground" : "text-muted-foreground"}`}
+            />
           </button>
         ))}
         <div
@@ -209,8 +229,8 @@ const PlayerProfile = () => {
       </div>
 
       <div className="min-h-[40vh]">
-        {activeTab === "videos" && (
-          videos.length > 0 ? (
+        {activeTab === "videos" &&
+          (videos.length > 0 ? (
             <div className="grid grid-cols-3 gap-px">
               {videos.map((video) => (
                 <div key={video.id} className="relative aspect-[9/16] overflow-hidden bg-secondary group">
@@ -235,8 +255,7 @@ const PlayerProfile = () => {
               </div>
               <p className="text-foreground font-semibold mb-1">{t("profile.noVideos")}</p>
             </div>
-          )
-        )}
+          ))}
         {activeTab === "private" && (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="rounded-full border-2 border-muted-foreground/30 p-5 mb-4">

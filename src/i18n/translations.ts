@@ -24,6 +24,7 @@ export const translations = {
   "auth.email": { he: "אימייל", en: "Email" },
   "auth.password": { he: "סיסמה", en: "Password" },
   "auth.displayName": { he: "שם תצוגה", en: "Display Name" },
+  "auth.role": { he: "סוג חשבון", en: "Account type" },
   "auth.signingIn": { he: "מתחבר...", en: "Signing in..." },
   "auth.signingUp": { he: "נרשם...", en: "Signing up..." },
   "auth.or": { he: "או", en: "or" },
