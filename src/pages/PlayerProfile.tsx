@@ -48,6 +48,7 @@ const PlayerProfile = () => {
     videos: null,
     private: null,
     saved: null,
+    about: null,
   });
   const tabBarRef = useRef<HTMLDivElement>(null);
 
