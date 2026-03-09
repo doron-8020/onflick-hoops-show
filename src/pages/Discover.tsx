@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, UserPlus, UserCheck, X } from "lucide-react";
+import { Search, UserPlus, UserCheck, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
 import { trendingTags, mockVideos } from "@/data/mockData";
 import BottomNav from "@/components/BottomNav";
+import FeedHeader from "@/components/FeedHeader";
 
 interface PlayerProfile {
   user_id: string;
@@ -20,15 +20,18 @@ interface PlayerProfile {
 const PlayerCard = ({ player }: { player: PlayerProfile }) => {
   const { user } = useAuth();
   const { t } = useLanguage();
-  const navigate = useNavigate();
   const { isFollowing, toggleFollow, loading } = useFollow(player.user_id);
   const isSelf = user?.id === player.user_id;
   const displayName = player.display_name || "Player";
 
+  const handleClick = () => {
+    window.location.href = `/player/${player.user_id}`;
+  };
+
   return (
     <div
       className="flex items-center gap-3 rounded-xl bg-secondary p-3 cursor-pointer transition-all hover:bg-secondary/80 active:scale-[0.98]"
-      onClick={() => navigate(`/player/${player.user_id}`)}
+      onClick={handleClick}
     >
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full overflow-hidden">
         {player.avatar_url ? (
@@ -67,7 +70,6 @@ const PlayerCard = ({ player }: { player: PlayerProfile }) => {
 };
 
 const Discover = () => {
-  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [players, setPlayers] = useState<PlayerProfile[]>([]);
   const [searching, setSearching] = useState(false);
@@ -102,14 +104,9 @@ const Discover = () => {
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="mx-auto max-w-2xl">
-        <div className="px-4 pt-14 pb-4 flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-1">
-            <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />
-          </button>
-          <h1 className="font-display text-3xl text-foreground tracking-wide">{t("discover.title")}</h1>
-        </div>
+        <FeedHeader />
 
-        <div className="px-4 mb-6">
+        <div className="px-4 pt-16 mb-6">
           <div className="flex items-center gap-3 rounded-xl bg-secondary px-4 py-3">
             <Search className="h-5 w-5 text-muted-foreground shrink-0" />
             <input
