@@ -20,10 +20,13 @@ interface PlayerProfile {
 const PlayerCard = ({ player }: { player: PlayerProfile }) => {
   const { user } = useAuth();
   const { t } = useLanguage();
-  const navigate = useNavigate();
   const { isFollowing, toggleFollow, loading } = useFollow(player.user_id);
   const isSelf = user?.id === player.user_id;
   const displayName = player.display_name || "Player";
+
+  const handleClick = () => {
+    window.location.href = `/player/${player.user_id}`;
+  };
 
   return (
     <div
