@@ -203,12 +203,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         )}
       </AnimatePresence>
 
-      {/* Sound Wheel (TikTok-style) - replaces simple mute button */}
-      {isVideo && (
-        <div className="absolute top-16 end-3 z-30 safe-top">
-          <SoundWheel videoRef={videoRef as React.RefObject<HTMLVideoElement>} />
-        </div>
-      )}
+      {/* Sound wheel removed */}
 
       {/* Right side actions */}
       <div
