@@ -173,7 +173,11 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
           comparison_player: comparisonPlayer.trim() || null,
           bio: bio.trim() || null,
           avatar_url: avatarUrl,
-        })
+          social_instagram: socialInstagram.trim() || null,
+          social_tiktok: socialTiktok.trim() || null,
+          social_facebook: socialFacebook.trim() || null,
+          social_youtube: socialYoutube.trim() || null,
+        } as any)
         .eq("user_id", user.id);
 
       if (error) throw error;
