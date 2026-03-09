@@ -28,7 +28,7 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("videos");
   const [scrolled, setScrolled] = useState(false);
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
-    videos: null, private: null, saved: null,
+    videos: null, private: null, saved: null, about: null,
   });
   const tabBarRef = useRef<HTMLDivElement>(null);
 
