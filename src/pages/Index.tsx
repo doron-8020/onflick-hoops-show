@@ -112,6 +112,12 @@ const Index = () => {
   const hasRealVideos = videos.length > 0;
   const tabs: FeedTab[] = ["following", "foryou"];
 
+  const handleTabClick = (tab: string) => {
+    if (tab === "explore") { navigate("/discover"); return; }
+    if (tab === "blog") { navigate("/blog"); return; }
+    setActiveTab(tab as FeedTab);
+  };
+
   return (
     <div className="relative min-h-screen bg-background">
       {/* Desktop: centered feed container */}
