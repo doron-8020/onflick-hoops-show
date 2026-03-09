@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   Bookmark,
   Grid3X3,
+  Info,
   Lock,
   MoreHorizontal,
   Play,
@@ -184,8 +185,9 @@ const PlayerProfile = () => {
             <>
               <button
                 onClick={() => setActiveTab("about")}
-                className="flex-1 rounded-lg bg-destructive/90 py-2 text-sm font-bold text-destructive-foreground shadow-lg"
+                className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-destructive/90 py-2 text-sm font-bold text-destructive-foreground shadow-lg"
               >
+                <Info className="h-4 w-4" />
                 {t("profile.aboutMeBtn")}
               </button>
               <button
@@ -335,6 +337,15 @@ const PlayerAboutSection = ({ profile }: { profile: any }) => {
         { label: t("editProfile.bioCoach"), value: profile.bio, isLong: true },
       ],
     },
+    {
+      title: t("editProfile.socialMedia"),
+      items: [
+        { label: t("editProfile.instagram"), value: profile.social_instagram, isLink: true, linkPrefix: "https://instagram.com/" },
+        { label: t("editProfile.tiktok"), value: profile.social_tiktok, isLink: true, linkPrefix: "https://tiktok.com/@" },
+        { label: t("editProfile.facebook"), value: profile.social_facebook, isLink: true, linkPrefix: "https://facebook.com/" },
+        { label: t("editProfile.youtube"), value: profile.social_youtube, isLink: true, linkPrefix: "https://youtube.com/@" },
+      ],
+    },
   ];
 
   const hasAnyData = sections.some((s) => s.items.some((i) => i.value));
@@ -361,11 +372,16 @@ const PlayerAboutSection = ({ profile }: { profile: any }) => {
               {section.title}
             </h3>
             <div className="grid gap-3">
-              {items.map((item) => (
+                  {items.map((item: any) => (
                 <div key={item.label} className="bg-card rounded-lg border border-border p-3 space-y-1">
                   <p className="text-xs text-muted-foreground uppercase tracking-wide">{item.label}</p>
                   {item.isLink && item.value ? (
-                    <a href={String(item.value)} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline break-all">
+                    <a
+                      href={item.linkPrefix ? `${item.linkPrefix}${String(item.value).replace('@', '')}` : String(item.value)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-primary hover:underline break-all"
+                    >
                       {item.value}
                     </a>
                   ) : (

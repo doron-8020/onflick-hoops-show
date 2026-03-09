@@ -267,6 +267,10 @@ export type Database = {
           private_profile: boolean
           rpg: number | null
           secondary_position: string | null
+          social_facebook: string | null
+          social_instagram: string | null
+          social_tiktok: string | null
+          social_youtube: string | null
           sprint_20m_sec: number | null
           status: Database["public"]["Enums"]["user_status"]
           team: string | null
@@ -307,6 +311,10 @@ export type Database = {
           private_profile?: boolean
           rpg?: number | null
           secondary_position?: string | null
+          social_facebook?: string | null
+          social_instagram?: string | null
+          social_tiktok?: string | null
+          social_youtube?: string | null
           sprint_20m_sec?: number | null
           status?: Database["public"]["Enums"]["user_status"]
           team?: string | null
@@ -347,6 +355,10 @@ export type Database = {
           private_profile?: boolean
           rpg?: number | null
           secondary_position?: string | null
+          social_facebook?: string | null
+          social_instagram?: string | null
+          social_tiktok?: string | null
+          social_youtube?: string | null
           sprint_20m_sec?: number | null
           status?: Database["public"]["Enums"]["user_status"]
           team?: string | null

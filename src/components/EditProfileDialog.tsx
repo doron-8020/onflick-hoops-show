@@ -64,6 +64,12 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
   const [comparisonPlayer, setComparisonPlayer] = useState("");
   const [bio, setBio] = useState("");
   
+  // Social Media
+  const [socialInstagram, setSocialInstagram] = useState("");
+  const [socialTiktok, setSocialTiktok] = useState("");
+  const [socialFacebook, setSocialFacebook] = useState("");
+  const [socialYoutube, setSocialYoutube] = useState("");
+  
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -91,6 +97,10 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
       setGpa(profile.gpa?.toString() || "");
       setComparisonPlayer(profile.comparison_player || "");
       setBio(profile.bio || "");
+      setSocialInstagram(profile.social_instagram || "");
+      setSocialTiktok(profile.social_tiktok || "");
+      setSocialFacebook(profile.social_facebook || "");
+      setSocialYoutube(profile.social_youtube || "");
       setAvatarPreview(profile.avatar_url || null);
       setAvatarFile(null);
     }
@@ -163,7 +173,11 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
           comparison_player: comparisonPlayer.trim() || null,
           bio: bio.trim() || null,
           avatar_url: avatarUrl,
-        })
+          social_instagram: socialInstagram.trim() || null,
+          social_tiktok: socialTiktok.trim() || null,
+          social_facebook: socialFacebook.trim() || null,
+          social_youtube: socialYoutube.trim() || null,
+        } as any)
         .eq("user_id", user.id);
 
       if (error) throw error;
@@ -520,6 +534,53 @@ const EditProfileDialog = ({ open, onOpenChange, profile, onSaved }: EditProfile
                   <p className="text-[10px] text-muted-foreground text-start mt-1">
                     {bio.length}/300
                   </p>
+                </div>
+
+                {/* Social Media */}
+                <div className="border-t border-border pt-3 mt-3">
+                  <p className="text-sm font-semibold text-foreground mb-3">{t("editProfile.socialMedia")}</p>
+                  <div className="space-y-3">
+                    <div>
+                      <Label className="text-muted-foreground text-xs">{t("editProfile.instagram")}</Label>
+                      <Input
+                        value={socialInstagram}
+                        onChange={(e) => setSocialInstagram(e.target.value)}
+                        placeholder="@username"
+                        maxLength={50}
+                        className="bg-secondary border-border text-foreground"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-muted-foreground text-xs">{t("editProfile.tiktok")}</Label>
+                      <Input
+                        value={socialTiktok}
+                        onChange={(e) => setSocialTiktok(e.target.value)}
+                        placeholder="@username"
+                        maxLength={50}
+                        className="bg-secondary border-border text-foreground"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-muted-foreground text-xs">{t("editProfile.facebook")}</Label>
+                      <Input
+                        value={socialFacebook}
+                        onChange={(e) => setSocialFacebook(e.target.value)}
+                        placeholder="username"
+                        maxLength={50}
+                        className="bg-secondary border-border text-foreground"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-muted-foreground text-xs">{t("editProfile.youtube")}</Label>
+                      <Input
+                        value={socialYoutube}
+                        onChange={(e) => setSocialYoutube(e.target.value)}
+                        placeholder="@channel"
+                        maxLength={50}
+                        className="bg-secondary border-border text-foreground"
+                      />
+                    </div>
+                  </div>
                 </div>
               </TabsContent>
             </Tabs>
