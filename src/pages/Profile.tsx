@@ -36,6 +36,7 @@ const Profile = () => {
     { key: "videos", icon: Grid3X3, label: "Videos" },
     { key: "private", icon: Lock, label: t("profile.privateVideos") },
     { key: "saved", icon: Bookmark, label: t("profile.saved") },
+    { key: "about", icon: User, label: t("profile.aboutMe") },
   ];
 
   useEffect(() => {
