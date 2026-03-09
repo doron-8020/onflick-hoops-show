@@ -54,6 +54,7 @@ export const translations = {
   "discover.tryAnother": { he: "נסה מילת חיפוש אחרת", en: "Try another search term" },
   "discover.trending": { he: "טרנדים 🔥", en: "Trending 🔥" },
   "discover.topHighlights": { he: "הדגשות מובילות", en: "Top Highlights" },
+  "discover.backToGrid": { he: "חזרה", en: "Back" },
 
   // Notifications
   "notifications.title": { he: "התראות", en: "Notifications" },
