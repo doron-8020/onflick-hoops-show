@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import {
   Grid3X3, Lock, Bookmark, Settings, UserPlus,
-  Play, Link as LinkIcon, Share2,
+  Play, User,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
