@@ -254,6 +254,9 @@ const Profile = () => {
         {activeTab === "saved" && (
           <EmptyTabState icon={Bookmark} title={t("profile.saved")} subtitle={t("profile.saveHighlights")} />
         )}
+        {activeTab === "about" && profile && (
+          <AboutMeSection profile={profile} />
+        )}
       </div>
 
       <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} profile={profile || {}} onSaved={fetchProfile} />
