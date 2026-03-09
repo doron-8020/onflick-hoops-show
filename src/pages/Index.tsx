@@ -126,13 +126,6 @@ const Index = () => {
                 </div>
                 <p className="text-sm text-muted-foreground animate-pulse">{t("feed.loading")}</p>
               </div>
-            ) : activeTab === "following" && !user ? (
-              <div className="h-[100dvh] flex flex-col items-center justify-center gap-4 px-8 text-center">
-                <div className="rounded-full bg-secondary p-6 mb-2"><Search className="h-10 w-10 text-muted-foreground" /></div>
-                <p className="text-lg font-semibold text-foreground">{t("feed.loginToSee")}</p>
-                <p className="text-sm text-muted-foreground">{t("feed.followToSee")}</p>
-                <button onClick={() => navigate("/auth")} className="mt-2 rounded-xl gradient-fire px-8 py-3 text-sm font-bold text-primary-foreground shadow-glow">{t("auth.signIn")}</button>
-              </div>
             ) : activeTab === "following" && !hasRealVideos ? (
               <div className="h-[100dvh] flex flex-col items-center justify-center gap-4 px-8 text-center">
                 <div className="rounded-full bg-secondary p-6 mb-2"><Search className="h-10 w-10 text-muted-foreground" /></div>
