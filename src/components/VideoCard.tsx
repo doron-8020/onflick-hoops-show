@@ -253,7 +253,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         <div className="mb-3 flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <span
-              className="font-semibold text-foreground text-sm cursor-pointer hover:underline"
+              className="inline-block rounded-md bg-red-600 px-2 py-0.5 font-semibold text-white text-sm cursor-pointer hover:opacity-90 transition-opacity"
               onClick={(e) => {
                 e.stopPropagation();
                 if (video.user_id) navigate(`/player/${video.user_id}`);
