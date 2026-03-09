@@ -79,6 +79,9 @@ export const translations = {
   "profile.onlyYou": { he: "רק אתה יכול לראות", en: "Only you can see" },
   "profile.saved": { he: "שמורים", en: "Saved" },
   "profile.saveHighlights": { he: "שמור הדגשות לצפייה מאוחרת", en: "Save highlights to watch later" },
+  "profile.aboutMe": { he: "אודותיי", en: "About Me" },
+  "profile.noDataYet": { he: "אין מידע עדיין", en: "No info yet" },
+  "profile.fillProfile": { he: "מלא את הפרופיל שלך כדי להציג מידע", en: "Fill your profile to display info" },
 
   // Create
   "create.title": { he: "העלאת תוכן", en: "Upload Content" },
