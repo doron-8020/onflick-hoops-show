@@ -10,7 +10,9 @@ export const translations = {
 
   // Feed
   "feed.following": { he: "עוקב", en: "Following" },
-  "feed.foryou": { he: "בשבילך", en: "For You" },
+  "feed.foryou": { he: "פור יו", en: "For You" },
+  "feed.explore": { he: "סייר", en: "Explore" },
+  "feed.blog": { he: "בלוג", en: "Blog" },
   "feed.loading": { he: "טוען הדגשות...", en: "Loading highlights..." },
   "feed.loginToSee": { he: "התחבר כדי לראות סרטונים", en: "Sign in to see videos" },
   "feed.followToSee": { he: "עקוב אחרי שחקנים כדי לראות את התוכן שלהם כאן", en: "Follow players to see their content here" },

@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
-import { Heart, MessageCircle, UserPlus, Bell, Trash2 } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, UserPlus, Bell, Trash2 } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 
 interface Notification {

@@ -128,9 +128,9 @@ const Index = () => {
             <button onClick={() => navigate("/discover")} className="p-1 rounded-full hover:bg-secondary/50 transition-colors" aria-label="Search">
               <Search className="h-5 w-5 text-foreground" />
             </button>
-            <div className="relative flex gap-6">
-              {tabs.map((tab) => (
-                <button key={tab} onClick={() => setActiveTab(tab)}
+            <div className="relative flex gap-5">
+              {["following", "foryou", "explore", "blog"].map((tab) => (
+                <button key={tab} onClick={() => handleTabClick(tab)}
                   className={`relative text-sm font-semibold transition-all duration-200 pb-1 ${activeTab === tab ? "text-foreground" : "text-muted-foreground hover:text-foreground/70"}`}>
                   {t(`feed.${tab}`)}
                   {activeTab === tab && (
