@@ -203,16 +203,11 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         )}
       </AnimatePresence>
 
-      {/* Sound Wheel (TikTok-style) - replaces simple mute button */}
-      {isVideo && (
-        <div className="absolute top-16 end-3 z-30 safe-top">
-          <SoundWheel videoRef={videoRef as React.RefObject<HTMLVideoElement>} />
-        </div>
-      )}
+      {/* Sound wheel removed */}
 
       {/* Right side actions */}
       <div
-        className="absolute end-3 bottom-28 flex flex-col items-center gap-5 z-10"
+        className="absolute end-3 bottom-28 flex flex-col items-center gap-3 z-10"
         onClick={(e) => e.stopPropagation()}
       >
         {video.user_id && (
@@ -239,28 +234,18 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         <BasketballLikeButton liked={liked} count={likes} onLike={handleLike} />
 
         <button onClick={() => setCommentsOpen(true)} className="flex flex-col items-center gap-1">
-          <div className="rounded-full bg-background/30 p-2.5 backdrop-blur-sm">
-            <MessageCircle className="h-7 w-7 text-foreground" />
-          </div>
-          <span className="text-xs font-semibold text-foreground drop-shadow-md">
+          <MessageCircle className="h-6 w-6 text-foreground drop-shadow-md" />
+          <span className="text-[10px] font-semibold text-foreground drop-shadow-md">
             {formatNumber(video.comments_count)}
           </span>
         </button>
 
         <button onClick={handleShare} className="flex flex-col items-center gap-1">
-          <div className="rounded-full bg-background/30 p-2.5 backdrop-blur-sm">
-            <Share2 className="h-7 w-7 text-foreground" />
-          </div>
-          <span className="text-xs font-semibold text-foreground drop-shadow-md">
+          <Share2 className="h-6 w-6 text-foreground drop-shadow-md" />
+          <span className="text-[10px] font-semibold text-foreground drop-shadow-md">
             {formatNumber(video.shares_count)}
           </span>
         </button>
-
-        {isVideo && (
-          <div className="flex flex-col items-center gap-1">
-            <SpinningSoundIcon imageUrl={profile?.avatar_url} />
-          </div>
-        )}
       </div>
 
       {/* Bottom info */}
@@ -268,7 +253,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         <div className="mb-3 flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <span
-              className="font-semibold text-foreground text-sm cursor-pointer hover:underline"
+              className="inline-block rounded-md bg-red-600 px-2 py-0.5 font-semibold text-white text-sm cursor-pointer hover:opacity-90 transition-opacity"
               onClick={(e) => {
                 e.stopPropagation();
                 if (video.user_id) navigate(`/player/${video.user_id}`);
