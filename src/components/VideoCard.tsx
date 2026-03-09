@@ -257,6 +257,21 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         <button onClick={handleShare} className="flex flex-col items-center">
           <Share2 className="h-7 w-7 text-foreground drop-shadow-md" />
         </button>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            haptic(20);
+            toast.success("Reposted!");
+          }}
+          className="flex flex-col items-center"
+        >
+          <Repeat2 className="h-7 w-7 text-foreground drop-shadow-md" />
+        </button>
+
+        {isVideo && (
+          <SpinningSoundIcon imageUrl={profile?.avatar_url} />
+        )}
       </div>
 
       {/* Bottom info */}
