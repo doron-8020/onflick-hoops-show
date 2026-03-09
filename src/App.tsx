@@ -21,6 +21,8 @@ import RoleOnboarding from "./pages/RoleOnboarding";
 import Blog from "./pages/Blog";
 import Onflick from "./pages/Onflick";
 import NotFound from "./pages/NotFound";
+import Terms from "./pages/Terms";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AppShell from "./components/AppShell";
 
 const queryClient = new QueryClient();
@@ -50,6 +52,8 @@ const App = () => (
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/onboarding/role" element={<RoleOnboarding />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </AppShell>
