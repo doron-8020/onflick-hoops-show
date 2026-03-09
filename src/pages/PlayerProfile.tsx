@@ -275,6 +275,7 @@ const PlayerProfile = () => {
             <p className="text-foreground font-semibold">{t("profile.saved")}</p>
           </div>
         )}
+        {activeTab === "about" && profile && <PlayerAboutSection profile={profile} />}
       </div>
 
       <BottomNav />
