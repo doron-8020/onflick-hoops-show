@@ -193,6 +193,58 @@ export const translations = {
   "editProfile.nameMinLength": { he: "שם תצוגה חייב להכיל לפחות 2 תווים", en: "Display name must be at least 2 characters" },
   "editProfile.fileTooLarge": { he: "הקובץ גדול מדי (מקסימום 5MB)", en: "File too large (max 5MB)" },
   "editProfile.invalidImage": { he: "יש לבחור קובץ תמונה", en: "Please select an image file" },
+  
+  // Profile Form Categories
+  "editProfile.personal": { he: "פרטים אישיים", en: "Personal" },
+  "editProfile.physical": { he: "מדדים פיזיים", en: "Physical" },
+  "editProfile.stats": { he: "סטטיסטיקות", en: "Stats" },
+  "editProfile.about": { he: "אודות", en: "About" },
+  
+  // Personal Info
+  "editProfile.fullName": { he: "שם מלא", en: "Full Name" },
+  "editProfile.dob": { he: "תאריך לידה", en: "Date of Birth" },
+  "editProfile.graduationYear": { he: "שנתון", en: "Graduation Year" },
+  "editProfile.selectDate": { he: "בחר תאריך", en: "Pick a date" },
+  
+  // Physical Measurements
+  "editProfile.height": { he: "גובה (ס\"מ)", en: "Height (cm)" },
+  "editProfile.weight": { he: "משקל (ק\"ג)", en: "Weight (kg)" },
+  "editProfile.wingspan": { he: "מוטת ידיים (ס\"מ)", en: "Wingspan (cm)" },
+  "editProfile.verticalLeap": { he: "ניתור אנכי (ס\"מ)", en: "Vertical Leap (cm)" },
+  "editProfile.sprint": { he: "מהירות 20 מטר (שניות)", en: "20m Sprint (seconds)" },
+  
+  // Position & Style
+  "editProfile.primaryPosition": { he: "עמדה עיקרית", en: "Primary Position" },
+  "editProfile.secondaryPosition": { he: "עמדה משנית", en: "Secondary Position" },
+  "editProfile.dominantHand": { he: "יד דומיננטית", en: "Dominant Hand" },
+  "editProfile.selectPosition": { he: "בחר עמדה", en: "Select Position" },
+  "editProfile.selectHand": { he: "בחר יד", en: "Select Hand" },
+  "editProfile.pg": { he: "פוינט גארד", en: "Point Guard (PG)" },
+  "editProfile.sg": { he: "שוטינג גארד", en: "Shooting Guard (SG)" },
+  "editProfile.sf": { he: "סמול פורוורד", en: "Small Forward (SF)" },
+  "editProfile.pf": { he: "פאוור פורוורד", en: "Power Forward (PF)" },
+  "editProfile.c": { he: "סנטר", en: "Center (C)" },
+  "editProfile.right": { he: "ימין", en: "Right" },
+  "editProfile.left": { he: "שמאל", en: "Left" },
+  "editProfile.both": { he: "שתיים", en: "Both" },
+  
+  // Team & League
+  "editProfile.currentTeam": { he: "קבוצה נוכחית", en: "Current Team" },
+  "editProfile.league": { he: "ליגה", en: "League" },
+  
+  // Game Stats
+  "editProfile.ppg": { he: "ממוצע נקודות למשחק", en: "Points Per Game (PPG)" },
+  "editProfile.rpg": { he: "ממוצע ריבאונדים למשחק", en: "Rebounds Per Game (RPG)" },
+  "editProfile.apg": { he: "ממוצע אסיסטים למשחק", en: "Assists Per Game (APG)" },
+  "editProfile.threePt": { he: "אחוז שלוש (%)", en: "3-Point % (3P%)" },
+  "editProfile.ft": { he: "אחוז קו עונשין (%)", en: "Free Throw % (FT%)" },
+  
+  // About
+  "editProfile.topTraits": { he: "3 תכונות בולטות על המגרש", en: "3 Top On-Court Traits" },
+  "editProfile.highlightsLink": { he: "קישור לפלייליסט ביצועים", en: "Highlights Playlist Link" },
+  "editProfile.gpa": { he: "ממוצע בגרות/GPA", en: "GPA / Academic Average" },
+  "editProfile.comparisonPlayer": { he: "שחקן מודל לחיקוי", en: "Player Comparison" },
+  "editProfile.bioCoach": { he: "משפט קצר על עצמך למאמנים", en: "Bio for Coaches" },
 
   // Follow
   "follow.error": { he: "שגיאה", en: "Error" },
