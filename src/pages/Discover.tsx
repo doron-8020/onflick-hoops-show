@@ -1,14 +1,13 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { Search, X, UserPlus, UserCheck } from "lucide-react";
+import { Search, X, UserPlus, UserCheck, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
-import { useMute } from "@/contexts/MuteContext";
 import VideoCard from "@/components/VideoCard";
+import VideoThumbnail from "@/components/VideoThumbnail";
 import BottomNav from "@/components/BottomNav";
 import FeedHeader from "@/components/FeedHeader";
-import PullToRefresh from "@/components/PullToRefresh";
 
 interface VideoWithProfile {
   id: string;
@@ -41,7 +40,7 @@ interface PlayerProfile {
   followers_count: number;
 }
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 30;
 
 const PlayerCard = ({ player }: { player: PlayerProfile }) => {
   const { user } = useAuth();
@@ -102,16 +101,20 @@ const Discover = () => {
   const { t, isRTL } = useLanguage();
   const { user } = useAuth();
 
-  // TikTok-style feed state
+  // Grid state
   const [videos, setVideos] = useState<VideoWithProfile[]>([]);
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
-  // Search logic
+  // Full-screen feed state
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const feedRef = useRef<HTMLDivElement>(null);
+
+  // Search logic for players
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (query.trim().length >= 2) {
@@ -136,19 +139,17 @@ const Discover = () => {
     setSearching(false);
   };
 
-  // Fetch videos for vertical feed
-  const fetchVideos = useCallback(async (cursor?: string, append = false) => {
+  // Fetch trending videos for grid (sorted by views_count)
+  const fetchVideos = useCallback(async (offset = 0, append = false) => {
     if (!append) setLoading(true); else setLoadingMore(true);
     
-    let query = supabase
+    const { data, error } = await supabase
       .from("videos")
       .select("*, profiles!videos_user_id_fkey(display_name, avatar_url, position, team)")
+      .order("views_count", { ascending: false })
       .order("created_at", { ascending: false })
-      .limit(PAGE_SIZE);
+      .range(offset, offset + PAGE_SIZE - 1);
     
-    if (cursor) query = query.lt("created_at", cursor);
-    
-    const { data, error } = await query;
     if (!error && data) {
       const typed = data as unknown as VideoWithProfile[];
       setVideos((prev) => append ? [...prev, ...typed] : typed);
@@ -168,24 +169,31 @@ const Discover = () => {
     fetchVideos();
   }, [fetchVideos]);
 
-  const loadMore = useCallback(() => {
-    if (loadingMore || !hasMore || videos.length === 0) return;
-    const lastVideo = videos[videos.length - 1];
-    if (lastVideo?.created_at) fetchVideos(lastVideo.created_at, true);
-  }, [videos, loadingMore, hasMore, fetchVideos]);
-
-  // Intersection observer for auto-play and infinite scroll
+  // Infinite scroll for grid
   useEffect(() => {
-    const container = scrollRef.current;
+    const handleScroll = () => {
+      if (!gridRef.current || loadingMore || !hasMore) return;
+      const { scrollTop, scrollHeight, clientHeight } = gridRef.current;
+      if (scrollHeight - scrollTop - clientHeight < 500) {
+        fetchVideos(videos.length, true);
+      }
+    };
+    const container = gridRef.current;
+    container?.addEventListener("scroll", handleScroll);
+    return () => container?.removeEventListener("scroll", handleScroll);
+  }, [videos.length, loadingMore, hasMore, fetchVideos]);
+
+  // Full-screen feed: intersection observer for auto-play
+  useEffect(() => {
+    if (selectedIndex === null) return;
+    const container = feedRef.current;
     if (!container) return;
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const index = Number(entry.target.getAttribute("data-index"));
-          if (!isNaN(index)) {
-            setActiveIndex(index);
-            if (index >= videos.length - 3) loadMore();
-          }
+          if (!isNaN(index)) setActiveIndex(index);
         }
         const videoEl = entry.target.querySelector("video");
         if (!videoEl) return;
@@ -193,17 +201,27 @@ const Discover = () => {
         else videoEl.pause();
       });
     }, { root: container, threshold: 0.8 });
+
     const items = container.querySelectorAll("[data-video-card]");
     items.forEach((item) => observer.observe(item));
     return () => observer.disconnect();
-  }, [videos, loading, loadMore]);
+  }, [selectedIndex, videos]);
 
   const renderWindow = useMemo(() => {
     return new Set([Math.max(0, activeIndex - 1), activeIndex, Math.min(videos.length - 1, activeIndex + 1)]);
   }, [activeIndex, videos.length]);
 
-  const handleRefresh = async () => { setHasMore(true); await fetchVideos(); };
+  const openFullScreen = (index: number) => {
+    setSelectedIndex(index);
+    setActiveIndex(index);
+  };
+
+  const closeFullScreen = () => {
+    setSelectedIndex(null);
+  };
+
   const showSearch = query.trim().length >= 2;
+  const isFullScreen = selectedIndex !== null;
 
   return (
     <div className="relative min-h-screen bg-background">
@@ -211,7 +229,7 @@ const Discover = () => {
         <FeedHeader />
 
         {/* Search overlay */}
-        {showSearch && (
+        {showSearch && !isFullScreen && (
           <div className="fixed inset-0 z-40 bg-background pt-14">
             <div className="mx-auto max-w-lg px-4">
               <div className="flex items-center gap-3 rounded-xl bg-secondary px-4 py-3 mb-4">
@@ -254,50 +272,101 @@ const Discover = () => {
           </div>
         )}
 
-        {/* TikTok-style vertical feed */}
-        <PullToRefresh onRefresh={handleRefresh} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide relative">
-          <div ref={scrollRef} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide">
+        {/* Full-screen vertical feed overlay */}
+        {isFullScreen && (
+          <div className="fixed inset-0 z-50 bg-background">
+            <button
+              onClick={closeFullScreen}
+              className="absolute top-4 left-4 z-50 flex items-center gap-2 rounded-full bg-background/80 backdrop-blur-sm px-4 py-2 text-sm font-medium text-foreground shadow-lg"
+            >
+              <ArrowRight className={`h-4 w-4 ${isRTL ? "" : "rotate-180"}`} />
+              {t("discover.backToGrid")}
+            </button>
+            <div ref={feedRef} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide">
+              {videos.map((video, i) => (
+                <div key={video.id} data-video-card data-index={i} className="h-[100dvh] w-full snap-start snap-always">
+                  {renderWindow.has(i) ? (
+                    <VideoCard video={video} isLiked={likedIds.has(video.id)} />
+                  ) : (
+                    <div className="h-full w-full bg-background flex items-center justify-center">
+                      <div className="animate-pulse rounded-full gradient-fire p-4">
+                        <span className="font-display text-xl text-primary-foreground">🏀</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Grid view (main) */}
+        {!isFullScreen && (
+          <div ref={gridRef} className="pt-14 pb-20 h-[100dvh] overflow-y-auto scrollbar-hide">
+            {/* Search bar */}
+            <div className="px-2 py-3">
+              <div
+                onClick={() => document.getElementById("search-input")?.focus()}
+                className="flex items-center gap-3 rounded-xl bg-secondary px-4 py-3 cursor-text"
+              >
+                <Search className="h-5 w-5 text-muted-foreground shrink-0" />
+                <input
+                  id="search-input"
+                  type="text"
+                  placeholder={t("discover.searchPlaceholder")}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  dir={isRTL ? "rtl" : "ltr"}
+                  className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Trending header */}
+            <div className="px-3 pb-2">
+              <h2 className="text-lg font-bold text-foreground">{t("discover.trending")}</h2>
+            </div>
+
+            {/* Video grid */}
             {loading ? (
-              <div className="h-[100dvh] flex flex-col items-center justify-center gap-4">
+              <div className="flex items-center justify-center py-20">
                 <div className="animate-pulse-glow rounded-full gradient-fire p-6">
                   <span className="font-display text-2xl text-primary-foreground">🏀</span>
                 </div>
-                <p className="text-sm text-muted-foreground animate-pulse">{t("feed.loading")}</p>
               </div>
             ) : videos.length > 0 ? (
               <>
-                {videos.map((video, i) => (
-                  <div key={video.id} data-video-card data-index={i} className="h-[100dvh] w-full snap-start snap-always">
-                    {renderWindow.has(i) ? (
-                      <VideoCard video={video} isLiked={likedIds.has(video.id)} />
-                    ) : (
-                      <div className="h-full w-full bg-background flex items-center justify-center">
-                        <div className="animate-pulse rounded-full gradient-fire p-4">
-                          <span className="font-display text-xl text-primary-foreground">🏀</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                <div className="grid grid-cols-3 gap-[2px] px-[2px]">
+                  {videos.map((video, index) => (
+                    <VideoThumbnail
+                      key={video.id}
+                      thumbnailUrl={video.thumbnail_url}
+                      videoUrl={video.video_url}
+                      viewsCount={video.views_count}
+                      mediaType={video.media_type}
+                      onClick={() => openFullScreen(index)}
+                    />
+                  ))}
+                </div>
                 {loadingMore && (
-                  <div className="h-20 flex items-center justify-center">
+                  <div className="flex justify-center py-6">
                     <div className="h-5 w-5 rounded-full border-2 border-primary border-t-transparent animate-spin" />
                   </div>
                 )}
               </>
             ) : (
-              <div className="h-[100dvh] flex flex-col items-center justify-center gap-4 px-8 text-center">
-                <div className="rounded-full bg-secondary p-6 mb-2">
+              <div className="flex flex-col items-center justify-center py-20 px-8 text-center">
+                <div className="rounded-full bg-secondary p-6 mb-4">
                   <Search className="h-10 w-10 text-muted-foreground" />
                 </div>
                 <p className="text-lg font-semibold text-foreground">{t("feed.noVideosYet")}</p>
               </div>
             )}
           </div>
-        </PullToRefresh>
+        )}
       </div>
 
-      <BottomNav />
+      {!isFullScreen && <BottomNav />}
     </div>
   );
 };
