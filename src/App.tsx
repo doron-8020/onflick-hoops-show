@@ -21,6 +21,8 @@ import RoleOnboarding from "./pages/RoleOnboarding";
 import Blog from "./pages/Blog";
 import Onflick from "./pages/Onflick";
 import NotFound from "./pages/NotFound";
+import Terms from "./pages/Terms";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AppShell from "./components/AppShell";
 
 const queryClient = new QueryClient();
