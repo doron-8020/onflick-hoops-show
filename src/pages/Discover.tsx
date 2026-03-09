@@ -70,7 +70,6 @@ const PlayerCard = ({ player }: { player: PlayerProfile }) => {
 };
 
 const Discover = () => {
-  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [players, setPlayers] = useState<PlayerProfile[]>([]);
   const [searching, setSearching] = useState(false);
