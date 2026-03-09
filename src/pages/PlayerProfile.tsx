@@ -337,6 +337,15 @@ const PlayerAboutSection = ({ profile }: { profile: any }) => {
         { label: t("editProfile.bioCoach"), value: profile.bio, isLong: true },
       ],
     },
+    {
+      title: t("editProfile.socialMedia"),
+      items: [
+        { label: t("editProfile.instagram"), value: profile.social_instagram, isLink: true, linkPrefix: "https://instagram.com/" },
+        { label: t("editProfile.tiktok"), value: profile.social_tiktok, isLink: true, linkPrefix: "https://tiktok.com/@" },
+        { label: t("editProfile.facebook"), value: profile.social_facebook, isLink: true, linkPrefix: "https://facebook.com/" },
+        { label: t("editProfile.youtube"), value: profile.social_youtube, isLink: true, linkPrefix: "https://youtube.com/@" },
+      ],
+    },
   ];
 
   const hasAnyData = sections.some((s) => s.items.some((i) => i.value));
