@@ -260,7 +260,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </div>
 
       {/* Bottom info */}
-      <div className="absolute bottom-20 start-0 end-16 p-4 safe-bottom">
+      <div className="absolute bottom-20 start-14 end-4 p-4 safe-bottom">
         <div className="mb-3 flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <span
