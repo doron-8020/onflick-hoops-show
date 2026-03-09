@@ -134,22 +134,37 @@ const Settings = () => {
 
   const Row = ({ icon: Icon, iconColor, label, desc, right, onClick, danger }: {
     icon: typeof User; iconColor?: string; label: string; desc?: string; right?: React.ReactNode; onClick?: () => void; danger?: boolean;
-  }) => (
-    <button
-      onClick={onClick}
-      disabled={!onClick}
-      className={`w-full flex items-center gap-3 px-4 py-3.5 transition-colors ${onClick ? "hover:bg-secondary/50" : ""} ${danger ? "text-destructive" : "text-foreground"}`}
-    >
-      <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${danger ? "bg-destructive/10" : iconColor || "bg-primary/10"}`}>
-        <Icon className={`h-4 w-4 ${danger ? "text-destructive" : iconColor ? "" : "text-primary"}`} />
+  }) => {
+    const content = (
+      <>
+        <div className={`h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 ${danger ? "bg-destructive/10" : iconColor || "bg-primary/10"}`}>
+          <Icon className={`h-4 w-4 ${danger ? "text-destructive" : iconColor ? "" : "text-primary"}`} />
+        </div>
+        <div className="flex-1 min-w-0 text-start">
+          <p className={`text-sm font-medium ${danger ? "text-destructive" : "text-foreground"}`}>{label}</p>
+          {desc && <p className="text-[11px] text-muted-foreground">{desc}</p>}
+        </div>
+        {right || (onClick && <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 rtl:rotate-180" />)}
+      </>
+    );
+
+    if (onClick) {
+      return (
+        <button
+          onClick={onClick}
+          className={`w-full flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-secondary/50 ${danger ? "text-destructive" : "text-foreground"}`}
+        >
+          {content}
+        </button>
+      );
+    }
+
+    return (
+      <div className={`w-full flex items-center gap-3 px-4 py-3.5 ${danger ? "text-destructive" : "text-foreground"}`}>
+        {content}
       </div>
-      <div className="flex-1 min-w-0 text-start">
-        <p className={`text-sm font-medium ${danger ? "text-destructive" : "text-foreground"}`}>{label}</p>
-        {desc && <p className="text-[11px] text-muted-foreground">{desc}</p>}
-      </div>
-      {right || (onClick && <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />)}
-    </button>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen bg-background pb-24">
