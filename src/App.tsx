@@ -52,6 +52,8 @@ const App = () => (
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/onboarding/role" element={<RoleOnboarding />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </AppShell>

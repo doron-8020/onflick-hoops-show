@@ -304,6 +304,7 @@ const Settings = () => {
       </div>
 
       <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} profile={profile} onSaved={fetchProfile} />
+      {user && <ChangeEmailDialog open={emailOpen} onOpenChange={setEmailOpen} currentEmail={user.email || ""} />}
       <BottomNav />
     </div>
   );
