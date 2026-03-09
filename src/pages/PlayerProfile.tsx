@@ -16,12 +16,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
 import BottomNav from "@/components/BottomNav";
 
-type TabKey = "videos" | "private" | "saved";
+type TabKey = "videos" | "private" | "saved" | "about";
 
 const TABS: { key: TabKey; icon: typeof Grid3X3 }[] = [
   { key: "videos", icon: Grid3X3 },
   { key: "private", icon: Lock },
   { key: "saved", icon: Bookmark },
+  { key: "about", icon: User },
 ];
 
 const formatCount = (n: number) => {
