@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
-import { Heart, MessageCircle, UserPlus, Bell, Trash2 } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, UserPlus, Bell, Trash2 } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 
 interface Notification {
@@ -127,7 +127,10 @@ const Notifications = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <div className="px-4 pt-14 pb-4">
+      <div className="px-4 pt-14 pb-4 flex items-center gap-3">
+        <button onClick={() => navigate(-1)} className="p-1">
+          <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />
+        </button>
         <h1 className="font-display text-3xl text-foreground">{t("notifications.title")}</h1>
       </div>
 

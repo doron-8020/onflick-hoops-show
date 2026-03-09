@@ -7,6 +7,7 @@ import {
   Lock,
   MoreHorizontal,
   Play,
+  User,
   UserCheck,
   UserPlus,
 } from "lucide-react";
@@ -16,12 +17,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
 import BottomNav from "@/components/BottomNav";
 
-type TabKey = "videos" | "private" | "saved";
+type TabKey = "videos" | "private" | "saved" | "about";
 
 const TABS: { key: TabKey; icon: typeof Grid3X3 }[] = [
   { key: "videos", icon: Grid3X3 },
   { key: "private", icon: Lock },
   { key: "saved", icon: Bookmark },
+  { key: "about", icon: User },
 ];
 
 const formatCount = (n: number) => {
@@ -46,6 +48,7 @@ const PlayerProfile = () => {
     videos: null,
     private: null,
     saved: null,
+    about: null,
   });
   const tabBarRef = useRef<HTMLDivElement>(null);
 
@@ -272,9 +275,102 @@ const PlayerProfile = () => {
             <p className="text-foreground font-semibold">{t("profile.saved")}</p>
           </div>
         )}
+        {activeTab === "about" && profile && <PlayerAboutSection profile={profile} />}
       </div>
 
       <BottomNav />
+    </div>
+  );
+};
+
+const PlayerAboutSection = ({ profile }: { profile: any }) => {
+  const { t } = useLanguage();
+
+  const sections = [
+    {
+      title: t("editProfile.personal"),
+      items: [
+        { label: t("editProfile.dob"), value: profile.dob ? new Date(profile.dob).toLocaleDateString() : null },
+        { label: t("editProfile.graduationYear"), value: profile.graduation_year },
+        { label: t("editProfile.primaryPosition"), value: profile.position },
+        { label: t("editProfile.secondaryPosition"), value: profile.secondary_position },
+        { label: t("editProfile.dominantHand"), value: profile.dominant_hand },
+        { label: t("editProfile.currentTeam"), value: profile.team },
+        { label: t("editProfile.league"), value: profile.league },
+      ],
+    },
+    {
+      title: t("editProfile.physical"),
+      items: [
+        { label: t("editProfile.height"), value: profile.height_cm ? `${profile.height_cm} cm` : null },
+        { label: t("editProfile.weight"), value: profile.weight_kg ? `${profile.weight_kg} kg` : null },
+        { label: t("editProfile.wingspan"), value: profile.wingspan_cm ? `${profile.wingspan_cm} cm` : null },
+        { label: t("editProfile.verticalLeap"), value: profile.vertical_leap_cm ? `${profile.vertical_leap_cm} cm` : null },
+        { label: t("editProfile.sprint"), value: profile.sprint_20m_sec ? `${profile.sprint_20m_sec} sec` : null },
+      ],
+    },
+    {
+      title: t("editProfile.stats"),
+      items: [
+        { label: t("editProfile.ppg"), value: profile.ppg },
+        { label: t("editProfile.rpg"), value: profile.rpg },
+        { label: t("editProfile.apg"), value: profile.apg },
+        { label: t("editProfile.threePt"), value: profile.three_pt_pct ? `${profile.three_pt_pct}%` : null },
+        { label: t("editProfile.ft"), value: profile.ft_pct ? `${profile.ft_pct}%` : null },
+      ],
+    },
+    {
+      title: t("editProfile.about"),
+      items: [
+        { label: t("editProfile.topTraits"), value: profile.top_traits },
+        { label: t("editProfile.highlightsLink"), value: profile.highlights_link, isLink: true },
+        { label: t("editProfile.gpa"), value: profile.gpa },
+        { label: t("editProfile.comparisonPlayer"), value: profile.comparison_player },
+        { label: t("editProfile.bioCoach"), value: profile.bio, isLong: true },
+      ],
+    },
+  ];
+
+  const hasAnyData = sections.some((s) => s.items.some((i) => i.value));
+
+  if (!hasAnyData) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 px-8">
+        <div className="rounded-full border-2 border-muted-foreground/30 p-5 mb-4">
+          <User className="h-8 w-8 text-muted-foreground/50" />
+        </div>
+        <p className="text-foreground font-semibold mb-1">{t("profile.noDataYet")}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="px-4 py-6 space-y-6">
+      {sections.map((section) => {
+        const items = section.items.filter((i) => i.value);
+        if (items.length === 0) return null;
+        return (
+          <div key={section.title} className="space-y-3">
+            <h3 className="font-display text-lg text-foreground tracking-wide border-b border-border pb-2">
+              {section.title}
+            </h3>
+            <div className="grid gap-3">
+              {items.map((item) => (
+                <div key={item.label} className="bg-card rounded-lg border border-border p-3 space-y-1">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">{item.label}</p>
+                  {item.isLink && item.value ? (
+                    <a href={String(item.value)} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline break-all">
+                      {item.value}
+                    </a>
+                  ) : (
+                    <p className={`text-foreground ${item.isLong ? "text-sm leading-relaxed" : "font-semibold"}`}>{item.value}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };

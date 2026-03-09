@@ -235,6 +235,17 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           </button>
         )}
 
+        {video.user_id && (
+          <button
+            onClick={() => navigate(`/player/${video.user_id}`)}
+            className="rounded-lg bg-destructive/90 px-2 py-1.5 shadow-lg backdrop-blur-sm"
+          >
+            <span className="text-[11px] font-bold text-destructive-foreground leading-none">
+              {t("feed.playerData")}
+            </span>
+          </button>
+        )}
+
         <button onClick={handleLike} className="flex flex-col items-center gap-1">
           <motion.div
             whileTap={{ scale: 1.3 }}
