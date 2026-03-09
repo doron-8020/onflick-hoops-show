@@ -42,7 +42,9 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [activeTab, setActiveTab] = useState<FeedTab>("foryou");
+  const [activeTab, setActiveTab] = useState<FeedTab>(() =>
+    new URLSearchParams(window.location.search).get("tab") === "following" ? "following" : "foryou"
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const { user } = useAuth();
   const { t } = useLanguage();
