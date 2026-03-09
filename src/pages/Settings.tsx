@@ -168,7 +168,7 @@ const Settings = () => {
         {user && (
           <Section title={t("settings.account")}>
             <Row icon={User} label={t("settings.editProfile")} desc={t("settings.editProfileDesc")} onClick={() => setEditOpen(true)} />
-            <Row icon={Mail} label={t("settings.changeEmail")} desc={user.email || ""} onClick={() => toast.info(language === "he" ? "בקרוב" : "Coming soon")} />
+            <Row icon={Mail} label={t("settings.changeEmail")} desc={user.email || ""} onClick={() => setEmailOpen(true)} />
           </Section>
         )}
 
