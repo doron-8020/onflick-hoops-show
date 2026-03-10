@@ -8,10 +8,13 @@ import {
   Play,
   User,
   BadgeCheck,
-  BarChart3,
+  BarChart2,
   Repeat2,
   Plus,
   Images,
+  Heart,
+  Share2,
+  Pencil,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,7 +23,7 @@ import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
 import EditProfileDialog from "@/components/EditProfileDialog";
 
-type TabKey = "videos" | "repost" | "private" | "saved" | "about";
+type TabKey = "liked" | "videos" | "repost" | "private" | "saved" | "about";
 
 const formatCount = (n: number) => {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
@@ -28,7 +31,7 @@ const formatCount = (n: number) => {
   return n.toString();
 };
 
-/* ───── Grid cell shared between videos / saved / repost tabs ───── */
+/* ───── Grid cell ───── */
 const GridCell = ({
   video,
   index,
@@ -38,6 +41,7 @@ const GridCell = ({
   index: number;
   onClick: () => void;
 }) => {
+  const { t } = useLanguage();
   const isGallery = video.media_type === "gallery";
   const isImage = video.media_type === "image";
 
@@ -57,24 +61,41 @@ const GridCell = ({
         <img src={thumbSrc} className="h-full w-full object-cover" alt="" loading="lazy" />
       ) : (
         <div className="h-full w-full bg-secondary flex items-center justify-center">
-          <Play className="h-6 w-6 text-primary-foreground/70" />
+          <Play className="h-3 w-3 text-white" />
         </div>
       )}
 
       {/* gallery badge */}
       {isGallery && (
         <div className="absolute top-1.5 end-1.5 pointer-events-none">
-          <Images className="h-3.5 w-3.5 text-primary-foreground drop-shadow-md" />
+          <Images className="h-3.5 w-3.5 text-white drop-shadow-md" />
+        </div>
+      )}
+
+      {/* pinned badge */}
+      {video.is_pinned && (
+        <div
+          className="absolute top-1.5 end-1.5 pointer-events-none rounded-[3px] px-1.5 py-0.5"
+          style={{ background: "#FF4D6A", fontSize: 11, fontWeight: 700 }}
+        >
+          <span className="text-white">{t("profile.pinned") || "Pinned"}</span>
         </div>
       )}
 
       <div className="absolute bottom-1 start-1 flex items-center gap-0.5 pointer-events-none">
-        <Play className="h-3 w-3 text-primary-foreground" fill="currentColor" />
-        <span className="text-[10px] font-semibold text-primary-foreground drop-shadow-md">
+        <Play className="h-3 w-3 text-white" fill="currentColor" />
+        <span
+          className="text-white"
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            textShadow: "0px 1px 3px rgba(0,0,0,0.8)",
+          }}
+        >
           {formatCount(video.views_count || 0)}
         </span>
       </div>
-      <div className="absolute inset-0 bg-background/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
     </div>
   );
 };
@@ -87,6 +108,7 @@ const Profile = () => {
   const [videos, setVideos] = useState<any[]>([]);
   const [savedVideos, setSavedVideos] = useState<any[]>([]);
   const [repostedVideos, setRepostedVideos] = useState<any[]>([]);
+  const [likedVideos, setLikedVideos] = useState<any[]>([]);
   const [editOpen, setEditOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("videos");
   const [bioExpanded, setBioExpanded] = useState(false);
@@ -94,6 +116,7 @@ const Profile = () => {
   const [profileViews, setProfileViews] = useState<{ coach: number; scout: number } | null>(null);
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
+    liked: null,
     videos: null,
     repost: null,
     private: null,
@@ -103,6 +126,7 @@ const Profile = () => {
   const tabBarRef = useRef<HTMLDivElement>(null);
 
   const TABS: { key: TabKey; icon: typeof Grid3X3; label: string }[] = [
+    { key: "liked", icon: Heart, label: "Liked" },
     { key: "videos", icon: Grid3X3, label: "Videos" },
     { key: "repost", icon: Repeat2, label: "Reposts" },
     { key: "private", icon: Lock, label: t("profile.privateVideos") },
@@ -116,6 +140,7 @@ const Profile = () => {
     fetchVideos();
     fetchSavedVideos();
     fetchRepostedVideos();
+    fetchLikedVideos();
     fetchProfileViewStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
@@ -162,6 +187,16 @@ const Profile = () => {
     setRepostedVideos((data || []).map((r: any) => r.videos).filter(Boolean));
   };
 
+  const fetchLikedVideos = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("video_likes")
+      .select("video_id, videos(*)")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    setLikedVideos((data || []).map((l: any) => l.videos).filter(Boolean));
+  };
+
   const fetchProfileViewStats = async () => {
     if (!user) return;
     try {
@@ -183,7 +218,10 @@ const Profile = () => {
     if (!el || !bar) return { left: 0, width: 0 };
     const barRect = bar.getBoundingClientRect();
     const elRect = el.getBoundingClientRect();
-    return { left: elRect.left - barRect.left, width: elRect.width };
+    // Center underline on icon only (22px)
+    const iconW = 22;
+    const center = elRect.left + elRect.width / 2 - barRect.left;
+    return { left: center - iconW / 2, width: iconW };
   }, [activeTab]);
 
   if (authLoading) {
@@ -222,39 +260,45 @@ const Profile = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-black pb-24">
       <div className="mx-auto max-w-lg">
         {/* ── Header ── */}
         <div
           className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-300 ${
-            scrolled ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-card" : "bg-transparent"
+            scrolled ? "bg-black/95 backdrop-blur-lg border-b border-white/10 shadow-card" : "bg-transparent"
           }`}
         >
-          <button onClick={() => navigate("/discover")} className="p-1">
-            <UserPlus className="h-5 w-5 text-foreground" />
-          </button>
+          <div className="flex items-center gap-4">
+            <button onClick={() => navigate(-1 as any)} className="p-1">
+              <Share2 className="h-5 w-5 text-white" />
+            </button>
+            <button onClick={() => navigate("/discover")} className="p-1">
+              <UserPlus className="h-5 w-5 text-white" />
+            </button>
+          </div>
           <h1
-            className={`font-display text-lg text-foreground tracking-wide transition-opacity duration-300 ${
+            className={`text-lg text-white tracking-normal transition-opacity duration-300 ${
               scrolled ? "opacity-100" : "opacity-0"
             }`}
+            style={{ fontSize: 18, fontWeight: 700 }}
           >
             {displayName}
           </h1>
           <button onClick={() => navigate("/settings")} className="p-1">
-            <Settings className="h-5 w-5 text-foreground" />
+            <Settings className="h-5 w-5 text-white" />
           </button>
         </div>
 
         {/* ── Avatar + Info ── */}
-        <div className="flex flex-col items-center px-4 pt-16 pb-2">
-          {/* Avatar with change-photo button */}
-          <div className="relative mb-3">
-            <div className="h-24 w-24 rounded-full overflow-hidden ring-2 ring-primary/30 ring-offset-2 ring-offset-background">
+        <div className="flex flex-col items-center px-4" style={{ paddingTop: 68 }}>
+          {/* Avatar */}
+          <div className="relative" style={{ marginTop: 16, marginBottom: 12 }}>
+            <div className="h-24 w-24 rounded-full overflow-hidden ring-2 ring-white/20 ring-offset-2 ring-offset-black">
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
               ) : (
                 <div className="h-full w-full gradient-fire flex items-center justify-center">
-                  <span className="font-display text-4xl text-primary-foreground">
+                  <span className="font-display text-4xl text-white">
                     {displayName.charAt(0).toUpperCase()}
                   </span>
                 </div>
@@ -263,79 +307,143 @@ const Profile = () => {
             {/* Change photo button */}
             <button
               onClick={() => setEditOpen(true)}
-              className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-6 w-6 rounded-full flex items-center justify-center border-2 border-background"
-              style={{ backgroundColor: "#20D5EC" }}
+              className="absolute flex items-center justify-center rounded-full"
+              style={{
+                bottom: -4,
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: 24,
+                height: 24,
+                background: "#20D5EC",
+                border: "2px solid black",
+                zIndex: 10,
+              }}
               aria-label="Change photo"
             >
-              <Plus className="h-3.5 w-3.5 text-white" strokeWidth={3} />
+              <Plus className="text-white" style={{ width: 14, height: 14 }} strokeWidth={3} />
             </button>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <h2 className="font-display text-2xl text-foreground tracking-wide">{displayName}</h2>
+          {/* Name */}
+          <div className="flex items-center gap-1.5" style={{ marginTop: 12 }}>
+            <h2
+              className="text-white"
+              style={{ fontSize: 18, fontWeight: 700, letterSpacing: "normal" }}
+            >
+              {displayName}
+            </h2>
             {profile?.verified && <BadgeCheck className="h-5 w-5 text-primary" fill="currentColor" />}
           </div>
-          <p className="text-sm text-muted-foreground mb-2">{handle}</p>
 
+          {/* Handle */}
+          <p style={{ fontSize: 14, marginTop: 2 }} className="text-white/60">
+            {handle}
+          </p>
+
+          {/* Profile views */}
           {profileViews && (profileViews.coach > 0 || profileViews.scout > 0) && (
-            <div className="mb-2 flex items-center gap-3 text-xs text-muted-foreground">
+            <div className="flex items-center gap-3 text-xs text-white/50" style={{ marginTop: 8 }}>
               <span>
-                {t("profile.coachViews")}: <span className="text-foreground font-semibold">{formatCount(profileViews.coach)}</span>
+                {t("profile.coachViews")}: <span className="text-white font-semibold">{formatCount(profileViews.coach)}</span>
               </span>
-              <span className="text-muted-foreground/50">•</span>
+              <span className="text-white/30">•</span>
               <span>
-                {t("profile.scoutViews")}: <span className="text-foreground font-semibold">{formatCount(profileViews.scout)}</span>
+                {t("profile.scoutViews")}: <span className="text-white font-semibold">{formatCount(profileViews.scout)}</span>
               </span>
             </div>
           )}
 
-          {/* Stats with dividers */}
-          <div className="flex items-center mb-4">
+          {/* Stats */}
+          <div className="flex items-center" style={{ marginTop: 16, marginBottom: 16, gap: 0 }}>
             {stats.map((stat, i) => (
               <div key={stat.label} className="flex items-center">
-                {i > 0 && <div className="h-6 w-px bg-foreground/20 mx-1" />}
+                {i > 0 && (
+                  <div
+                    style={{
+                      width: 1,
+                      height: 24,
+                      background: "rgba(255,255,255,0.2)",
+                      alignSelf: "center",
+                      margin: "0 16px",
+                    }}
+                  />
+                )}
                 <div
-                  className={`flex flex-col items-center px-6 ${stat.onClick ? "cursor-pointer active:opacity-70" : ""}`}
+                  className={`flex flex-col items-center ${stat.onClick ? "cursor-pointer active:opacity-70" : ""}`}
+                  style={{ minWidth: 56 }}
                   onClick={stat.onClick}
                 >
-                  <span className="font-display text-xl text-foreground leading-tight">{formatCount(stat.value)}</span>
-                  <span className="text-xs text-muted-foreground">{stat.label}</span>
+                  <span className="text-white" style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.2 }}>
+                    {formatCount(stat.value)}
+                  </span>
+                  <span className="text-white/60" style={{ fontSize: 12 }}>{stat.label}</span>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="flex gap-2 w-full max-w-xs mb-4">
+          {/* Action buttons */}
+          <div className="flex w-full max-w-xs" style={{ gap: 8, marginBottom: 12, marginTop: 0 }}>
             <button
               onClick={() => setEditOpen(true)}
               data-edit-profile
-              className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground transition-colors hover:bg-secondary/80"
+              className="flex-1 flex items-center justify-center text-white"
+              style={{
+                height: 36,
+                borderRadius: 6,
+                background: "#2A2A2A",
+                fontSize: 14,
+                fontWeight: 600,
+                gap: 6,
+              }}
             >
+              <Pencil className="text-white" style={{ width: 14, height: 14 }} />
               {t("profile.editProfile")}
             </button>
-            <button className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground transition-colors hover:bg-secondary/80">
+            <button
+              className="flex-1 flex items-center justify-center text-white"
+              style={{
+                height: 36,
+                borderRadius: 6,
+                background: "#2A2A2A",
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            >
               {t("profile.shareProfile")}
             </button>
-            <button onClick={() => navigate("/analytics")} className="rounded-md bg-secondary px-3 py-2 transition-colors hover:bg-secondary/80" title="Analytics">
-              <BarChart3 className="h-4 w-4 text-foreground" />
+            <button
+              onClick={() => navigate("/analytics")}
+              className="flex items-center justify-center text-white"
+              style={{
+                width: 40,
+                height: 36,
+                borderRadius: 6,
+                background: "#2A2A2A",
+              }}
+              title="Analytics"
+            >
+              <BarChart2 className="text-white" style={{ width: 18, height: 18 }} />
             </button>
           </div>
 
+          {/* Bio / position */}
           {(profile?.bio || profile?.position || profile?.team) && (
-            <div className="w-full max-w-xs text-center space-y-1 mb-2">
+            <div className="w-full max-w-xs text-center space-y-1" style={{ marginTop: 8, marginBottom: 12 }}>
               {profile?.position && (
-                <p className="text-xs font-semibold text-foreground">
+                <p className="text-white" style={{ fontSize: 13, fontWeight: 600 }}>
                   {profile.position}
                   {profile.team ? ` · ${profile.team}` : ""}
                 </p>
               )}
               {profile?.bio && (
-                <p className="text-sm text-muted-foreground leading-snug">
+                <p style={{ fontSize: 14, lineHeight: 1.4, color: "rgba(255,255,255,0.9)" }}>
                   {bioExpanded || profile.bio.length <= 80 ? profile.bio : `${profile.bio.slice(0, 80)}...`}
                   {profile.bio.length > 80 && (
                     <button
                       onClick={() => setBioExpanded(!bioExpanded)}
-                      className="text-foreground font-semibold ms-1"
+                      className="ms-1"
+                      style={{ fontWeight: 600, color: "white" }}
                     >
                       {bioExpanded ? t("profile.bioLess") : t("profile.bioMore")}
                     </button>
@@ -347,7 +455,15 @@ const Profile = () => {
         </div>
 
         {/* ── Tabs ── */}
-        <div ref={tabBarRef} className="relative flex border-b border-border sticky top-[52px] z-40 bg-background">
+        <div
+          ref={tabBarRef}
+          className="relative flex sticky top-[52px] z-40"
+          style={{
+            background: "black",
+            borderBottom: "1px solid rgba(255,255,255,0.1)",
+            marginTop: 16,
+          }}
+        >
           {TABS.map((tab) => {
             const isActive = activeTab === tab.key;
             return (
@@ -357,29 +473,53 @@ const Profile = () => {
                   tabRefs.current[tab.key] = el;
                 }}
                 onClick={() => setActiveTab(tab.key)}
-                className="flex-1 flex justify-center py-3 transition-colors"
+                className="flex-1 flex justify-center transition-colors"
+                style={{ paddingTop: 10, paddingBottom: 10 }}
                 aria-label={tab.label}
               >
                 <tab.icon
-                  className={`h-5 w-5 transition-colors duration-200 ${
-                    isActive ? "text-foreground" : "text-muted-foreground"
-                  }`}
+                  style={{
+                    width: 22,
+                    height: 22,
+                    color: "white",
+                    opacity: isActive ? 1 : 0.45,
+                    transition: "opacity 0.2s",
+                  }}
                 />
               </button>
             );
           })}
           <div
-            className="absolute bottom-0 h-0.5 bg-foreground transition-all duration-300 ease-out"
-            style={{ left: underlineStyle.left, width: underlineStyle.width }}
+            className="absolute bottom-0 bg-white transition-all duration-300 ease-out"
+            style={{ left: underlineStyle.left, width: underlineStyle.width, height: 2 }}
           />
         </div>
 
         {/* ── Tab content ── */}
         <div className="min-h-[40vh]">
+          {activeTab === "liked" && (
+            <>
+              {likedVideos.length > 0 ? (
+                <div className="grid grid-cols-3" style={{ gap: 1.5 }}>
+                  {likedVideos.map((video, index) => (
+                    <GridCell
+                      key={video.id}
+                      video={video}
+                      index={index}
+                      onClick={() => navigate(`/profile/feed?start=${index}`, { state: { videos: likedVideos } })}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <EmptyTabState icon={Heart} title="Liked" subtitle="No liked videos yet" />
+              )}
+            </>
+          )}
+
           {activeTab === "videos" && (
             <>
               {videos.length > 0 ? (
-                <div className="grid grid-cols-3 gap-px">
+                <div className="grid grid-cols-3" style={{ gap: 1.5 }}>
                   {videos.map((video, index) => (
                     <GridCell
                       key={video.id}
@@ -398,7 +538,7 @@ const Profile = () => {
           {activeTab === "repost" && (
             <>
               {repostedVideos.length > 0 ? (
-                <div className="grid grid-cols-3 gap-px">
+                <div className="grid grid-cols-3" style={{ gap: 1.5 }}>
                   {repostedVideos.map((video, index) => (
                     <GridCell
                       key={video.id}
@@ -421,7 +561,7 @@ const Profile = () => {
           {activeTab === "saved" && (
             <>
               {savedVideos.length > 0 ? (
-                <div className="grid grid-cols-3 gap-px">
+                <div className="grid grid-cols-3" style={{ gap: 1.5 }}>
                   {savedVideos.map((video, index) => (
                     <GridCell
                       key={video.id}
@@ -452,11 +592,11 @@ const EmptyTabState = forwardRef<
   { icon: typeof Grid3X3; title: string; subtitle: string }
 >(({ icon: Icon, title, subtitle }, ref) => (
   <div ref={ref} className="flex flex-col items-center justify-center py-20 px-8">
-    <div className="rounded-full border-2 border-muted-foreground/30 p-5 mb-4">
-      <Icon className="h-8 w-8 text-muted-foreground/50" />
+    <div className="rounded-full border-2 border-white/20 p-5 mb-4">
+      <Icon className="h-8 w-8 text-white/40" />
     </div>
-    <p className="text-foreground font-semibold mb-1">{title}</p>
-    <p className="text-sm text-muted-foreground text-center">{subtitle}</p>
+    <p className="text-white font-semibold mb-1">{title}</p>
+    <p className="text-sm text-white/50 text-center">{subtitle}</p>
   </div>
 ));
 EmptyTabState.displayName = "EmptyTabState";
@@ -514,14 +654,14 @@ const AboutMeSection = ({ profile }: { profile: any }) => {
   if (!hasAnyData) {
     return (
       <div className="flex flex-col items-center justify-center py-20 px-8">
-        <div className="rounded-full border-2 border-muted-foreground/30 p-5 mb-4">
-          <User className="h-8 w-8 text-muted-foreground/50" />
+        <div className="rounded-full border-2 border-white/20 p-5 mb-4">
+          <User className="h-8 w-8 text-white/40" />
         </div>
-        <p className="text-foreground font-semibold mb-1">{t("profile.noDataYet")}</p>
-        <p className="text-sm text-muted-foreground text-center">{t("profile.fillProfile")}</p>
+        <p className="text-white font-semibold mb-1">{t("profile.noDataYet")}</p>
+        <p className="text-sm text-white/50 text-center">{t("profile.fillProfile")}</p>
         <button
           onClick={() => document.querySelector<HTMLButtonElement>("[data-edit-profile]")?.click()}
-          className="mt-4 rounded-xl gradient-fire px-6 py-2 text-sm font-bold text-primary-foreground shadow-glow"
+          className="mt-4 rounded-xl gradient-fire px-6 py-2 text-sm font-bold text-white shadow-glow"
         >
           {t("profile.editProfile")}
         </button>
@@ -537,13 +677,13 @@ const AboutMeSection = ({ profile }: { profile: any }) => {
 
         return (
           <div key={section.title} className="space-y-3">
-            <h3 className="font-display text-lg text-foreground tracking-wide border-b border-border pb-2">
+            <h3 className="text-lg text-white tracking-wide border-b border-white/10 pb-2" style={{ fontWeight: 700 }}>
               {section.title}
             </h3>
             <div className="grid gap-3">
               {sectionItems.map((item) => (
-                <div key={item.label} className="bg-card rounded-lg border border-border p-3 space-y-1">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide">{item.label}</p>
+                <div key={item.label} className="rounded-lg border border-white/10 p-3 space-y-1" style={{ background: "#1A1A1A" }}>
+                  <p className="text-xs text-white/50 uppercase tracking-wide">{item.label}</p>
                   {item.isLink && item.value ? (
                     <a
                       href={item.value.toString()}
@@ -554,7 +694,7 @@ const AboutMeSection = ({ profile }: { profile: any }) => {
                       {item.value}
                     </a>
                   ) : (
-                    <p className={`text-foreground ${item.isLong ? "text-sm leading-relaxed" : "font-semibold"}`}>
+                    <p className={`text-white ${item.isLong ? "text-sm leading-relaxed" : "font-semibold"}`}>
                       {item.value}
                     </p>
                   )}
