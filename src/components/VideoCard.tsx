@@ -198,8 +198,8 @@ const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCar
         )}
       </div>
 
-      {/* More button (top-right, not for own videos) */}
-      {user && video.user_id && user.id !== video.user_id && (
+      {/* More button (top-right) */}
+      {user && video.user_id && (
         <button
           onClick={(e) => { e.stopPropagation(); setActionSheetOpen(true); }}
           className="absolute top-14 end-3 z-20 rounded-full bg-background/40 p-2 backdrop-blur-sm"
