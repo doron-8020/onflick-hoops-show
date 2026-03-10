@@ -225,4 +225,15 @@
     background: hsl(var(--muted));
     border-radius: 2px;
   }
+
+  /* Music marquee animation */
+  @keyframes marquee-scroll {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .animate-marquee {
+    animation: marquee-scroll 8s linear infinite;
+    padding-right: 40px;
+  }
 }
