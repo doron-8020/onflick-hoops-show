@@ -19,6 +19,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
 import { useStartConversation } from "@/hooks/useStartConversation";
 import BottomNav from "@/components/BottomNav";
+import { useStories } from "@/hooks/useStories";
+import StoryViewer from "@/components/StoryViewer";
+import { AnimatePresence } from "framer-motion";
 
 type TabKey = "videos" | "private" | "saved" | "about";
 
@@ -48,6 +51,8 @@ const PlayerProfile = () => {
   const [bioExpanded, setBioExpanded] = useState(false);
   const { isFollowing, toggleFollow, loading: followLoading } = useFollow(userId);
   const startConversation = useStartConversation();
+  const { storyGroups, fetchStories } = useStories();
+  const [storyViewerGroup, setStoryViewerGroup] = useState<any>(null);
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
     videos: null,
@@ -150,15 +155,35 @@ const PlayerProfile = () => {
 
       <div className="flex flex-col items-center px-4 pt-16 pb-2">
         <div className="relative mb-3">
-          <div className="h-24 w-24 rounded-full overflow-hidden ring-2 ring-primary/30 ring-offset-2 ring-offset-background">
-            {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
-            ) : (
-              <div className="h-full w-full gradient-fire flex items-center justify-center">
-                <span className="font-display text-4xl text-primary-foreground">{displayName.charAt(0).toUpperCase()}</span>
+          {(() => {
+            const playerStoryGroup = storyGroups.find((g) => g.userId === userId);
+            const hasStory = !!playerStoryGroup;
+            const avatarEl = (
+              <div className="h-24 w-24 rounded-full overflow-hidden">
+                {profile.avatar_url ? (
+                  <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
+                ) : (
+                  <div className="h-full w-full gradient-fire flex items-center justify-center">
+                    <span className="font-display text-4xl text-primary-foreground">{displayName.charAt(0).toUpperCase()}</span>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            );
+            return hasStory ? (
+              <button
+                onClick={() => setStoryViewerGroup(playerStoryGroup)}
+                className="rounded-full p-[3px] bg-gradient-to-tr from-blue-500 to-purple-500"
+              >
+                <div className="rounded-full p-[2px] bg-background">
+                  {avatarEl}
+                </div>
+              </button>
+            ) : (
+              <div className="ring-2 ring-primary/30 ring-offset-2 ring-offset-background rounded-full">
+                {avatarEl}
+              </div>
+            );
+          })()}
         </div>
 
         <div className="flex items-center gap-1.5 justify-center">
@@ -312,6 +337,16 @@ const PlayerProfile = () => {
         )}
         {activeTab === "about" && profile && <PlayerAboutSection profile={profile} />}
       </div>
+
+      {/* Story viewer overlay */}
+      <AnimatePresence>
+        {storyViewerGroup && (
+          <StoryViewer
+            group={storyViewerGroup}
+            onClose={() => { setStoryViewerGroup(null); fetchStories(); }}
+          />
+        )}
+      </AnimatePresence>
 
       <BottomNav />
     </div>
