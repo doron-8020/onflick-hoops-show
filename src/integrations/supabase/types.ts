@@ -88,6 +88,35 @@ export type Database = {
         }
         Relationships: []
       }
+      bookmarks: {
+        Row: {
+          created_at: string
+          id: string
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookmarks_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
         Row: {
           content: string
@@ -494,6 +523,7 @@ export type Database = {
           id: string
           likes_count: number
           media_type: string
+          privacy: string
           shares_count: number
           tags: string[] | null
           thumbnail_url: string | null
@@ -511,6 +541,7 @@ export type Database = {
           id?: string
           likes_count?: number
           media_type?: string
+          privacy?: string
           shares_count?: number
           tags?: string[] | null
           thumbnail_url?: string | null
@@ -528,6 +559,7 @@ export type Database = {
           id?: string
           likes_count?: number
           media_type?: string
+          privacy?: string
           shares_count?: number
           tags?: string[] | null
           thumbnail_url?: string | null
