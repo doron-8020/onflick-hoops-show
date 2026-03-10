@@ -135,12 +135,15 @@ const Profile = () => {
 
   useEffect(() => {
     if (!user) return;
-    fetchProfile();
-    fetchVideos();
-    fetchSavedVideos();
-    fetchRepostedVideos();
-    fetchLikedVideos();
-    fetchProfileViewStats();
+    // Fetch all data in parallel for faster loading
+    Promise.all([
+      fetchProfile(),
+      fetchVideos(),
+      fetchSavedVideos(),
+      fetchRepostedVideos(),
+      fetchLikedVideos(),
+      fetchProfileViewStats(),
+    ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
