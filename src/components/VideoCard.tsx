@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import CommentsSheet from "./CommentsSheet";
 import GalleryCarousel from "./GalleryCarousel";
-import SpinningSoundIcon from "./SpinningSoundIcon";
+import SoundWheel from "./SoundWheel";
 import VideoActionSheet from "./VideoActionSheet";
 
 interface VideoCardProps {
@@ -142,14 +142,36 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     }
   }, [liked, handleLike, user, navigate]);
 
+  const [sharesCount, setSharesCount] = useState(video.shares_count);
+
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const shareData = { title: video.caption || "Check this highlight!", url: `${window.location.origin}/?v=${video.id}` };
+    const shareUrl = `${window.location.origin}/?v=${video.id}`;
+    const shareData = { title: video.caption || "Check this highlight!", url: shareUrl };
+    let shared = false;
     try {
-      if (navigator.share) await navigator.share(shareData);
-      else { await navigator.clipboard.writeText(shareData.url); toast.success(t("video.linkCopied")); }
+      if (navigator.share) {
+        await navigator.share(shareData);
+        shared = true;
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success(t("video.linkCopied"));
+        shared = true;
+      }
+    } catch (err: any) {
+      // User cancelled native share — don't count
+      if (err?.name === "AbortError") return;
+      // Fallback: try clipboard
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success(t("video.linkCopied"));
+        shared = true;
+      } catch { toast.error("Could not share"); }
+    }
+    if (shared) {
+      setSharesCount((c) => c + 1);
       await supabase.rpc("increment_shares", { p_video_id: video.id });
-    } catch {}
+    }
   };
 
   const handleRepost = async (e: React.MouseEvent) => {
@@ -192,7 +214,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           </>
         ) : (
           <>
-            <video ref={videoRef} src={video.video_url} className="h-full w-full object-cover" loop playsInline muted={globalMuted} poster={video.thumbnail_url || undefined} preload="metadata" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
+            <video ref={videoRef} src={video.video_url} className="h-full w-full object-cover" loop playsInline autoPlay muted={globalMuted} poster={video.thumbnail_url || undefined} preload="auto" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
             <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/30" />
           </>
         )}
@@ -277,8 +299,11 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           <span className="text-[11px] font-semibold text-foreground drop-shadow-md">{formatNumber(savesCount)}</span>
         </button>
 
-        <button onClick={handleShare} className="flex flex-col items-center">
+        <button onClick={handleShare} className="flex flex-col items-center gap-0.5">
           <Share2 className="h-7 w-7 text-foreground drop-shadow-md" />
+          {sharesCount > 0 && (
+            <span className="text-[11px] font-semibold text-foreground drop-shadow-md">{formatNumber(sharesCount)}</span>
+          )}
         </button>
 
         <button onClick={handleRepost} className="flex flex-col items-center gap-0.5">
@@ -288,7 +313,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           )}
         </button>
 
-        {isVideo && <SpinningSoundIcon imageUrl={profile?.avatar_url} isPlaying={playing} />}
+        {isVideo && <SoundWheel videoRef={videoRef} />}
       </div>
 
       {/* Bottom info */}

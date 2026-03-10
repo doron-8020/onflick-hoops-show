@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { Volume2, VolumeX, Volume1 } from "lucide-react";
+import { Volume2, VolumeX, Volume1, Music2 } from "lucide-react";
 import { useMute } from "@/contexts/MuteContext";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -19,7 +19,11 @@ const SoundWheel = ({ videoRef }: SoundWheelProps) => {
     setGlobalMuted(newMuted);
     if (videoRef.current) {
       videoRef.current.muted = newMuted;
-      if (!newMuted) videoRef.current.volume = volume || 1;
+      if (!newMuted) {
+        const vol = volume || 1;
+        setVolume(vol);
+        videoRef.current.volume = vol;
+      }
     }
     setShowSlider(true);
     clearTimeout(hideTimeout.current);
@@ -80,10 +84,16 @@ const SoundWheel = ({ videoRef }: SoundWheelProps) => {
       </AnimatePresence>
       <button
         onClick={handleToggleMute}
-        className="rounded-full bg-background/30 p-2 backdrop-blur-sm"
+        className="relative h-11 w-11 rounded-full bg-background/30 backdrop-blur-sm ring-1 ring-border/60 overflow-hidden flex items-center justify-center"
         aria-label={globalMuted ? "Unmute" : "Mute"}
       >
-        <VolumeIcon className="h-4 w-4 text-foreground/80" />
+        {globalMuted ? (
+          <div className="h-full w-full flex items-center justify-center">
+            <Music2 className="h-5 w-5 text-foreground/80" />
+          </div>
+        ) : (
+          <VolumeIcon className="h-5 w-5 text-foreground/80" />
+        )}
       </button>
     </div>
   );
