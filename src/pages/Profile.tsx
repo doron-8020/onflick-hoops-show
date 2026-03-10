@@ -378,6 +378,21 @@ const Profile = () => {
         </div>
 
         <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} profile={profile || {}} onSaved={fetchProfile} />
+        {deleteVideoId && user && (
+          <VideoActionSheet
+            videoId={deleteVideoId}
+            videoUserId={user.id}
+            open={!!deleteVideoId}
+            onOpenChange={(open) => { if (!open) { setDeleteVideoId(null); setDeleteVideoUrl(null); } }}
+            isOwn
+            videoUrl={deleteVideoUrl || undefined}
+            onDeleted={() => {
+              setVideos((prev) => prev.filter((v) => v.id !== deleteVideoId));
+              setDeleteVideoId(null);
+              setDeleteVideoUrl(null);
+            }}
+          />
+        )}
       </div>
       <BottomNav />
     </div>
