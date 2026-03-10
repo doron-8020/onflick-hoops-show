@@ -289,6 +289,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCar
         </button>
 
         {isVideo && <SpinningSoundIcon imageUrl={profile?.avatar_url} isPlaying={playing} />}
+        {isVideo && <SoundWheel videoRef={videoRef as React.RefObject<HTMLVideoElement>} />}
       </div>
 
       {/* Bottom info */}
