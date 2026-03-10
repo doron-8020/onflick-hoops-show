@@ -405,20 +405,31 @@ const Profile = () => {
               }}
               onClick={async () => {
                 const profileUrl = `${window.location.origin}/player/${user?.id}`;
-                const shareData = {
-                  title: profile?.display_name || "ONFLICK Profile",
-                  text: `${profile?.display_name || "Check out this profile"} on ONFLICK`,
-                  url: profileUrl,
-                };
                 try {
-                  if (navigator.share) {
-                    await navigator.share(shareData);
-                  } else {
-                    await navigator.clipboard.writeText(profileUrl);
-                    toast({ title: "Link copied!" });
+                  if (typeof navigator.share === "function") {
+                    await navigator.share({
+                      title: profile?.display_name || "ONFLICK Profile",
+                      text: `${profile?.display_name || "Check out this profile"} on ONFLICK`,
+                      url: profileUrl,
+                    });
+                    return;
                   }
                 } catch {
-                  // user cancelled share
+                  // share dialog cancelled or failed — fall through to copy
+                }
+                try {
+                  await navigator.clipboard.writeText(profileUrl);
+                  toast({ title: "✅ הלינק הועתק!" });
+                } catch {
+                  const ta = document.createElement("textarea");
+                  ta.value = profileUrl;
+                  ta.style.position = "fixed";
+                  ta.style.opacity = "0";
+                  document.body.appendChild(ta);
+                  ta.select();
+                  document.execCommand("copy");
+                  document.body.removeChild(ta);
+                  toast({ title: "✅ הלינק הועתק!" });
                 }
               }}
             >
