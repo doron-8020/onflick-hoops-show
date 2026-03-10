@@ -38,6 +38,8 @@ const Profile = () => {
   const [bioExpanded, setBioExpanded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [profileViews, setProfileViews] = useState<{ coach: number; scout: number } | null>(null);
+  const [deleteVideoId, setDeleteVideoId] = useState<string | null>(null);
+  const [deleteVideoUrl, setDeleteVideoUrl] = useState<string | null>(null);
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
     videos: null,
