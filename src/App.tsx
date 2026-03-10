@@ -26,6 +26,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ProfileFeed from "./pages/ProfileFeed";
 import FollowList from "./pages/FollowList";
 import TagFeed from "./pages/TagFeed";
+import Messages from "./pages/Messages";
+import Conversation from "./pages/Conversation";
 import AppShell from "./components/AppShell";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
