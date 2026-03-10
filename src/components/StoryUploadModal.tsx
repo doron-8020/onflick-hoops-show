@@ -1,5 +1,5 @@
-import { useState, useRef, useCallback } from "react";
-import { Plus, Camera } from "lucide-react";
+import { useState, useRef } from "react";
+import { Camera, ImagePlus, Video } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -20,7 +20,8 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [caption, setCaption] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const reset = () => {
     setPreview(null);
@@ -34,7 +35,6 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
     const f = e.target.files?.[0];
     if (!f) return;
 
-    // Check video duration (max 15s)
     if (f.type.startsWith("video")) {
       const video = document.createElement("video");
       video.preload = "metadata";
@@ -116,17 +116,60 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
         {/* Content */}
         <div className="flex-1 flex flex-col items-center justify-center px-4">
           {!preview ? (
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="flex flex-col items-center gap-4"
-            >
-              <div className="h-24 w-24 rounded-full bg-white/10 flex items-center justify-center">
-                <Camera className="h-10 w-10 text-white/70" />
+            <div className="flex flex-col items-center gap-8 w-full max-w-xs">
+              <p className="text-white/60 text-sm text-center">
+                {language === "he" ? "בחר מקור תמונה או סרטון (עד 15 שניות)" : "Choose a source for your photo or video (up to 15s)"}
+              </p>
+
+              <div className="grid grid-cols-2 gap-4 w-full">
+                {/* Gallery */}
+                <button
+                  onClick={() => galleryInputRef.current?.click()}
+                  className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors border border-white/10"
+                >
+                  <div className="h-14 w-14 rounded-full bg-primary/20 flex items-center justify-center">
+                    <ImagePlus className="h-7 w-7 text-primary" />
+                  </div>
+                  <span className="text-white text-xs font-medium">
+                    {language === "he" ? "גלריה" : "Gallery"}
+                  </span>
+                </button>
+
+                {/* Camera */}
+                <button
+                  onClick={() => cameraInputRef.current?.click()}
+                  className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors border border-white/10"
+                >
+                  <div className="h-14 w-14 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <Camera className="h-7 w-7 text-blue-400" />
+                  </div>
+                  <span className="text-white text-xs font-medium">
+                    {language === "he" ? "מצלמה" : "Camera"}
+                  </span>
+                </button>
+
+                {/* Video Camera */}
+                <button
+                  onClick={() => {
+                    // Create a temporary input for video capture
+                    const input = document.createElement("input");
+                    input.type = "file";
+                    input.accept = "video/*";
+                    input.capture = "environment";
+                    input.onchange = (e) => handleFileSelect(e as any);
+                    input.click();
+                  }}
+                  className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors border border-white/10 col-span-2"
+                >
+                  <div className="h-14 w-14 rounded-full bg-red-500/20 flex items-center justify-center">
+                    <Video className="h-7 w-7 text-red-400" />
+                  </div>
+                  <span className="text-white text-xs font-medium">
+                    {language === "he" ? "צלם סרטון" : "Record Video"}
+                  </span>
+                </button>
               </div>
-              <span className="text-white/70 text-sm">
-                {language === "he" ? "בחר תמונה או סרטון (עד 15 שניות)" : "Pick a photo or video (up to 15s)"}
-              </span>
-            </button>
+            </div>
           ) : (
             <div className="w-full max-w-sm flex flex-col items-center gap-4">
               <div className="relative w-full aspect-[9/16] rounded-2xl overflow-hidden bg-black/50">
@@ -136,7 +179,6 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
                   <img src={preview} className="h-full w-full object-contain" alt="" />
                 )}
 
-                {/* Upload progress overlay */}
                 {uploading && (
                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                     <div className="relative h-20 w-20">
@@ -160,7 +202,6 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
                 )}
               </div>
 
-              {/* Caption input */}
               <input
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
@@ -182,10 +223,21 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
           )}
         </div>
 
+        {/* Gallery input */}
         <input
-          ref={fileInputRef}
+          ref={galleryInputRef}
           type="file"
           accept="image/*,video/*"
+          className="hidden"
+          onChange={handleFileSelect}
+        />
+
+        {/* Camera capture input */}
+        <input
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
           className="hidden"
           onChange={handleFileSelect}
         />
