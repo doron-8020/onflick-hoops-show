@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Home, Search, Plus, Bell, User } from "lucide-react";
+import { Home, Search, Plus, MessageCircle, User } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,12 +10,12 @@ const BottomNav = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [unreadCount, setUnreadCount] = useState(0);
-
+  const [unreadMsgCount, setUnreadMsgCount] = useState(0);
   const navItems = [
     { icon: Home, label: t("nav.home"), path: "/" },
     { icon: Search, label: t("nav.discover"), path: "/discover" },
     { icon: Plus, label: t("nav.create"), path: "/create", isCreate: true },
-    { icon: Bell, label: t("nav.notifications"), path: "/notifications" },
+    { icon: MessageCircle, label: t("nav.messages"), path: "/messages" },
     { icon: User, label: t("nav.profile"), path: "/profile" },
   ];
 
@@ -52,6 +52,33 @@ const BottomNav = () => {
     };
   }, [user]);
 
+  // Unread DM count
+  useEffect(() => {
+    if (!user) return;
+    const fetchUnreadDMs = async () => {
+      // Get all conversation IDs for this user
+      const { data: convos } = await (supabase as any)
+        .from("conversations")
+        .select("id")
+        .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`);
+      if (!convos || convos.length === 0) { setUnreadMsgCount(0); return; }
+      const ids = convos.map((c: any) => c.id);
+      const { count } = await (supabase as any)
+        .from("direct_messages")
+        .select("*", { count: "exact", head: true })
+        .in("conversation_id", ids)
+        .neq("sender_id", user.id)
+        .eq("read", false);
+      setUnreadMsgCount(count || 0);
+    };
+    fetchUnreadDMs();
+    const ch = supabase
+      .channel("nav-dm-unread")
+      .on("postgres_changes", { event: "*", schema: "public", table: "direct_messages" }, () => fetchUnreadDMs())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [user]);
+
   useEffect(() => {
     if (location.pathname === "/notifications") {
       setUnreadCount(0);
@@ -80,6 +107,8 @@ const BottomNav = () => {
           }
 
           const isNotif = item.path === "/notifications";
+          const isMsg = item.path === "/messages";
+          const badgeCount = isNotif ? unreadCount : isMsg ? unreadMsgCount : 0;
 
           return (
             <Link
@@ -100,9 +129,9 @@ const BottomNav = () => {
               >
                 {item.label}
               </span>
-              {isNotif && unreadCount > 0 && (
+              {badgeCount > 0 && (
                 <span className="absolute -top-0.5 end-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground animate-scale-in">
-                  {unreadCount > 99 ? "99+" : unreadCount}
+                  {badgeCount > 99 ? "99+" : badgeCount}
                 </span>
               )}
             </Link>

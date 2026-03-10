@@ -6,6 +6,7 @@ export const translations = {
   "nav.discover": { he: "גלה", en: "Discover" },
   "nav.create": { he: "צור", en: "Create" },
   "nav.notifications": { he: "התראות", en: "Alerts" },
+  "nav.messages": { he: "הודעות", en: "Messages" },
   "nav.profile": { he: "פרופיל", en: "Profile" },
 
   // Feed

@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
+import { useStartConversation } from "@/hooks/useStartConversation";
 import BottomNav from "@/components/BottomNav";
 
 type TabKey = "videos" | "private" | "saved" | "about";
@@ -46,6 +47,7 @@ const PlayerProfile = () => {
   const [scrolled, setScrolled] = useState(false);
   const [bioExpanded, setBioExpanded] = useState(false);
   const { isFollowing, toggleFollow, loading: followLoading } = useFollow(userId);
+  const startConversation = useStartConversation();
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
     videos: null,
@@ -209,7 +211,7 @@ const PlayerProfile = () => {
                 {isFollowing ? <UserCheck className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
                 {isFollowing ? t("video.followingBtn") : t("profile.follow")}
               </button>
-              <button className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground">{t("profile.message")}</button>
+              <button onClick={() => userId && startConversation(userId)} className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground">{t("profile.message")}</button>
             </>
           )}
         </div>

@@ -26,6 +26,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ProfileFeed from "./pages/ProfileFeed";
 import FollowList from "./pages/FollowList";
 import TagFeed from "./pages/TagFeed";
+import Messages from "./pages/Messages";
+import Conversation from "./pages/Conversation";
 import AppShell from "./components/AppShell";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -101,6 +103,8 @@ const App = () => (
                     <Route path="/profile/feed" element={<ProfileFeed />} />
                     <Route path="/user/:userId/follows" element={<FollowList />} />
                     <Route path="/tag/:tagName" element={<TagFeed />} />
+                    <Route path="/messages" element={<Messages />} />
+                    <Route path="/messages/:conversationId" element={<Conversation />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/blog" element={<Blog />} />
