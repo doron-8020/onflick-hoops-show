@@ -9,6 +9,9 @@ import {
   User,
   BadgeCheck,
   BarChart3,
+  Repeat2,
+  Plus,
+  Images,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,12 +20,63 @@ import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
 import EditProfileDialog from "@/components/EditProfileDialog";
 
-type TabKey = "videos" | "private" | "saved" | "about";
+type TabKey = "videos" | "repost" | "private" | "saved" | "about";
 
 const formatCount = (n: number) => {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
   if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
   return n.toString();
+};
+
+/* ───── Grid cell shared between videos / saved / repost tabs ───── */
+const GridCell = ({
+  video,
+  index,
+  onClick,
+}: {
+  video: any;
+  index: number;
+  onClick: () => void;
+}) => {
+  const isGallery = video.media_type === "gallery";
+  const isImage = video.media_type === "image";
+
+  const thumbSrc = isGallery
+    ? video.gallery_urls?.[0] ?? null
+    : isImage
+    ? video.video_url
+    : video.thumbnail_url ?? null;
+
+  return (
+    <div
+      key={video.id}
+      className="relative aspect-[9/16] overflow-hidden bg-secondary group cursor-pointer"
+      onClick={onClick}
+    >
+      {thumbSrc ? (
+        <img src={thumbSrc} className="h-full w-full object-cover" alt="" loading="lazy" />
+      ) : (
+        <div className="h-full w-full bg-secondary flex items-center justify-center">
+          <Play className="h-6 w-6 text-primary-foreground/70" />
+        </div>
+      )}
+
+      {/* gallery badge */}
+      {isGallery && (
+        <div className="absolute top-1.5 end-1.5 pointer-events-none">
+          <Images className="h-3.5 w-3.5 text-primary-foreground drop-shadow-md" />
+        </div>
+      )}
+
+      <div className="absolute bottom-1 start-1 flex items-center gap-0.5 pointer-events-none">
+        <Play className="h-3 w-3 text-primary-foreground" fill="currentColor" />
+        <span className="text-[10px] font-semibold text-primary-foreground drop-shadow-md">
+          {formatCount(video.views_count || 0)}
+        </span>
+      </div>
+      <div className="absolute inset-0 bg-background/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+    </div>
+  );
 };
 
 const Profile = () => {
@@ -32,6 +86,7 @@ const Profile = () => {
   const [profile, setProfile] = useState<any>(null);
   const [videos, setVideos] = useState<any[]>([]);
   const [savedVideos, setSavedVideos] = useState<any[]>([]);
+  const [repostedVideos, setRepostedVideos] = useState<any[]>([]);
   const [editOpen, setEditOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("videos");
   const [bioExpanded, setBioExpanded] = useState(false);
@@ -40,6 +95,7 @@ const Profile = () => {
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
     videos: null,
+    repost: null,
     private: null,
     saved: null,
     about: null,
@@ -48,6 +104,7 @@ const Profile = () => {
 
   const TABS: { key: TabKey; icon: typeof Grid3X3; label: string }[] = [
     { key: "videos", icon: Grid3X3, label: "Videos" },
+    { key: "repost", icon: Repeat2, label: "Reposts" },
     { key: "private", icon: Lock, label: t("profile.privateVideos") },
     { key: "saved", icon: Bookmark, label: t("profile.saved") },
     { key: "about", icon: User, label: t("profile.aboutMe") },
@@ -58,6 +115,7 @@ const Profile = () => {
     fetchProfile();
     fetchVideos();
     fetchSavedVideos();
+    fetchRepostedVideos();
     fetchProfileViewStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
@@ -92,6 +150,16 @@ const Profile = () => {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
     setSavedVideos((data || []).map((b: any) => b.videos).filter(Boolean));
+  };
+
+  const fetchRepostedVideos = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("reposts")
+      .select("video_id, videos(*)")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    setRepostedVideos((data || []).map((r: any) => r.videos).filter(Boolean));
   };
 
   const fetchProfileViewStats = async () => {
@@ -147,9 +215,16 @@ const Profile = () => {
   const displayName = profile?.display_name || "Player";
   const handle = `@${(profile?.display_name || "player").toLowerCase().replace(/\s+/g, "")}`;
 
+  const stats = [
+    { value: profile?.following_count || 0, label: t("profile.following"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=following`) },
+    { value: profile?.followers_count || 0, label: t("profile.followers"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=followers`) },
+    { value: totalLikes, label: t("profile.likes") },
+  ];
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="mx-auto max-w-lg">
+        {/* ── Header ── */}
         <div
           className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-300 ${
             scrolled ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-card" : "bg-transparent"
@@ -170,7 +245,9 @@ const Profile = () => {
           </button>
         </div>
 
+        {/* ── Avatar + Info ── */}
         <div className="flex flex-col items-center px-4 pt-16 pb-2">
+          {/* Avatar with change-photo button */}
           <div className="relative mb-3">
             <div className="h-24 w-24 rounded-full overflow-hidden ring-2 ring-primary/30 ring-offset-2 ring-offset-background">
               {profile?.avatar_url ? (
@@ -183,6 +260,15 @@ const Profile = () => {
                 </div>
               )}
             </div>
+            {/* Change photo button */}
+            <button
+              onClick={() => setEditOpen(true)}
+              className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-6 w-6 rounded-full flex items-center justify-center border-2 border-background"
+              style={{ backgroundColor: "#20D5EC" }}
+              aria-label="Change photo"
+            >
+              <Plus className="h-3.5 w-3.5 text-white" strokeWidth={3} />
+            </button>
           </div>
 
           <div className="flex items-center gap-1.5">
@@ -203,19 +289,18 @@ const Profile = () => {
             </div>
           )}
 
-          <div className="flex gap-0 mb-4">
-            {[
-              { value: profile?.following_count || 0, label: t("profile.following"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=following`) },
-              { value: profile?.followers_count || 0, label: t("profile.followers"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=followers`) },
-              { value: totalLikes, label: t("profile.likes") },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className={`flex flex-col items-center px-6 ${stat.onClick ? "cursor-pointer active:opacity-70" : ""}`}
-                onClick={stat.onClick}
-              >
-                <span className="font-display text-xl text-foreground leading-tight">{formatCount(stat.value)}</span>
-                <span className="text-xs text-muted-foreground">{stat.label}</span>
+          {/* Stats with dividers */}
+          <div className="flex items-center mb-4">
+            {stats.map((stat, i) => (
+              <div key={stat.label} className="flex items-center">
+                {i > 0 && <div className="h-6 w-px bg-foreground/20 mx-1" />}
+                <div
+                  className={`flex flex-col items-center px-6 ${stat.onClick ? "cursor-pointer active:opacity-70" : ""}`}
+                  onClick={stat.onClick}
+                >
+                  <span className="font-display text-xl text-foreground leading-tight">{formatCount(stat.value)}</span>
+                  <span className="text-xs text-muted-foreground">{stat.label}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -261,6 +346,7 @@ const Profile = () => {
           )}
         </div>
 
+        {/* ── Tabs ── */}
         <div ref={tabBarRef} className="relative flex border-b border-border sticky top-[52px] z-40 bg-background">
           {TABS.map((tab) => {
             const isActive = activeTab === tab.key;
@@ -288,36 +374,19 @@ const Profile = () => {
           />
         </div>
 
+        {/* ── Tab content ── */}
         <div className="min-h-[40vh]">
           {activeTab === "videos" && (
             <>
               {videos.length > 0 ? (
                 <div className="grid grid-cols-3 gap-px">
                   {videos.map((video, index) => (
-                    <div
+                    <GridCell
                       key={video.id}
-                      className="relative aspect-[9/16] overflow-hidden bg-secondary group cursor-pointer"
+                      video={video}
+                      index={index}
                       onClick={() => navigate(`/profile/feed?start=${index}`, { state: { videos } })}
-                    >
-                      {video.media_type === "image" ? (
-                        <img src={video.video_url} className="h-full w-full object-cover" alt="" loading="lazy" />
-                      ) : (
-                        <video
-                          src={video.video_url}
-                          className="h-full w-full object-cover"
-                          muted
-                          playsInline
-                          preload="metadata"
-                        />
-                      )}
-                      <div className="absolute bottom-1 start-1 flex items-center gap-0.5 pointer-events-none">
-                        <Play className="h-3 w-3 text-primary-foreground" fill="currentColor" />
-                        <span className="text-[10px] font-semibold text-primary-foreground drop-shadow-md">
-                          {formatCount(video.views_count || 0)}
-                        </span>
-                      </div>
-                      <div className="absolute inset-0 bg-background/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
+                    />
                   ))}
                 </div>
               ) : (
@@ -325,38 +394,41 @@ const Profile = () => {
               )}
             </>
           )}
+
+          {activeTab === "repost" && (
+            <>
+              {repostedVideos.length > 0 ? (
+                <div className="grid grid-cols-3 gap-px">
+                  {repostedVideos.map((video, index) => (
+                    <GridCell
+                      key={video.id}
+                      video={video}
+                      index={index}
+                      onClick={() => navigate(`/profile/feed?start=${index}`, { state: { videos: repostedVideos } })}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <EmptyTabState icon={Repeat2} title="Reposts" subtitle="No reposts yet" />
+              )}
+            </>
+          )}
+
           {activeTab === "private" && (
             <EmptyTabState icon={Lock} title={t("profile.privateVideos")} subtitle={t("profile.onlyYou")} />
           )}
+
           {activeTab === "saved" && (
             <>
               {savedVideos.length > 0 ? (
                 <div className="grid grid-cols-3 gap-px">
                   {savedVideos.map((video, index) => (
-                    <div
+                    <GridCell
                       key={video.id}
-                      className="relative aspect-[9/16] overflow-hidden bg-secondary group cursor-pointer"
+                      video={video}
+                      index={index}
                       onClick={() => navigate(`/profile/feed?start=${index}`, { state: { videos: savedVideos } })}
-                    >
-                      {video.media_type === "image" ? (
-                        <img src={video.video_url} className="h-full w-full object-cover" alt="" loading="lazy" />
-                      ) : (
-                        <video
-                          src={video.video_url}
-                          className="h-full w-full object-cover"
-                          muted
-                          playsInline
-                          preload="metadata"
-                        />
-                      )}
-                      <div className="absolute bottom-1 start-1 flex items-center gap-0.5 pointer-events-none">
-                        <Play className="h-3 w-3 text-primary-foreground" fill="currentColor" />
-                        <span className="text-[10px] font-semibold text-primary-foreground drop-shadow-md">
-                          {formatCount(video.views_count || 0)}
-                        </span>
-                      </div>
-                      <div className="absolute inset-0 bg-background/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
+                    />
                   ))}
                 </div>
               ) : (
@@ -364,6 +436,7 @@ const Profile = () => {
               )}
             </>
           )}
+
           {activeTab === "about" && profile && <AboutMeSection profile={profile} />}
         </div>
 
