@@ -54,6 +54,7 @@ const Profile = () => {
     if (!user) return;
     fetchProfile();
     fetchVideos();
+    fetchSavedVideos();
     fetchProfileViewStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
