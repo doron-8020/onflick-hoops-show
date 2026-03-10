@@ -78,7 +78,7 @@ const GridCell = ({
           className="absolute top-1.5 end-1.5 pointer-events-none rounded-[3px] px-1.5 py-0.5"
           style={{ background: "#FF4D6A", fontSize: 11, fontWeight: 700 }}
         >
-          <span className="text-white">{t("profile.pinned") || "Pinned"}</span>
+          <span className="text-white">Pinned</span>
         </div>
       )}
 
