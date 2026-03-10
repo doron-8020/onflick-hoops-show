@@ -273,11 +273,29 @@ const StoryViewer = ({ group, onClose }: StoryViewerProps) => {
         </Avatar>
         <div className="flex-1 min-w-0">
           <span className="text-white text-sm font-semibold">{group.displayName}</span>
-          {/* Story badge */}
-          <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-500 text-white">
+          <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary text-primary-foreground">
             STORY
           </span>
         </div>
+        {isOwn && (
+          <button
+            onClick={async () => {
+              if (!currentStory) return;
+              pauseTimer();
+              const confirmed = window.confirm(language === "he" ? "למחוק את הסטורי?" : "Delete this story?");
+              if (!confirmed) { resumeTimer(); return; }
+              await (supabase as any).from("stories").delete().eq("id", currentStory.id);
+              toast.success(language === "he" ? "הסטורי נמחק" : "Story deleted");
+              if (group.stories.length <= 1) { onClose(); return; }
+              const newStories = group.stories.filter((_, i) => i !== currentIndex);
+              group.stories.splice(0, group.stories.length, ...newStories);
+              setCurrentIndex(Math.min(currentIndex, newStories.length - 1));
+            }}
+            className="text-white/70 p-1 hover:text-red-400 transition-colors"
+          >
+            <Trash2 className="h-5 w-5" />
+          </button>
+        )}
         <button onClick={onClose} className="text-white p-1">
           <X className="h-6 w-6" />
         </button>
