@@ -19,6 +19,7 @@ const ProfileFeed = () => {
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
   const [activeIndex, setActiveIndex] = useState(startIndex);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const trackView = useViewTracker();
 
   useEffect(() => {
     if (videos.length === 0) {
