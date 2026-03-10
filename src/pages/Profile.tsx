@@ -425,7 +425,7 @@ const Profile = () => {
                     await navigator.share(shareData);
                   } else {
                     await navigator.clipboard.writeText(profileUrl);
-                    toast({ title: t("profile.linkCopied") || "Link copied!" });
+                    toast({ title: "Link copied!" });
                   }
                 } catch {
                   // user cancelled share
