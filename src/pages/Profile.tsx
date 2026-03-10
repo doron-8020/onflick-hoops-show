@@ -225,6 +225,40 @@ const Profile = () => {
     }
   };
 
+  const fetchScoutFollowers = async () => {
+    if (!user) return;
+    try {
+      const { count } = await supabase
+        .from("follows")
+        .select("id", { count: "exact", head: true })
+        .eq("following_id", user.id)
+        .in("follower_id",
+          (await supabase.from("user_types").select("user_id").eq("type", "scout")).data?.map((r: any) => r.user_id) || []
+        );
+      setScoutFollowers(count || 0);
+    } catch {
+      setScoutFollowers(0);
+    }
+  };
+
+  const fetchScoutRating = async () => {
+    if (!user) return;
+    try {
+      const { data } = await (supabase as any)
+        .from("scout_ratings")
+        .select("rating")
+        .eq("player_id", user.id);
+      if (data && data.length > 0) {
+        const avg = data.reduce((sum: number, r: any) => sum + r.rating, 0) / data.length;
+        setScoutRating(Math.round(avg * 10) / 10);
+      } else {
+        setScoutRating(null);
+      }
+    } catch {
+      setScoutRating(null);
+    }
+  };
+
   const totalLikes = useMemo(() => videos.reduce((sum, v) => sum + (v.likes_count || 0), 0), [videos]);
 
   const underlineStyle = useMemo(() => {
