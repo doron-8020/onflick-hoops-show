@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
+import { useStartConversation } from "@/hooks/useStartConversation";
 import BottomNav from "@/components/BottomNav";
 
 type TabKey = "videos" | "private" | "saved" | "about";
