@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useMemo, forwardRef } from "react";
-import { Star } from "lucide-react";
+
 import {
   Grid3X3,
   Lock,
@@ -468,21 +468,12 @@ const Profile = () => {
 
             <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", margin: "0 16px" }} />
 
-            {/* Scout rating */}
+            {/* Scout rank */}
             <div className="flex flex-col items-center" style={{ minWidth: 48 }}>
-              <div className="flex items-center gap-0.5">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className="h-3.5 w-3.5"
-                    fill={scoutRating && star <= Math.round(scoutRating) ? "#FBBF24" : "transparent"}
-                    stroke={scoutRating && star <= Math.round(scoutRating) ? "#FBBF24" : "rgba(255,255,255,0.3)"}
-                  />
-                ))}
-              </div>
-              <span className="text-white/60" style={{ fontSize: 11 }}>
-                {scoutRating ? `${scoutRating}/5` : (language === "he" ? "אין דירוג" : "No rating")}
+              <span className="text-white" style={{ fontSize: 17, fontWeight: 700, lineHeight: 1.2 }}>
+                {scoutRating ? `${scoutRating}/5` : "—"}
               </span>
+              <span className="text-white/60" style={{ fontSize: 11 }}>⭐ SCOUT RANK</span>
             </div>
           </div>
 
