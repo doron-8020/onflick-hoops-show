@@ -54,7 +54,7 @@ const haptic = (ms = 30) => {
   } catch {}
 };
 
-const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => {
+const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCardProps) => {
   const [liked, setLiked] = useState(initialLiked);
   const [likes, setLikes] = useState(video.likes_count);
   const [saved, setSaved] = useState(false);
