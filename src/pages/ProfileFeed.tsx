@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useViewTracker } from "@/hooks/useViewTracker";
 import VideoCard from "@/components/VideoCard";
 
 const ProfileFeed = () => {
