@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Camera, ImagePlus, Video } from "lucide-react";
+import { Camera, ImagePlus, Video, Upload, CloudUpload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -21,7 +21,8 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
   const [file, setFile] = useState<File | null>(null);
   const [caption, setCaption] = useState("");
   const galleryInputRef = useRef<HTMLInputElement>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const selfieInputRef = useRef<HTMLInputElement>(null);
 
   const reset = () => {
     setPreview(null);
@@ -91,159 +92,198 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
 
   if (!open) return null;
 
+  const sourceButtons = [
+    {
+      key: "gallery",
+      icon: ImagePlus,
+      label: language === "he" ? "גלריה" : "Gallery",
+      subtitle: language === "he" ? "בחר מהטלפון או מהמחשב" : "Choose from device",
+      gradient: "from-violet-600 to-indigo-600",
+      glow: "shadow-[0_0_30px_-5px_rgba(139,92,246,0.5)]",
+      onClick: () => galleryInputRef.current?.click(),
+    },
+    {
+      key: "photo",
+      icon: Upload,
+      label: language === "he" ? "העלאת תמונות" : "Upload Photos",
+      subtitle: language === "he" ? "תמונה מהמכשיר" : "Image from device",
+      gradient: "from-emerald-500 to-teal-600",
+      glow: "shadow-[0_0_30px_-5px_rgba(16,185,129,0.5)]",
+      onClick: () => photoInputRef.current?.click(),
+    },
+    {
+      key: "video",
+      icon: Video,
+      label: language === "he" ? "הקלטת וידאו" : "Record Video",
+      subtitle: language === "he" ? "עד 15 שניות" : "Up to 15 seconds",
+      gradient: "from-red-500 to-rose-600",
+      glow: "shadow-[0_0_30px_-5px_rgba(239,68,68,0.5)]",
+      onClick: () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "video/*";
+        input.capture = "environment";
+        input.onchange = (e) => handleFileSelect(e as any);
+        input.click();
+      },
+    },
+    {
+      key: "selfie",
+      icon: Camera,
+      label: language === "he" ? "צילום סלפי" : "Take Selfie",
+      subtitle: language === "he" ? "מצלמה קדמית" : "Front camera",
+      gradient: "from-amber-500 to-orange-600",
+      glow: "shadow-[0_0_30px_-5px_rgba(245,158,11,0.5)]",
+      onClick: () => selfieInputRef.current?.click(),
+    },
+    {
+      key: "drive",
+      icon: CloudUpload,
+      label: "Google Drive",
+      subtitle: language === "he" ? "בחר מהענן" : "Choose from cloud",
+      gradient: "from-blue-500 to-cyan-500",
+      glow: "shadow-[0_0_30px_-5px_rgba(59,130,246,0.5)]",
+      onClick: () => {
+        toast.info(language === "he" ? "Google Drive יהיה זמין בקרוב" : "Google Drive coming soon");
+      },
+    },
+  ];
+
   return (
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[110] bg-black flex flex-col"
+        className="fixed inset-0 z-[110] bg-black/95 backdrop-blur-xl flex flex-col"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 safe-top">
+        <div className="flex items-center justify-between px-5 py-4 safe-top">
           <button
             onClick={() => { reset(); onClose(); }}
-            className="text-white text-sm font-medium"
+            className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
           >
-            {language === "he" ? "ביטול" : "Cancel"}
+            <X className="h-5 w-5 text-white" />
           </button>
-          <span className="text-white font-display text-lg">
+          <span className="text-white font-bold text-lg tracking-tight">
             {language === "he" ? "סטורי חדש" : "New Story"}
           </span>
-          <div className="w-12" />
+          <div className="w-9" />
         </div>
 
         {/* Content */}
-        <div className="flex-1 flex flex-col items-center justify-center px-4">
+        <div className="flex-1 flex flex-col items-center justify-center px-5 overflow-y-auto">
           {!preview ? (
-            <div className="flex flex-col items-center gap-8 w-full max-w-xs">
-              <p className="text-white/60 text-sm text-center">
-                {language === "he" ? "בחר מקור תמונה או סרטון (עד 15 שניות)" : "Choose a source for your photo or video (up to 15s)"}
-              </p>
-
-              <div className="grid grid-cols-2 gap-4 w-full">
-                {/* Gallery */}
-                <button
-                  onClick={() => galleryInputRef.current?.click()}
-                  className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors border border-white/10"
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="flex flex-col gap-3 w-full max-w-md"
+            >
+              {sourceButtons.map((btn, i) => (
+                <motion.button
+                  key={btn.key}
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.07, duration: 0.35 }}
+                  onClick={btn.onClick}
+                  className={`group relative w-full flex items-center gap-4 px-5 py-4 rounded-2xl bg-gradient-to-r ${btn.gradient} ${btn.glow} hover:scale-[1.02] active:scale-[0.98] transition-all duration-200`}
                 >
-                  <div className="h-14 w-14 rounded-full bg-primary/20 flex items-center justify-center">
-                    <ImagePlus className="h-7 w-7 text-primary" />
+                  <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 group-hover:bg-white/30 transition-colors">
+                    <btn.icon className="h-6 w-6 text-white" />
                   </div>
-                  <span className="text-white text-xs font-medium">
-                    {language === "he" ? "גלריה" : "Gallery"}
-                  </span>
-                </button>
-
-                {/* Camera */}
-                <button
-                  onClick={() => cameraInputRef.current?.click()}
-                  className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors border border-white/10"
-                >
-                  <div className="h-14 w-14 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <Camera className="h-7 w-7 text-blue-400" />
+                  <div className="flex flex-col items-start">
+                    <span className="text-white text-[15px] font-bold tracking-tight">{btn.label}</span>
+                    <span className="text-white/70 text-xs">{btn.subtitle}</span>
                   </div>
-                  <span className="text-white text-xs font-medium">
-                    {language === "he" ? "מצלמה" : "Camera"}
-                  </span>
-                </button>
-
-                {/* Video Camera */}
-                <button
-                  onClick={() => {
-                    // Create a temporary input for video capture
-                    const input = document.createElement("input");
-                    input.type = "file";
-                    input.accept = "video/*";
-                    input.capture = "environment";
-                    input.onchange = (e) => handleFileSelect(e as any);
-                    input.click();
-                  }}
-                  className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-white/10 hover:bg-white/15 transition-colors border border-white/10 col-span-2"
-                >
-                  <div className="h-14 w-14 rounded-full bg-red-500/20 flex items-center justify-center">
-                    <Video className="h-7 w-7 text-red-400" />
-                  </div>
-                  <span className="text-white text-xs font-medium">
-                    {language === "he" ? "צלם סרטון" : "Record Video"}
-                  </span>
-                </button>
-              </div>
-            </div>
+                </motion.button>
+              ))}
+            </motion.div>
           ) : (
-            <div className="w-full max-w-sm flex flex-col items-center gap-4">
-              <div className="relative w-full aspect-[9/16] rounded-2xl overflow-hidden bg-black/50">
-                {file?.type.startsWith("video") ? (
-                  <video src={preview} className="h-full w-full object-contain" autoPlay loop muted playsInline />
-                ) : (
-                  <img src={preview} className="h-full w-full object-contain" alt="" />
-                )}
-
-                {uploading && (
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <div className="relative h-20 w-20">
-                      <svg className="h-20 w-20 -rotate-90" viewBox="0 0 80 80">
-                        <circle cx="40" cy="40" r="36" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="4" />
-                        <circle
-                          cx="40" cy="40" r="36" fill="none"
-                          stroke="hsl(var(--primary))"
-                          strokeWidth="4"
-                          strokeLinecap="round"
-                          strokeDasharray={`${2 * Math.PI * 36}`}
-                          strokeDashoffset={`${2 * Math.PI * 36 * (1 - progress / 100)}`}
-                          className="transition-all duration-300"
-                        />
-                      </svg>
-                      <span className="absolute inset-0 flex items-center justify-center text-white text-sm font-bold">
-                        {Math.round(progress)}%
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <input
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-                placeholder={language === "he" ? "הוסף כיתוב..." : "Add a caption..."}
-                maxLength={100}
-                className="w-full rounded-full px-4 py-2.5 text-sm bg-white/15 text-white placeholder:text-white/50 border border-white/20 outline-none focus:border-white/50"
-              />
-
-              <button
-                onClick={handleUpload}
-                disabled={uploading}
-                className="w-full py-3 rounded-full bg-primary text-primary-foreground font-bold text-sm disabled:opacity-50 transition-opacity"
-              >
-                {uploading
-                  ? (language === "he" ? "מעלה..." : "Uploading...")
-                  : (language === "he" ? "פרסם סטורי" : "Post Story")}
-              </button>
-            </div>
+            <PreviewSection
+              preview={preview}
+              file={file}
+              uploading={uploading}
+              progress={progress}
+              caption={caption}
+              setCaption={setCaption}
+              handleUpload={handleUpload}
+              language={language}
+            />
           )}
         </div>
 
-        {/* Gallery input */}
-        <input
-          ref={galleryInputRef}
-          type="file"
-          accept="image/*,video/*"
-          className="hidden"
-          onChange={handleFileSelect}
-        />
-
-        {/* Camera capture input */}
-        <input
-          ref={cameraInputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          className="hidden"
-          onChange={handleFileSelect}
-        />
+        {/* Hidden inputs */}
+        <input ref={galleryInputRef} type="file" accept="image/*,video/*" className="hidden" onChange={handleFileSelect} />
+        <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
+        <input ref={selfieInputRef} type="file" accept="image/*" capture="user" className="hidden" onChange={handleFileSelect} />
       </motion.div>
     </AnimatePresence>
   );
 };
+
+/* ── Preview & Upload Section ── */
+const PreviewSection = ({
+  preview, file, uploading, progress, caption, setCaption, handleUpload, language,
+}: {
+  preview: string;
+  file: File | null;
+  uploading: boolean;
+  progress: number;
+  caption: string;
+  setCaption: (v: string) => void;
+  handleUpload: () => void;
+  language: string;
+}) => (
+  <div className="w-full max-w-sm flex flex-col items-center gap-4">
+    <div className="relative w-full aspect-[9/16] rounded-2xl overflow-hidden bg-black/50">
+      {file?.type.startsWith("video") ? (
+        <video src={preview} className="h-full w-full object-contain" autoPlay loop muted playsInline />
+      ) : (
+        <img src={preview} className="h-full w-full object-contain" alt="" />
+      )}
+
+      {uploading && (
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+          <div className="relative h-20 w-20">
+            <svg className="h-20 w-20 -rotate-90" viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="36" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="4" />
+              <circle
+                cx="40" cy="40" r="36" fill="none"
+                stroke="hsl(var(--primary))"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeDasharray={`${2 * Math.PI * 36}`}
+                strokeDashoffset={`${2 * Math.PI * 36 * (1 - progress / 100)}`}
+                className="transition-all duration-300"
+              />
+            </svg>
+            <span className="absolute inset-0 flex items-center justify-center text-white text-sm font-bold">
+              {Math.round(progress)}%
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+
+    <input
+      value={caption}
+      onChange={(e) => setCaption(e.target.value)}
+      placeholder={language === "he" ? "הוסף כיתוב..." : "Add a caption..."}
+      maxLength={100}
+      className="w-full rounded-full px-4 py-2.5 text-sm bg-white/15 text-white placeholder:text-white/50 border border-white/20 outline-none focus:border-white/50"
+    />
+
+    <button
+      onClick={handleUpload}
+      disabled={uploading}
+      className="w-full py-3 rounded-full bg-primary text-primary-foreground font-bold text-sm disabled:opacity-50 transition-opacity"
+    >
+      {uploading
+        ? (language === "he" ? "מעלה..." : "Uploading...")
+        : (language === "he" ? "פרסם סטורי" : "Post Story")}
+    </button>
+  </div>
+);
 
 export default StoryUploadModal;
