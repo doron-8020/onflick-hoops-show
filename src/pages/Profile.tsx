@@ -260,6 +260,8 @@ const Profile = () => {
   };
 
   const totalLikes = useMemo(() => videos.reduce((sum, v) => sum + (v.likes_count || 0), 0), [videos]);
+  const totalShares = useMemo(() => videos.reduce((sum, v) => sum + (v.shares_count || 0), 0), [videos]);
+  const totalReposts = useMemo(() => videos.reduce((sum, v) => sum + (v.reposts_count || 0), 0), [videos]);
 
   const underlineStyle = useMemo(() => {
     const el = tabRefs.current[activeTab];
