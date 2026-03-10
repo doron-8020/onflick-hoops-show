@@ -330,15 +330,21 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       <div className="absolute bottom-20 start-14 end-4 p-4 safe-bottom">
         <div className="mb-3 flex items-center gap-3">
           <div className="flex-1 min-w-0">
-            <span
-              className="inline-block rounded-md bg-destructive px-2 py-0.5 font-semibold text-destructive-foreground text-sm cursor-pointer hover:opacity-90 transition-opacity"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (video.user_id) navigate(`/player/${video.user_id}`);
-              }}
-            >
-              {displayName}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span
+                className="inline-block rounded-md bg-destructive px-2 py-0.5 font-semibold text-destructive-foreground text-sm cursor-pointer hover:opacity-90 transition-opacity"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (video.user_id) navigate(`/player/${video.user_id}`);
+                }}
+              >
+                {displayName}
+              </span>
+              {profile?.verified && (
+                <BadgeCheck className="h-4 w-4 text-primary shrink-0" fill="currentColor" />
+              )}
+            </div>
+            <p className="text-xs text-foreground/50 mt-0.5">{handle}</p>
             {profile?.position && (
               <p className="text-xs text-foreground/60">
                 {profile.position}
@@ -376,6 +382,16 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           {formatNumber(video.views_count)} {t("feed.views")}
         </p>
       </div>
+
+      {/* Video progress bar */}
+      {isVideo && (
+        <div className="absolute bottom-[76px] inset-x-0 h-[3px] bg-foreground/10 z-10">
+          <div
+            className="h-full bg-primary transition-[width] duration-200 ease-linear"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      )}
 
       <CommentsSheet videoId={video.id} open={commentsOpen} onOpenChange={setCommentsOpen} />
     </div>
