@@ -18,7 +18,7 @@ const BottomNav = () => {
   const navItems = [
     { icon: Home, label: t("nav.home"), path: "/" },
     { icon: Search, label: t("nav.discover"), path: "/discover" },
-    { icon: Plus, label: t("nav.create"), path: "/create", isCreate: true },
+    { icon: Plus, label: "", path: "/create", isCreate: true },
     { icon: MessageCircle, label: t("nav.messages"), path: "/messages" },
     { icon: User, label: t("nav.profile"), path: "/profile" },
   ];
@@ -60,8 +60,8 @@ const BottomNav = () => {
   }, [location.pathname]);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/5 bg-black/95 backdrop-blur-xl safe-bottom">
-      <div className="mx-auto max-w-lg flex items-center justify-around px-2 py-1.5 pb-[env(safe-area-inset-bottom,6px)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/80 backdrop-blur-xl safe-bottom">
+      <div className="mx-auto max-w-lg flex items-center justify-around px-2 h-[56px] pb-[env(safe-area-inset-bottom,0px)]">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
 
@@ -71,14 +71,14 @@ const BottomNav = () => {
                 key={item.path}
                 to={item.path}
                 onClick={() => haptic(20)}
-                className="flex flex-col items-center"
+                className="flex flex-col items-center justify-center"
                 aria-label="Create new highlight"
               >
-                {/* TikTok-style create button with cyan/magenta shadows */}
+                {/* TikTok-style rounded rect create button */}
                 <div className="relative">
                   <div className="absolute inset-0 rounded-lg bg-[#25F4EE] translate-x-[-3px]" />
                   <div className="absolute inset-0 rounded-lg bg-[#FE2C55] translate-x-[3px]" />
-                  <div className="relative rounded-lg bg-white px-3.5 py-1.5">
+                  <div className="relative rounded-lg bg-white px-3.5 py-1">
                     <Plus className="h-5 w-5 text-black" strokeWidth={2.5} />
                   </div>
                 </div>
@@ -102,11 +102,13 @@ const BottomNav = () => {
                 className={`h-6 w-6 transition-colors duration-200 ${isActive ? "text-white" : "text-white/50"}`}
                 strokeWidth={isActive ? 2 : 1.5}
               />
-              <span className={`text-[10px] font-medium transition-colors duration-200 ${isActive ? "text-white" : "text-white/50"}`}>
-                {item.label}
-              </span>
+              {item.label && (
+                <span className={`text-[10px] font-medium transition-colors duration-200 ${isActive ? "text-white" : "text-white/50"}`}>
+                  {item.label}
+                </span>
+              )}
               {badgeCount > 0 && (
-                <span className="absolute -top-0.5 end-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#FE2C55] px-1 text-[9px] font-bold text-white animate-scale-in">
+                <span className="absolute -top-0.5 end-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#FE2C55] px-1 text-[10px] font-bold text-white animate-scale-in">
                   {badgeCount > 99 ? "99+" : badgeCount}
                 </span>
               )}
