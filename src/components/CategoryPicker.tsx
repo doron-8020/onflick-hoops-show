@@ -23,10 +23,12 @@ interface CategoryPickerProps {
   onCategoryChange: (cat: string) => void;
   selectedTags: string[];
   onTagsChange: (tags: string[]) => void;
+  maxTagsReached?: boolean;
+  showCategoryError?: boolean;
 }
 
-const CategoryPicker = ({ selectedCategory, onCategoryChange, selectedTags, onTagsChange }: CategoryPickerProps) => {
-  const { language, t } = useLanguage();
+const CategoryPicker = ({ selectedCategory, onCategoryChange, selectedTags, onTagsChange, maxTagsReached = false, showCategoryError = false }: CategoryPickerProps) => {
+  const { language } = useLanguage();
 
   const toggleTag = (tag: string) => {
     if (selectedTags.includes(tag)) {
@@ -40,8 +42,8 @@ const CategoryPicker = ({ selectedCategory, onCategoryChange, selectedTags, onTa
     <div className="space-y-3">
       {/* Category */}
       <div>
-        <p className="text-xs font-semibold text-muted-foreground mb-2">
-          {language === "he" ? "קטגוריה (רשות)" : "Category (optional)"}
+        <p className={`text-xs font-semibold mb-2 ${showCategoryError ? "text-destructive" : "text-muted-foreground"}`}>
+          {language === "he" ? "קטגוריה (חובה) *" : "Category (required) *"}
         </p>
         <div className="flex flex-wrap gap-1.5">
           {CATEGORIES.map((cat) => (
@@ -60,6 +62,11 @@ const CategoryPicker = ({ selectedCategory, onCategoryChange, selectedTags, onTa
             </button>
           ))}
         </div>
+        {showCategoryError && !selectedCategory && (
+          <p className="text-[11px] text-destructive mt-1">
+            {language === "he" ? "יש לבחור קטגוריה" : "Please select a category"}
+          </p>
+        )}
       </div>
 
       {/* Suggested Tags */}
@@ -73,10 +80,11 @@ const CategoryPicker = ({ selectedCategory, onCategoryChange, selectedTags, onTa
               key={tag}
               type="button"
               onClick={() => toggleTag(tag)}
+              disabled={maxTagsReached && !selectedTags.includes(tag)}
               className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
                 selectedTags.includes(tag)
                   ? "bg-primary/20 text-primary border border-primary/30"
-                  : "bg-secondary text-muted-foreground hover:bg-secondary/80"
+                  : "bg-secondary text-muted-foreground hover:bg-secondary/80 disabled:opacity-40 disabled:cursor-not-allowed"
               }`}
             >
               #{tag}

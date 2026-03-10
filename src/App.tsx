@@ -25,9 +25,59 @@ import Terms from "./pages/Terms";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ProfileFeed from "./pages/ProfileFeed";
 import FollowList from "./pages/FollowList";
+import TagFeed from "./pages/TagFeed";
 import AppShell from "./components/AppShell";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const queryClient = new QueryClient();
+
+// OG tag updater for shared video links
+const OGTagUpdater = () => {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const videoId = params.get("v");
+    if (!videoId) return;
+
+    const updateOG = async () => {
+      const { data } = await supabase
+        .from("videos")
+        .select("title, caption, thumbnail_url, profiles!videos_user_id_fkey(display_name, position)")
+        .eq("id", videoId)
+        .maybeSingle();
+
+      if (!data) return;
+      const profile = (data as any).profiles;
+      const title = (data as any).title || "ONFLICK Highlight";
+      const desc = [profile?.display_name, profile?.position].filter(Boolean).join(" · ");
+      const image = (data as any).thumbnail_url || "/pwa-192x192.png";
+      const url = window.location.href;
+
+      const setMeta = (property: string, content: string) => {
+        let el = document.querySelector(`meta[property="${property}"]`) || document.querySelector(`meta[name="${property}"]`);
+        if (!el) {
+          el = document.createElement("meta");
+          el.setAttribute(property.startsWith("og:") ? "property" : "name", property);
+          document.head.appendChild(el);
+        }
+        el.setAttribute("content", content);
+      };
+
+      setMeta("og:title", title);
+      setMeta("og:description", desc);
+      setMeta("og:image", image);
+      setMeta("og:url", url);
+      setMeta("twitter:title", title);
+      setMeta("twitter:description", desc);
+      setMeta("twitter:image", image);
+      document.title = `${title} | ONFLICK`;
+    };
+
+    updateOG();
+  }, []);
+
+  return null;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -40,6 +90,7 @@ const App = () => (
             <OfflineBanner />
             <BrowserRouter>
               <AuthProvider>
+                <OGTagUpdater />
                 <AppShell>
                   <Routes>
                     <Route path="/" element={<Index />} />
@@ -49,6 +100,7 @@ const App = () => (
                     <Route path="/player/:userId" element={<PlayerProfile />} />
                     <Route path="/profile/feed" element={<ProfileFeed />} />
                     <Route path="/user/:userId/follows" element={<FollowList />} />
+                    <Route path="/tag/:tagName" element={<TagFeed />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/blog" element={<Blog />} />
@@ -71,4 +123,3 @@ const App = () => (
 );
 
 export default App;
-

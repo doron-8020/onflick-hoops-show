@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Camera, Video, Image, Upload, X, Loader2, Plus } from "lucide-react";
+import { Camera, Video, Image, Upload, X, Loader2, Plus, Check, Globe, Users, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -8,14 +8,22 @@ import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import CategoryPicker from "@/components/CategoryPicker";
 
-const MAX_GALLERY_IMAGES = 20;
+const MAX_GALLERY_IMAGES = 35;
+
+const PRIVACY_OPTIONS = [
+  { value: "public", emoji: "🌍", en: "Public", he: "ציבורי" },
+  { value: "followers", emoji: "👥", en: "Followers only", he: "עוקבים בלבד" },
+  { value: "private", emoji: "🔒", en: "Private", he: "פרטי" },
+];
 
 const Create = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { t, isRTL } = useLanguage();
+  const { t, isRTL, language } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadDone, setUploadDone] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -27,6 +35,13 @@ const Create = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [activePreview, setActivePreview] = useState(0);
+  const [privacy, setPrivacy] = useState("public");
+  const [showCategoryError, setShowCategoryError] = useState(false);
+
+  // Combined tag count
+  const customTagsArray = customTags.split(",").map((t) => t.trim().replace("#", "")).filter(Boolean);
+  const totalTags = selectedTags.length + customTagsArray.length;
+  const maxTagsReached = totalTags >= 3;
 
   if (authLoading) {
     return (
@@ -76,12 +91,12 @@ const Create = () => {
     }
 
     const file = files[0];
-    const isVideo = file.type.startsWith("video/");
-    const isImage = file.type.startsWith("image/");
-    if (!isVideo && !isImage) { toast.error(t("create.invalidFile")); return; }
+    const isVid = file.type.startsWith("video/");
+    const isImg = file.type.startsWith("image/");
+    if (!isVid && !isImg) { toast.error(t("create.invalidFile")); return; }
     if (file.size > 100 * 1024 * 1024) { toast.error(t("create.fileTooLarge")); return; }
     setSelectedFile(file);
-    setMediaType(isVideo ? "video" : "image");
+    setMediaType(isVid ? "video" : "image");
     setPreviewUrl(URL.createObjectURL(file));
     setGalleryFiles([]);
     setGalleryPreviews([]);
@@ -114,51 +129,66 @@ const Create = () => {
   const handleUpload = async () => {
     const hasMedia = selectedFile || galleryFiles.length > 0;
     if (!hasMedia || !title.trim()) { toast.error(t("create.addTitleAndFile")); return; }
+    if (!selectedCategory) {
+      setShowCategoryError(true);
+      toast.error(language === "he" ? "יש לבחור קטגוריה" : "Please select a category");
+      return;
+    }
     setUploading(true);
+    setUploadProgress(0);
+    setUploadDone(false);
     try {
-      // Combine custom tags + selected tags + category
-      const customTagsArray = customTags.split(",").map((t) => t.trim().replace("#", "")).filter(Boolean);
-      const allTags = [...new Set([...selectedTags, ...customTagsArray, ...(selectedCategory ? [selectedCategory] : [])])];
+      const allCustomTags = customTags.split(",").map((t) => t.trim().replace("#", "")).filter(Boolean);
+      const allTags = [...new Set([...selectedTags, ...allCustomTags, selectedCategory])];
+
+      let totalBytes = 0;
+      let uploadedBytes = 0;
 
       if (mediaType === "gallery" && galleryFiles.length > 0) {
+        totalBytes = galleryFiles.reduce((s, f) => s + f.size, 0);
         const urls: string[] = [];
         for (const file of galleryFiles) {
           const fileExt = file.name.split(".").pop();
           const filePath = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
           const { error: uploadError } = await supabase.storage.from("videos").upload(filePath, file);
           if (uploadError) throw uploadError;
+          uploadedBytes += file.size;
+          setUploadProgress(Math.round((uploadedBytes / totalBytes) * 100));
           const { data: { publicUrl } } = supabase.storage.from("videos").getPublicUrl(filePath);
           urls.push(publicUrl);
         }
         const { error: insertError } = await supabase.from("videos").insert({
           user_id: user.id, title: title.trim(), caption: caption.trim() || null,
           video_url: urls[0], thumbnail_url: urls[0], gallery_urls: urls,
-          tags: allTags.length > 0 ? allTags : null, media_type: "gallery",
+          tags: allTags.length > 0 ? allTags : null, media_type: "gallery", privacy,
         });
         if (insertError) throw insertError;
       } else {
+        totalBytes = selectedFile!.size;
         const fileExt = selectedFile!.name.split(".").pop();
         const filePath = `${user.id}/${Date.now()}.${fileExt}`;
         const { error: uploadError } = await supabase.storage.from("videos").upload(filePath, selectedFile!);
         if (uploadError) throw uploadError;
+        setUploadProgress(100);
         const { data: { publicUrl } } = supabase.storage.from("videos").getPublicUrl(filePath);
         const { error: insertError } = await supabase.from("videos").insert({
           user_id: user.id, title: title.trim(), caption: caption.trim() || null,
           video_url: publicUrl, thumbnail_url: mediaType === "image" ? publicUrl : null,
-          tags: allTags.length > 0 ? allTags : null, media_type: mediaType,
+          tags: allTags.length > 0 ? allTags : null, media_type: mediaType, privacy,
         });
         if (insertError) throw insertError;
       }
+      setUploadDone(true);
       toast.success(t("create.success"));
-      navigate("/");
+      setTimeout(() => navigate("/"), 1000);
     } catch (error: any) {
       toast.error(error.message || t("create.uploadFailed"));
-    } finally {
       setUploading(false);
     }
   };
 
   const hasContent = selectedFile || galleryFiles.length > 0;
+  const canPublish = hasContent && title.trim() && selectedCategory && !uploading;
 
   return (
     <div className="min-h-screen bg-background flex flex-col pb-24">
@@ -238,7 +268,7 @@ const Create = () => {
                 <span className="flex items-center gap-1"><Video className="h-3.5 w-3.5" /> {t("create.video")}</span>
                 <span className="flex items-center gap-1"><Image className="h-3.5 w-3.5" /> {t("create.image")}</span>
               </div>
-              <p className="text-xs text-muted-foreground">{t("create.upTo100MB")} · {t("create.upTo20Images") || "Up to 20 images"}</p>
+              <p className="text-xs text-muted-foreground">{t("create.upTo100MB")} · {language === "he" ? "עד 35 תמונות בגלריה" : "Up to 35 images gallery"}</p>
             </button>
           )}
 
@@ -247,6 +277,26 @@ const Create = () => {
           <input type="text" placeholder={t("create.titleField")} value={title} onChange={(e) => setTitle(e.target.value)}
             dir={isRTL ? "rtl" : "ltr"}
             className="w-full rounded-xl bg-secondary px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary" />
+
+          {/* Privacy selector */}
+          <div className="flex gap-2">
+            {PRIVACY_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setPrivacy(opt.value)}
+                className={`flex-1 flex items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all ${
+                  privacy === opt.value
+                    ? "bg-primary text-primary-foreground shadow-glow"
+                    : "bg-secondary text-muted-foreground hover:bg-secondary/80"
+                }`}
+              >
+                <span>{opt.emoji}</span>
+                <span>{language === "he" ? opt.he : opt.en}</span>
+              </button>
+            ))}
+          </div>
+
           <textarea placeholder={t("create.descField")} value={caption} onChange={(e) => setCaption(e.target.value)} rows={2}
             dir={isRTL ? "rtl" : "ltr"}
             className="w-full rounded-xl bg-secondary px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary resize-none" />
@@ -254,24 +304,61 @@ const Create = () => {
           {/* Category & Tag Picker */}
           <CategoryPicker
             selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
+            onCategoryChange={(cat) => { setSelectedCategory(cat); setShowCategoryError(false); }}
             selectedTags={selectedTags}
-            onTagsChange={setSelectedTags}
+            onTagsChange={(tags) => {
+              if (tags.length + customTagsArray.length > 3) {
+                toast.error(language === "he" ? "ניתן להוסיף עד 3 תגיות" : "You can add up to 3 tags only");
+                return;
+              }
+              setSelectedTags(tags);
+            }}
+            maxTagsReached={maxTagsReached}
+            showCategoryError={showCategoryError}
           />
 
           {/* Custom tags */}
-          <input type="text" placeholder={t("create.tagsField")} value={customTags} onChange={(e) => setCustomTags(e.target.value)}
-            dir={isRTL ? "rtl" : "ltr"}
-            className="w-full rounded-xl bg-secondary px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary" />
+          <div>
+            <input type="text" placeholder={t("create.tagsField")} value={customTags}
+              onChange={(e) => {
+                const newCustom = e.target.value.split(",").map(t => t.trim().replace("#", "")).filter(Boolean);
+                if (newCustom.length + selectedTags.length > 3) {
+                  toast.error(language === "he" ? "ניתן להוסיף עד 3 תגיות" : "You can add up to 3 tags only");
+                  return;
+                }
+                setCustomTags(e.target.value);
+              }}
+              dir={isRTL ? "rtl" : "ltr"}
+              disabled={maxTagsReached && customTagsArray.length === 0}
+              className="w-full rounded-xl bg-secondary px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary disabled:opacity-50" />
+            <p className="text-[11px] text-muted-foreground mt-1 px-1">
+              {language === "he" ? `מקסימום 3 תגיות (${totalTags}/3)` : `Maximum 3 tags (${totalTags}/3)`}
+            </p>
+          </div>
 
-          <button onClick={handleUpload} disabled={uploading || !hasContent || !title.trim()}
-            className="w-full rounded-xl gradient-fire py-3.5 text-sm font-bold text-primary-foreground shadow-glow disabled:opacity-50 transition-opacity flex items-center justify-center gap-2">
-            {uploading ? (
-              <><Loader2 className="h-4 w-4 animate-spin" />{t("create.uploading")}</>
-            ) : (
-              <><Upload className="h-4 w-4" />{t("create.publish")}</>
-            )}
-          </button>
+          {/* Upload button / progress */}
+          {uploading ? (
+            <div className="space-y-2">
+              <div className="w-full h-3 rounded-full bg-secondary overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-300 ${uploadDone ? "bg-green-500" : "gradient-fire"}`}
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                {uploadDone ? (
+                  <><Check className="h-4 w-4 text-green-500" /><span className="text-sm font-semibold text-green-500">{language === "he" ? "הושלם!" : "Done!"}</span></>
+                ) : (
+                  <><Loader2 className="h-4 w-4 animate-spin text-primary" /><span className="text-sm font-semibold text-foreground">{t("create.uploading")} {uploadProgress}%</span></>
+                )}
+              </div>
+            </div>
+          ) : (
+            <button onClick={handleUpload} disabled={!canPublish}
+              className="w-full rounded-xl gradient-fire py-3.5 text-sm font-bold text-primary-foreground shadow-glow disabled:opacity-50 transition-opacity flex items-center justify-center gap-2">
+              <Upload className="h-4 w-4" />{t("create.publish")}
+            </button>
+          )}
         </div>
       </div>
 
