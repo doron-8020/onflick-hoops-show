@@ -263,16 +263,28 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         </button>
 
         <button
-          onClick={(e) => {
+          onClick={async (e) => {
             e.stopPropagation();
-            setSaved(!saved);
+            if (!user) { navigate("/auth"); return; }
             haptic(20);
-            toast.success(saved ? t("video.unsaved") : t("video.saved"));
+            if (saved) {
+              setSaved(false);
+              setSavesCount((c) => c - 1);
+              const { error } = await supabase.from("bookmarks").delete().eq("user_id", user.id).eq("video_id", video.id);
+              if (error) { setSaved(true); setSavesCount((c) => c + 1); }
+              else toast.success(t("video.unsaved"));
+            } else {
+              setSaved(true);
+              setSavesCount((c) => c + 1);
+              const { error } = await supabase.from("bookmarks").insert({ user_id: user.id, video_id: video.id });
+              if (error) { setSaved(false); setSavesCount((c) => c - 1); }
+              else toast.success(t("video.saved"));
+            }
           }}
           className="flex flex-col items-center gap-0.5"
         >
           <Bookmark className={`h-7 w-7 drop-shadow-md ${saved ? "text-primary fill-primary" : "text-foreground"}`} />
-          <span className="text-[11px] font-semibold text-foreground drop-shadow-md">0</span>
+          <span className="text-[11px] font-semibold text-foreground drop-shadow-md">{formatNumber(savesCount)}</span>
         </button>
 
         <button onClick={handleShare} className="flex flex-col items-center">
