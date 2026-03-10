@@ -307,7 +307,40 @@ const Profile = () => {
             <EmptyTabState icon={Lock} title={t("profile.privateVideos")} subtitle={t("profile.onlyYou")} />
           )}
           {activeTab === "saved" && (
-            <EmptyTabState icon={Bookmark} title={t("profile.saved")} subtitle={t("profile.saveHighlights")} />
+            <>
+              {savedVideos.length > 0 ? (
+                <div className="grid grid-cols-3 gap-px">
+                  {savedVideos.map((video, index) => (
+                    <div
+                      key={video.id}
+                      className="relative aspect-[9/16] overflow-hidden bg-secondary group cursor-pointer"
+                      onClick={() => navigate(`/profile/feed?start=${index}`, { state: { videos: savedVideos } })}
+                    >
+                      {video.media_type === "image" ? (
+                        <img src={video.video_url} className="h-full w-full object-cover" alt="" loading="lazy" />
+                      ) : (
+                        <video
+                          src={video.video_url}
+                          className="h-full w-full object-cover"
+                          muted
+                          playsInline
+                          preload="metadata"
+                        />
+                      )}
+                      <div className="absolute bottom-1 start-1 flex items-center gap-0.5 pointer-events-none">
+                        <Play className="h-3 w-3 text-primary-foreground" fill="currentColor" />
+                        <span className="text-[10px] font-semibold text-primary-foreground drop-shadow-md">
+                          {formatCount(video.views_count || 0)}
+                        </span>
+                      </div>
+                      <div className="absolute inset-0 bg-background/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <EmptyTabState icon={Bookmark} title={t("profile.saved")} subtitle={t("profile.saveHighlights")} />
+              )}
+            </>
           )}
           {activeTab === "about" && profile && <AboutMeSection profile={profile} />}
         </div>
