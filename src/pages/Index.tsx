@@ -217,7 +217,7 @@ const Index = () => {
                 {videos.map((video, i) => (
                   <div key={video.id} data-video-card data-index={i} className="h-[100dvh] w-full snap-start snap-always">
                     {renderWindow.has(i) ? (
-                      <VideoCard video={video} isLiked={likedIds.has(video.id)} />
+                      <VideoCard video={video} isLiked={likedIds.has(video.id)} onDeleted={(id) => setVideos((prev) => prev.filter((v) => v.id !== id))} />
                     ) : (
                       <div className="h-full w-full bg-background flex items-center justify-center">
                         <div className="animate-pulse rounded-full gradient-fire p-4"><span className="font-display text-xl text-primary-foreground">🏀</span></div>
