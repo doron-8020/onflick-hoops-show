@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Heart, MessageCircle, Share2, Play, Pause, UserPlus, UserCheck, Bookmark, Repeat2, BadgeCheck, MoreHorizontal } from "lucide-react";
+import { Heart, MessageCircle, Share2, Play, Pause, UserPlus, UserCheck, Bookmark, Repeat2, BadgeCheck, MoreHorizontal, Music2 } from "lucide-react";
 import BasketballLikeButton from "./BasketballLikeButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -313,7 +313,13 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           )}
         </button>
 
-        {isVideo && <SoundWheel videoRef={videoRef} isPlaying={playing} thumbnailUrl={video.thumbnail_url} />}
+        {isVideo ? (
+          <SoundWheel videoRef={videoRef} isPlaying={playing} thumbnailUrl={video.thumbnail_url} />
+        ) : (
+          <div className="h-11 w-11 rounded-full bg-background/30 backdrop-blur-sm ring-1 ring-border/60 flex items-center justify-center opacity-40">
+            <Music2 className="h-5 w-5 text-foreground/50" />
+          </div>
+        )}
       </div>
 
       {/* Bottom info */}
