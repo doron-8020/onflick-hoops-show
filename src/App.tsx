@@ -48,6 +48,7 @@ const App = () => (
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/player/:userId" element={<PlayerProfile />} />
                     <Route path="/profile/feed" element={<ProfileFeed />} />
+                    <Route path="/user/:userId/follows" element={<FollowList />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/blog" element={<Blog />} />
