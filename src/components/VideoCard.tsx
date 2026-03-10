@@ -32,6 +32,7 @@ interface VideoCardProps {
       avatar_url: string | null;
       position: string | null;
       team: string | null;
+      verified?: boolean;
     } | null;
   };
   isLiked?: boolean;
