@@ -71,6 +71,27 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     if (videoRef.current) videoRef.current.muted = globalMuted;
   }, [globalMuted]);
 
+  // Check if bookmarked + count
+  useEffect(() => {
+    const fetchBookmark = async () => {
+      const { count } = await supabase
+        .from("bookmarks")
+        .select("*", { count: "exact", head: true })
+        .eq("video_id", video.id);
+      setSavesCount(count || 0);
+
+      if (!user) return;
+      const { data } = await supabase
+        .from("bookmarks")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("video_id", video.id)
+        .maybeSingle();
+      setSaved(!!data);
+    };
+    fetchBookmark();
+  }, [user, video.id]);
+
   const handleLike = useCallback(async () => {
     if (!user) {
       navigate("/auth");
