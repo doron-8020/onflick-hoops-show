@@ -299,8 +299,11 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           <span className="text-[11px] font-semibold text-foreground drop-shadow-md">{formatNumber(savesCount)}</span>
         </button>
 
-        <button onClick={handleShare} className="flex flex-col items-center">
+        <button onClick={handleShare} className="flex flex-col items-center gap-0.5">
           <Share2 className="h-7 w-7 text-foreground drop-shadow-md" />
+          {sharesCount > 0 && (
+            <span className="text-[11px] font-semibold text-foreground drop-shadow-md">{formatNumber(sharesCount)}</span>
+          )}
         </button>
 
         <button onClick={handleRepost} className="flex flex-col items-center gap-0.5">
@@ -310,7 +313,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           )}
         </button>
 
-        {isVideo && <SpinningSoundIcon imageUrl={profile?.avatar_url} isPlaying={playing} />}
+        {isVideo && <SoundWheel videoRef={videoRef} />}
       </div>
 
       {/* Bottom info */}
