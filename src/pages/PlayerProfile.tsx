@@ -338,6 +338,16 @@ const PlayerProfile = () => {
         {activeTab === "about" && profile && <PlayerAboutSection profile={profile} />}
       </div>
 
+      {/* Story viewer overlay */}
+      <AnimatePresence>
+        {storyViewerGroup && (
+          <StoryViewer
+            group={storyViewerGroup}
+            onClose={() => { setStoryViewerGroup(null); fetchStories(); }}
+          />
+        )}
+      </AnimatePresence>
+
       <BottomNav />
     </div>
   );
