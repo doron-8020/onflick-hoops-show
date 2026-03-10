@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Heart, MessageCircle, Share2, Play, Pause, UserPlus, UserCheck, Bookmark, Repeat2, BadgeCheck, MoreHorizontal, Music2 } from "lucide-react";
+import { Heart, MessageCircle, Share2, Play, Pause, Bookmark, Repeat2, BadgeCheck, MoreHorizontal, Music2 } from "lucide-react";
 import BasketballLikeButton from "./BasketballLikeButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -197,7 +197,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     }
   };
 
-  const musicText = video.caption ? `${displayName} · Original Sound` : `${displayName} · Original Sound`;
+  const musicText = `${displayName} · Original Sound`;
 
   return (
     <div className="relative h-full w-full" onClick={isVideo ? handleTap : undefined}>
@@ -208,12 +208,12 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         ) : video.media_type === "image" ? (
           <>
             <img src={video.video_url} className="h-full w-full object-cover" alt={video.caption || "Highlight"} loading="lazy" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
           </>
         ) : (
           <>
             <video ref={videoRef} src={video.video_url} className="h-full w-full object-cover" loop playsInline autoPlay muted={globalMuted} poster={video.thumbnail_url || undefined} preload="auto" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
           </>
         )}
       </div>
@@ -222,7 +222,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       {user && video.user_id && user.id !== video.user_id && (
         <button
           onClick={(e) => { e.stopPropagation(); haptic(10); setActionSheetOpen(true); }}
-          className="absolute top-14 end-3 z-20 rounded-full bg-black/30 p-2 backdrop-blur-sm"
+          className="absolute top-[56px] end-[14px] z-20 rounded-full bg-black/30 h-8 w-8 flex items-center justify-center backdrop-blur-sm"
         >
           <MoreHorizontal className="h-5 w-5 text-white" />
         </button>
@@ -249,11 +249,11 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </AnimatePresence>
 
       {/* RIGHT side action column */}
-      <div className="absolute right-3 bottom-[100px] flex flex-col items-center gap-5 z-10" onClick={(e) => e.stopPropagation()}>
+      <div className="absolute right-3 bottom-[88px] flex flex-col items-center gap-4 z-10" onClick={(e) => e.stopPropagation()}>
         {/* Avatar */}
         {video.user_id && (
           <button onClick={() => { haptic(10); navigate(`/player/${video.user_id}`); }} className="relative mb-1">
-            <div className="h-[46px] w-[46px] rounded-full overflow-hidden ring-2 ring-white/60 ring-offset-1 ring-offset-black/30">
+            <div className="h-[44px] w-[44px] rounded-full overflow-hidden ring-2 ring-white ring-offset-1 ring-offset-black/30">
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
               ) : (
@@ -262,8 +262,9 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
                 </div>
               )}
             </div>
+            {/* Follow + button — only when not following */}
             {user && video.user_id && user.id !== video.user_id && !isFollowing && (
-              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 h-5 w-5 rounded-full bg-primary flex items-center justify-center border-2 border-black/60">
+              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 h-5 w-5 rounded-full bg-[#FE2C55] flex items-center justify-center border-2 border-black/60">
                 <span className="text-[10px] text-white font-bold">+</span>
               </div>
             )}
@@ -276,10 +277,10 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         {/* Comments */}
         <button onClick={() => { haptic(10); setCommentsOpen(true); }} className="flex flex-col items-center gap-1">
           <MessageCircle className="h-7 w-7 text-white drop-shadow-md" strokeWidth={1.5} />
-          <span className="text-xs font-semibold text-white drop-shadow-md">{formatNumber(video.comments_count)}</span>
+          <span className="text-[12px] font-semibold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">{formatNumber(video.comments_count)}</span>
         </button>
 
-        {/* Bookmark */}
+        {/* Bookmark — white outline/fill only */}
         <button
           onClick={async (e) => {
             e.stopPropagation();
@@ -297,29 +298,27 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           }}
           className="flex flex-col items-center gap-1"
         >
-          <Bookmark className={`h-7 w-7 drop-shadow-md ${saved ? "text-primary fill-primary" : "text-white"}`} strokeWidth={1.5} />
-          <span className="text-xs font-semibold text-white drop-shadow-md">{formatNumber(savesCount)}</span>
+          <Bookmark className={`h-7 w-7 drop-shadow-md ${saved ? "text-white fill-white" : "text-white"}`} strokeWidth={1.5} />
+          <span className="text-[12px] font-semibold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">{formatNumber(savesCount)}</span>
         </button>
 
         {/* Share */}
         <button onClick={handleShare} className="flex flex-col items-center gap-1">
           <Share2 className="h-7 w-7 text-white drop-shadow-md" strokeWidth={1.5} />
-          {sharesCount > 0 && (
-            <span className="text-xs font-semibold text-white drop-shadow-md">{formatNumber(sharesCount)}</span>
-          )}
+          <span className="text-[12px] font-semibold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">{formatNumber(sharesCount)}</span>
         </button>
 
         {/* Repost */}
         <button onClick={handleRepost} className="flex flex-col items-center gap-1">
           <Repeat2 className={`h-7 w-7 drop-shadow-md ${reposted ? "text-primary" : "text-white"}`} strokeWidth={1.5} />
           {repostsCount > 0 && (
-            <span className="text-xs font-semibold text-white drop-shadow-md">{formatNumber(repostsCount)}</span>
+            <span className="text-[12px] font-semibold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">{formatNumber(repostsCount)}</span>
           )}
         </button>
 
         {/* Sound Wheel */}
         {isVideo ? (
-          <SoundWheel videoRef={videoRef} isPlaying={playing} thumbnailUrl={video.thumbnail_url} />
+          <SoundWheel videoRef={videoRef} isPlaying={playing} thumbnailUrl={profile?.avatar_url || video.thumbnail_url} />
         ) : (
           <div className="h-10 w-10 rounded-full bg-black/30 backdrop-blur-sm ring-1 ring-white/20 flex items-center justify-center opacity-40">
             <Music2 className="h-5 w-5 text-white/50" />
@@ -328,9 +327,9 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </div>
 
       {/* Bottom-left info area */}
-      <div className="absolute bottom-[76px] left-3 right-[72px] z-10">
+      <div className="absolute bottom-[72px] left-3 right-[72px] z-10">
         {/* Gradient readability overlay */}
-        <div className="absolute inset-0 -left-3 -bottom-[76px] -right-[72px] pointer-events-none" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)" }} />
+        <div className="absolute inset-0 -left-3 -bottom-[72px] -right-[72px] pointer-events-none" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 40%, transparent 100%)" }} />
 
         <div className="relative">
           {/* Username + Follow */}
@@ -339,7 +338,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
               className="flex items-center gap-1"
               onClick={(e) => { e.stopPropagation(); haptic(10); if (video.user_id) navigate(`/player/${video.user_id}`); }}
             >
-              <span className="text-[16px] font-bold text-white drop-shadow-md">{handle}</span>
+              <span className="text-[16px] font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">{handle}</span>
               {profile?.verified && <BadgeCheck className="h-3.5 w-3.5 text-[#20D5EC] shrink-0" fill="currentColor" />}
             </button>
             {user && video.user_id && user.id !== video.user_id && (
@@ -353,14 +352,14 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
           {/* Caption */}
           {video.caption && (
-            <p className="text-[14px] leading-[1.4] text-white/90 mb-1.5 line-clamp-2 drop-shadow-sm">{video.caption}</p>
+            <p className="text-[14px] leading-[1.4] text-white/90 mb-1.5 line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">{video.caption}</p>
           )}
 
-          {/* Tags */}
+          {/* Tags — white color */}
           {video.tags && video.tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mb-1.5">
               {video.tags.map((tag) => (
-                <button key={tag} onClick={(e) => { e.stopPropagation(); navigate(`/tag/${tag}`); }} className="text-[13px] text-white font-medium hover:underline drop-shadow-sm">
+                <button key={tag} onClick={(e) => { e.stopPropagation(); navigate(`/tag/${tag}`); }} className="text-[13px] text-white font-medium hover:underline drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
                   #{tag}
                 </button>
               ))}
@@ -376,14 +375,14 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           </div>
 
           {/* View count */}
-          <p className="mt-1.5 text-[11px] text-white/50">{formatNumber(video.views_count)} {t("feed.views")}</p>
+          <p className="mt-1.5 text-[12px] text-white/60">{formatNumber(video.views_count)} {t("feed.views")}</p>
         </div>
       </div>
 
-      {/* Video progress bar */}
+      {/* Video progress bar — thin white line */}
       {isVideo && (
-        <div className="absolute bottom-[68px] inset-x-0 h-[2px] bg-white/10 z-10">
-          <div className="h-full bg-primary transition-[width] duration-200 ease-linear" style={{ width: `${progress}%` }} />
+        <div className="absolute bottom-[72px] inset-x-0 h-[2px] bg-white/10 z-10">
+          <div className="h-full bg-white/80 transition-[width] duration-200 ease-linear" style={{ width: `${progress}%` }} />
         </div>
       )}
 
