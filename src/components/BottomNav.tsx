@@ -10,7 +10,7 @@ const BottomNav = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [unreadCount, setUnreadCount] = useState(0);
-
+  const [unreadMsgCount, setUnreadMsgCount] = useState(0);
   const navItems = [
     { icon: Home, label: t("nav.home"), path: "/" },
     { icon: Search, label: t("nav.discover"), path: "/discover" },
