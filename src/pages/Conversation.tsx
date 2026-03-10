@@ -104,9 +104,18 @@ const Conversation = () => {
           filter: `conversation_id=eq.${conversationId}`,
         },
         (payload) => {
-          const msg = payload.new as Message;
+      const msg = payload.new as Message;
           setMessages((prev) => {
             if (prev.some((m) => m.id === msg.id)) return prev;
+            // Replace optimistic message (same sender+content, temp UUID)
+            const optimisticIdx = prev.findIndex(
+              (m) => m.sender_id === msg.sender_id && m.content === msg.content && m.id !== msg.id
+            );
+            if (optimisticIdx !== -1) {
+              const updated = [...prev];
+              updated[optimisticIdx] = msg;
+              return updated;
+            }
             return [...prev, msg];
           });
           scrollToBottom();
