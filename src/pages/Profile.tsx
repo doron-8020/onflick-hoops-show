@@ -81,6 +81,16 @@ const Profile = () => {
     setVideos(data || []);
   };
 
+  const fetchSavedVideos = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("bookmarks")
+      .select("video_id, videos(*)")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    setSavedVideos((data || []).map((b: any) => b.videos).filter(Boolean));
+  };
+
   const fetchProfileViewStats = async () => {
     if (!user) return;
     try {
