@@ -53,6 +53,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   const [liked, setLiked] = useState(initialLiked);
   const [likes, setLikes] = useState(video.likes_count);
   const [saved, setSaved] = useState(false);
+  const [savesCount, setSavesCount] = useState(0);
   const [showHeart, setShowHeart] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
