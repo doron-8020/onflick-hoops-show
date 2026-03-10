@@ -29,6 +29,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
   const [videos, setVideos] = useState<any[]>([]);
+  const [savedVideos, setSavedVideos] = useState<any[]>([]);
   const [editOpen, setEditOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("videos");
   const [scrolled, setScrolled] = useState(false);
