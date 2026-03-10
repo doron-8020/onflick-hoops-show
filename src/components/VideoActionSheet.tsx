@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Copy, EyeOff, Flag, UserX } from "lucide-react";
+import { Copy, EyeOff, Flag, UserX, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -13,6 +13,9 @@ interface VideoActionSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onBlocked?: () => void;
+  isOwn?: boolean;
+  videoUrl?: string;
+  onDeleted?: () => void;
 }
 
 const REPORT_REASONS = [
@@ -22,11 +25,13 @@ const REPORT_REASONS = [
   { key: "other", emoji: "📝", en: "Other", he: "אחר" },
 ];
 
-const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked }: VideoActionSheetProps) => {
+const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked, isOwn, videoUrl, onDeleted }: VideoActionSheetProps) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const [showReport, setShowReport] = useState(false);
   const [showBlockConfirm, setShowBlockConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(`${window.location.origin}/?v=${videoId}`);
@@ -58,6 +63,32 @@ const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked 
     onBlocked?.();
   };
 
+  const handleDelete = async () => {
+    if (!user) return;
+    setDeleting(true);
+    try {
+      // Try to delete from storage if URL contains our bucket
+      if (videoUrl) {
+        const bucketUrl = supabase.storage.from("videos").getPublicUrl("").data.publicUrl;
+        if (videoUrl.startsWith(bucketUrl)) {
+          const path = videoUrl.replace(bucketUrl + "/", "");
+          await supabase.storage.from("videos").remove([path]);
+        }
+      }
+      // Delete row
+      const { error } = await supabase.from("videos").delete().eq("id", videoId);
+      if (error) throw error;
+      toast.success(language === "he" ? "הפוסט נמחק" : "Post deleted");
+      setShowDeleteConfirm(false);
+      onOpenChange(false);
+      onDeleted?.();
+    } catch {
+      toast.error(language === "he" ? "שגיאה במחיקה" : "Failed to delete");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <>
       <Sheet open={open && !showReport} onOpenChange={onOpenChange}>
@@ -66,22 +97,33 @@ const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked 
             <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
           </div>
           <div className="px-4 pb-6 space-y-1">
-            <button onClick={handleCopyLink} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
-              <Copy className="h-5 w-5 text-foreground" />
-              <span className="text-sm font-medium text-foreground">{language === "he" ? "📋 העתק קישור" : "📋 Copy Link"}</span>
-            </button>
-            <button onClick={handleNotInterested} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
-              <EyeOff className="h-5 w-5 text-foreground" />
-              <span className="text-sm font-medium text-foreground">{language === "he" ? "🚫 לא מעניין" : "🚫 Not Interested"}</span>
-            </button>
-            <button onClick={() => setShowReport(true)} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
-              <Flag className="h-5 w-5 text-foreground" />
-              <span className="text-sm font-medium text-foreground">{language === "he" ? "🚨 דווח" : "🚨 Report"}</span>
-            </button>
-            <button onClick={() => { onOpenChange(false); setShowBlockConfirm(true); }} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
-              <UserX className="h-5 w-5 text-destructive" />
-              <span className="text-sm font-medium text-destructive">{language === "he" ? "🔇 חסום משתמש" : "🔇 Block User"}</span>
-            </button>
+            {isOwn ? (
+              /* Own post: only delete */
+              <button onClick={() => { onOpenChange(false); setShowDeleteConfirm(true); }} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
+                <Trash2 className="h-5 w-5 text-destructive" />
+                <span className="text-sm font-medium text-destructive">{language === "he" ? "🗑️ מחק פוסט" : "🗑️ Delete Post"}</span>
+              </button>
+            ) : (
+              /* Other's post: copy, not interested, report, block */
+              <>
+                <button onClick={handleCopyLink} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
+                  <Copy className="h-5 w-5 text-foreground" />
+                  <span className="text-sm font-medium text-foreground">{language === "he" ? "📋 העתק קישור" : "📋 Copy Link"}</span>
+                </button>
+                <button onClick={handleNotInterested} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
+                  <EyeOff className="h-5 w-5 text-foreground" />
+                  <span className="text-sm font-medium text-foreground">{language === "he" ? "🚫 לא מעניין" : "🚫 Not Interested"}</span>
+                </button>
+                <button onClick={() => setShowReport(true)} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
+                  <Flag className="h-5 w-5 text-foreground" />
+                  <span className="text-sm font-medium text-foreground">{language === "he" ? "🚨 דווח" : "🚨 Report"}</span>
+                </button>
+                <button onClick={() => { onOpenChange(false); setShowBlockConfirm(true); }} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
+                  <UserX className="h-5 w-5 text-destructive" />
+                  <span className="text-sm font-medium text-destructive">{language === "he" ? "🔇 חסום משתמש" : "🔇 Block User"}</span>
+                </button>
+              </>
+            )}
           </div>
         </SheetContent>
       </Sheet>
@@ -119,6 +161,24 @@ const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked 
             <AlertDialogCancel>{language === "he" ? "ביטול" : "Cancel"}</AlertDialogCancel>
             <AlertDialogAction onClick={handleBlock} className="bg-destructive text-destructive-foreground">
               {language === "he" ? "חסום" : "Block"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete confirm */}
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{language === "he" ? "למחוק את הפוסט?" : "Delete this post?"}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {language === "he" ? "הפעולה לא ניתנת לביטול." : "This action cannot be undone."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>{language === "he" ? "ביטול" : "Cancel"}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} disabled={deleting} className="bg-destructive text-destructive-foreground">
+              {deleting ? (language === "he" ? "מוחק..." : "Deleting...") : (language === "he" ? "מחק" : "Delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

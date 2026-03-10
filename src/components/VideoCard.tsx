@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CommentsSheet from "./CommentsSheet";
 import GalleryCarousel from "./GalleryCarousel";
 import SpinningSoundIcon from "./SpinningSoundIcon";
+import SoundWheel from "./SoundWheel";
 import VideoActionSheet from "./VideoActionSheet";
 
 interface VideoCardProps {
@@ -38,6 +39,7 @@ interface VideoCardProps {
     } | null;
   };
   isLiked?: boolean;
+  onDeleted?: (videoId: string) => void;
 }
 
 const formatNumber = (n: number) => {
@@ -52,7 +54,7 @@ const haptic = (ms = 30) => {
   } catch {}
 };
 
-const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => {
+const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCardProps) => {
   const [liked, setLiked] = useState(initialLiked);
   const [likes, setLikes] = useState(video.likes_count);
   const [saved, setSaved] = useState(false);
@@ -196,8 +198,8 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         )}
       </div>
 
-      {/* More button (top-right, not for own videos) */}
-      {user && video.user_id && user.id !== video.user_id && (
+      {/* More button (top-right) */}
+      {user && video.user_id && (
         <button
           onClick={(e) => { e.stopPropagation(); setActionSheetOpen(true); }}
           className="absolute top-14 end-3 z-20 rounded-full bg-background/40 p-2 backdrop-blur-sm"
@@ -287,6 +289,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         </button>
 
         {isVideo && <SpinningSoundIcon imageUrl={profile?.avatar_url} isPlaying={playing} />}
+        {isVideo && <SoundWheel videoRef={videoRef as React.RefObject<HTMLVideoElement>} />}
       </div>
 
       {/* Bottom info */}
@@ -331,14 +334,23 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
       {/* Video progress bar */}
       {isVideo && (
-        <div className="absolute bottom-[76px] inset-x-0 h-[3px] bg-foreground/10 z-10">
+        <div className="absolute bottom-[88px] inset-x-0 h-[3px] bg-foreground/10 z-10">
           <div className="h-full bg-primary transition-[width] duration-200 ease-linear" style={{ width: `${progress}%` }} />
         </div>
       )}
 
       <CommentsSheet videoId={video.id} open={commentsOpen} onOpenChange={setCommentsOpen} />
       {video.user_id && (
-        <VideoActionSheet videoId={video.id} videoUserId={video.user_id} open={actionSheetOpen} onOpenChange={setActionSheetOpen} />
+        <VideoActionSheet
+          videoId={video.id}
+          videoUserId={video.user_id}
+          open={actionSheetOpen}
+          onOpenChange={setActionSheetOpen}
+          isOwn={user?.id === video.user_id}
+          videoUrl={video.video_url}
+          onDeleted={() => onDeleted?.(video.id)}
+          onBlocked={() => {}}
+        />
       )}
     </div>
   );

@@ -8,6 +8,7 @@ import {
   Play,
   User,
   BadgeCheck,
+  MoreHorizontal,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,6 +16,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
 import EditProfileDialog from "@/components/EditProfileDialog";
+import VideoActionSheet from "@/components/VideoActionSheet";
 
 type TabKey = "videos" | "private" | "saved" | "about";
 
@@ -36,6 +38,8 @@ const Profile = () => {
   const [bioExpanded, setBioExpanded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [profileViews, setProfileViews] = useState<{ coach: number; scout: number } | null>(null);
+  const [deleteVideoId, setDeleteVideoId] = useState<string | null>(null);
+  const [deleteVideoUrl, setDeleteVideoUrl] = useState<string | null>(null);
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
     videos: null,
@@ -315,6 +319,13 @@ const Profile = () => {
                           {formatCount(video.views_count || 0)}
                         </span>
                       </div>
+                      {/* Delete button on own grid */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setDeleteVideoId(video.id); setDeleteVideoUrl(video.video_url); }}
+                        className="absolute top-1 end-1 rounded-full bg-background/60 p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                      >
+                        <MoreHorizontal className="h-4 w-4 text-foreground" />
+                      </button>
                       <div className="absolute inset-0 bg-background/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                   ))}
@@ -367,6 +378,21 @@ const Profile = () => {
         </div>
 
         <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} profile={profile || {}} onSaved={fetchProfile} />
+        {deleteVideoId && user && (
+          <VideoActionSheet
+            videoId={deleteVideoId}
+            videoUserId={user.id}
+            open={!!deleteVideoId}
+            onOpenChange={(open) => { if (!open) { setDeleteVideoId(null); setDeleteVideoUrl(null); } }}
+            isOwn
+            videoUrl={deleteVideoUrl || undefined}
+            onDeleted={() => {
+              setVideos((prev) => prev.filter((v) => v.id !== deleteVideoId));
+              setDeleteVideoId(null);
+              setDeleteVideoUrl(null);
+            }}
+          />
+        )}
       </div>
       <BottomNav />
     </div>
