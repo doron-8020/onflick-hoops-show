@@ -147,7 +147,6 @@ const Profile = () => {
 
   useEffect(() => {
     if (!user) return;
-    // Fetch all data in parallel for faster loading
     Promise.all([
       fetchProfile(),
       fetchVideos(),
@@ -155,6 +154,8 @@ const Profile = () => {
       fetchRepostedVideos(),
       fetchLikedVideos(),
       fetchProfileViewStats(),
+      fetchScoutFollowers(),
+      fetchScoutRating(),
     ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
