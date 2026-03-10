@@ -341,7 +341,16 @@ const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCar
 
       <CommentsSheet videoId={video.id} open={commentsOpen} onOpenChange={setCommentsOpen} />
       {video.user_id && (
-        <VideoActionSheet videoId={video.id} videoUserId={video.user_id} open={actionSheetOpen} onOpenChange={setActionSheetOpen} />
+        <VideoActionSheet
+          videoId={video.id}
+          videoUserId={video.user_id}
+          open={actionSheetOpen}
+          onOpenChange={setActionSheetOpen}
+          isOwn={user?.id === video.user_id}
+          videoUrl={video.video_url}
+          onDeleted={() => onDeleted?.(video.id)}
+          onBlocked={() => {}}
+        />
       )}
     </div>
   );
