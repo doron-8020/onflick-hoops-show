@@ -74,6 +74,18 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     if (videoRef.current) videoRef.current.muted = globalMuted;
   }, [globalMuted]);
 
+  // Video progress tracking
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el || !isVideo) return;
+    const tick = () => {
+      if (el.duration) setProgress((el.currentTime / el.duration) * 100);
+      progressRAF.current = requestAnimationFrame(tick);
+    };
+    progressRAF.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(progressRAF.current);
+  }, [isVideo]);
+
   // Check if bookmarked + count
   useEffect(() => {
     const fetchBookmark = async () => {
