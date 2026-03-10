@@ -77,7 +77,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
     const { data, error } = await supabase
       .from("comments")
       .select(
-        "id, content, created_at, user_id, profiles!comments_user_id_fkey(display_name, avatar_url)"
+        "id, content, created_at, user_id, profiles!comments_user_id_fkey(display_name, avatar_url, verified)"
       )
       .eq("video_id", videoId)
       .order("created_at", { ascending: true });
