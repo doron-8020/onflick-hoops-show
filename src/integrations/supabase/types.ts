@@ -615,6 +615,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_shares: { Args: { p_video_id: string }; Returns: undefined }
       increment_views: { Args: { p_video_id: string }; Returns: undefined }
       record_profile_view: {
         Args: { p_viewed_user_id: string }

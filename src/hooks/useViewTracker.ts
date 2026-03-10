@@ -10,7 +10,10 @@ export const useViewTracker = () => {
   const trackView = useCallback((videoId: string) => {
     if (!videoId || viewedIds.current.has(videoId)) return;
     viewedIds.current.add(videoId);
-    supabase.rpc("increment_views", { p_video_id: videoId }).then(() => {});
+    // Delay 3s so only meaningful views are counted
+    setTimeout(() => {
+      supabase.rpc("increment_views", { p_video_id: videoId }).then(() => {});
+    }, 3000);
   }, []);
 
   return trackView;

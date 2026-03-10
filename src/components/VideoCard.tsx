@@ -148,8 +148,8 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         await navigator.clipboard.writeText(shareData.url);
         toast.success(t("video.linkCopied"));
       }
-      // Increment shares_count in DB
-      await supabase.from("videos").update({ shares_count: video.shares_count + 1 }).eq("id", video.id);
+      // Atomic increment shares_count in DB
+      await supabase.rpc("increment_shares", { p_video_id: video.id });
     } catch {}
   };
 
