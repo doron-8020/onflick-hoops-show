@@ -313,7 +313,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           )}
         </button>
 
-        {isVideo && <SoundWheel videoRef={videoRef} />}
+        {isVideo && <SoundWheel videoRef={videoRef} isPlaying={playing} thumbnailUrl={video.thumbnail_url} />}
       </div>
 
       {/* Bottom info */}
