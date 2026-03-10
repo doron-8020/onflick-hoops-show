@@ -53,6 +53,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   const [liked, setLiked] = useState(initialLiked);
   const [likes, setLikes] = useState(video.likes_count);
   const [saved, setSaved] = useState(false);
+  const [savesCount, setSavesCount] = useState(0);
   const [showHeart, setShowHeart] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
@@ -69,6 +70,27 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   useEffect(() => {
     if (videoRef.current) videoRef.current.muted = globalMuted;
   }, [globalMuted]);
+
+  // Check if bookmarked + count
+  useEffect(() => {
+    const fetchBookmark = async () => {
+      const { count } = await supabase
+        .from("bookmarks")
+        .select("*", { count: "exact", head: true })
+        .eq("video_id", video.id);
+      setSavesCount(count || 0);
+
+      if (!user) return;
+      const { data } = await supabase
+        .from("bookmarks")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("video_id", video.id)
+        .maybeSingle();
+      setSaved(!!data);
+    };
+    fetchBookmark();
+  }, [user, video.id]);
 
   const handleLike = useCallback(async () => {
     if (!user) {
@@ -241,16 +263,28 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         </button>
 
         <button
-          onClick={(e) => {
+          onClick={async (e) => {
             e.stopPropagation();
-            setSaved(!saved);
+            if (!user) { navigate("/auth"); return; }
             haptic(20);
-            toast.success(saved ? t("video.unsaved") : t("video.saved"));
+            if (saved) {
+              setSaved(false);
+              setSavesCount((c) => c - 1);
+              const { error } = await supabase.from("bookmarks").delete().eq("user_id", user.id).eq("video_id", video.id);
+              if (error) { setSaved(true); setSavesCount((c) => c + 1); }
+              else toast.success(t("video.unsaved"));
+            } else {
+              setSaved(true);
+              setSavesCount((c) => c + 1);
+              const { error } = await supabase.from("bookmarks").insert({ user_id: user.id, video_id: video.id });
+              if (error) { setSaved(false); setSavesCount((c) => c - 1); }
+              else toast.success(t("video.saved"));
+            }
           }}
           className="flex flex-col items-center gap-0.5"
         >
           <Bookmark className={`h-7 w-7 drop-shadow-md ${saved ? "text-primary fill-primary" : "text-foreground"}`} />
-          <span className="text-[11px] font-semibold text-foreground drop-shadow-md">0</span>
+          <span className="text-[11px] font-semibold text-foreground drop-shadow-md">{formatNumber(savesCount)}</span>
         </button>
 
         <button onClick={handleShare} className="flex flex-col items-center">
