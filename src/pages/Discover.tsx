@@ -147,7 +147,7 @@ const Discover = () => {
     
     const { data, error } = await supabase
       .from("videos")
-      .select("*, profiles!videos_user_id_fkey(display_name, avatar_url, position, team)")
+      .select("*, profiles!videos_user_id_fkey(display_name, avatar_url, position, team, verified)")
       .order("views_count", { ascending: false })
       .order("created_at", { ascending: false })
       .range(offset, offset + PAGE_SIZE - 1);
