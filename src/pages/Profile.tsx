@@ -260,6 +260,8 @@ const Profile = () => {
   };
 
   const totalLikes = useMemo(() => videos.reduce((sum, v) => sum + (v.likes_count || 0), 0), [videos]);
+  const totalShares = useMemo(() => videos.reduce((sum, v) => sum + (v.shares_count || 0), 0), [videos]);
+  const totalReposts = useMemo(() => videos.reduce((sum, v) => sum + (v.reposts_count || 0), 0), [videos]);
 
   const underlineStyle = useMemo(() => {
     const el = tabRefs.current[activeTab];
@@ -427,6 +429,8 @@ const Profile = () => {
               { value: profile?.following_count || 0, label: t("profile.following"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=following`) },
               { value: profile?.followers_count || 0, label: t("profile.followers"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=followers`) },
               { value: totalLikes, label: t("profile.likes") },
+              { value: totalShares, label: language === "he" ? "שיתופים" : "Shares" },
+              { value: totalReposts, label: language === "he" ? "ריפוסט" : "Reposts" },
             ].map((stat, i) => (
               <div key={stat.label} className="flex items-center">
                 {i > 0 && (
