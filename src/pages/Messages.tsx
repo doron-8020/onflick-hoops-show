@@ -9,6 +9,7 @@ import DesktopLayout from "@/components/DesktopLayout";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
+import StoriesBar from "@/components/StoriesBar";
 
 interface ConversationItem {
   id: string;
@@ -151,6 +152,10 @@ const Messages = () => {
             />
           </div>
         </div>
+
+        {/* Stories */}
+        <StoriesBar />
+        <div className="border-b border-border" />
 
         {loading ? (
           <div className="flex items-center justify-center py-20">

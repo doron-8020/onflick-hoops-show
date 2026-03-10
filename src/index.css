@@ -111,6 +111,19 @@
     box-shadow: 0 0 0 2px hsl(var(--ring));
     border-radius: var(--radius);
   }
+
+  /* Contrasting input fields */
+  input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+  textarea {
+    background-color: hsl(var(--foreground) / 0.1) !important;
+    color: hsl(var(--foreground));
+  }
+
+  .light input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+  .light textarea {
+    background-color: hsl(0 0% 100%) !important;
+    border-color: hsl(var(--border));
+  }
 }
 
 @layer utilities {
