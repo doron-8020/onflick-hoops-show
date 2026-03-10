@@ -373,34 +373,8 @@ const Profile = () => {
             ))}
           </div>
 
-          {/* Stats */}
-          <div className="flex items-center" style={{ marginTop: 16, marginBottom: 16, gap: 0 }}>
-            {stats.map((stat, i) => (
-              <div key={stat.label} className="flex items-center">
-                {i > 0 && (
-                  <div
-                    style={{
-                      width: 1,
-                      height: 24,
-                      background: "rgba(255,255,255,0.2)",
-                      alignSelf: "center",
-                      margin: "0 16px",
-                    }}
-                  />
-                )}
-                <div
-                  className={`flex flex-col items-center ${stat.onClick ? "cursor-pointer active:opacity-70" : ""}`}
-                  style={{ minWidth: 56 }}
-                  onClick={stat.onClick}
-                >
-                  <span className="text-white" style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.2 }}>
-                    {formatCount(stat.value)}
-                  </span>
-                  <span className="text-white/60" style={{ fontSize: 12 }}>{stat.label}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+
+
 
           {/* Action buttons */}
           <div className="flex w-full max-w-xs" style={{ gap: 8, marginBottom: 12, marginTop: 0 }}>
