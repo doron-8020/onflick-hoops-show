@@ -411,6 +411,24 @@ const Profile = () => {
                 fontSize: 14,
                 fontWeight: 600,
               }}
+              onClick={async () => {
+                const profileUrl = `${window.location.origin}/player/${user?.id}`;
+                const shareData = {
+                  title: profile?.display_name || "ONFLICK Profile",
+                  text: `${profile?.display_name || "Check out this profile"} on ONFLICK`,
+                  url: profileUrl,
+                };
+                try {
+                  if (navigator.share) {
+                    await navigator.share(shareData);
+                  } else {
+                    await navigator.clipboard.writeText(profileUrl);
+                    toast({ title: t("profile.linkCopied") || "Link copied!" });
+                  }
+                } catch {
+                  // user cancelled share
+                }
+              }}
             >
               {t("profile.shareProfile")}
             </button>
