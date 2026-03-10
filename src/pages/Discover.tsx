@@ -9,6 +9,7 @@ import VideoCard from "@/components/VideoCard";
 import VideoThumbnail from "@/components/VideoThumbnail";
 import BottomNav from "@/components/BottomNav";
 import FeedHeader from "@/components/FeedHeader";
+import StoriesBar from "@/components/StoriesBar";
 
 interface VideoWithProfile {
   id: string;
@@ -281,7 +282,10 @@ const Discover = () => {
               </div>
             </div>
 
-            {/* Top Players */}
+            {/* Stories */}
+            <StoriesBar />
+            <div className="border-b border-border" />
+
             {!showSearch && topPlayers.length > 0 && (
               <div className="px-4 pb-3">
                 <h2 className="text-sm font-bold text-foreground mb-2">{language === "he" ? "שחקנים מובילים 🔥" : "Top Players 🔥"}</h2>
