@@ -114,6 +114,7 @@ const Discover = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const feedRef = useRef<HTMLDivElement>(null);
+  const trackView = useViewTracker();
 
   // Search logic for players
   useEffect(() => {
