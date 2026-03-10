@@ -111,6 +111,7 @@ const App = () => (
                     <Route path="/blog" element={<Blog />} />
                     <Route path="/onflick" element={<Onflick />} />
                     <Route path="/admin" element={<Admin />} />
+                    <Route path="/analytics" element={<Analytics />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/onboarding/role" element={<RoleOnboarding />} />
                     <Route path="/terms" element={<Terms />} />
