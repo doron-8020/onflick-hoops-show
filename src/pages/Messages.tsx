@@ -9,6 +9,7 @@ import DesktopLayout from "@/components/DesktopLayout";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
+import StoriesBar from "@/components/StoriesBar";
 
 interface ConversationItem {
   id: string;
