@@ -70,6 +70,11 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   const lastTapRef = useRef<number>(0);
   const progressRAF = useRef<number>(0);
 
+  const profile = video.profiles;
+  const displayName = profile?.display_name || "Player";
+  const handle = `@${(displayName).toLowerCase().replace(/\s+/g, "")}`;
+  const isVideo = video.media_type !== "image" && video.media_type !== "gallery";
+
   useEffect(() => {
     if (videoRef.current) videoRef.current.muted = globalMuted;
   }, [globalMuted]);
