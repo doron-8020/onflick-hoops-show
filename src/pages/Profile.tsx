@@ -33,6 +33,7 @@ const Profile = () => {
   const [savedVideos, setSavedVideos] = useState<any[]>([]);
   const [editOpen, setEditOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("videos");
+  const [bioExpanded, setBioExpanded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [profileViews, setProfileViews] = useState<{ coach: number; scout: number } | null>(null);
 
@@ -203,11 +204,15 @@ const Profile = () => {
 
           <div className="flex gap-0 mb-4">
             {[
-              { value: profile?.following_count || 0, label: t("profile.following") },
-              { value: profile?.followers_count || 0, label: t("profile.followers") },
+              { value: profile?.following_count || 0, label: t("profile.following"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=following`) },
+              { value: profile?.followers_count || 0, label: t("profile.followers"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=followers`) },
               { value: totalLikes, label: t("profile.likes") },
             ].map((stat) => (
-              <div key={stat.label} className="flex flex-col items-center px-6">
+              <div
+                key={stat.label}
+                className={`flex flex-col items-center px-6 ${stat.onClick ? "cursor-pointer active:opacity-70" : ""}`}
+                onClick={stat.onClick}
+              >
                 <span className="font-display text-xl text-foreground leading-tight">{formatCount(stat.value)}</span>
                 <span className="text-xs text-muted-foreground">{stat.label}</span>
               </div>
@@ -238,7 +243,19 @@ const Profile = () => {
                   {profile.team ? ` · ${profile.team}` : ""}
                 </p>
               )}
-              {profile?.bio && <p className="text-sm text-muted-foreground leading-snug">{profile.bio}</p>}
+              {profile?.bio && (
+                <p className="text-sm text-muted-foreground leading-snug">
+                  {bioExpanded || profile.bio.length <= 80 ? profile.bio : `${profile.bio.slice(0, 80)}...`}
+                  {profile.bio.length > 80 && (
+                    <button
+                      onClick={() => setBioExpanded(!bioExpanded)}
+                      className="text-foreground font-semibold ms-1"
+                    >
+                      {bioExpanded ? t("profile.bioLess") : t("profile.bioMore")}
+                    </button>
+                  )}
+                </p>
+              )}
             </div>
           )}
         </div>

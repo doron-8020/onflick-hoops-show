@@ -44,6 +44,7 @@ const PlayerProfile = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabKey>("videos");
   const [scrolled, setScrolled] = useState(false);
+  const [bioExpanded, setBioExpanded] = useState(false);
   const { isFollowing, toggleFollow, loading: followLoading } = useFollow(userId);
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
@@ -166,11 +167,15 @@ const PlayerProfile = () => {
 
         <div className="flex gap-0 mb-4">
           {[
-            { value: profile.following_count || 0, label: t("profile.following") },
-            { value: profile.followers_count || 0, label: t("profile.followers") },
+            { value: profile.following_count || 0, label: t("profile.following"), onClick: () => navigate(`/user/${userId}/follows?tab=following`) },
+            { value: profile.followers_count || 0, label: t("profile.followers"), onClick: () => navigate(`/user/${userId}/follows?tab=followers`) },
             { value: totalLikes, label: t("profile.likes") },
           ].map((stat) => (
-            <div key={stat.label} className="flex flex-col items-center px-6">
+            <div
+              key={stat.label}
+              className={`flex flex-col items-center px-6 ${stat.onClick ? "cursor-pointer active:opacity-70" : ""}`}
+              onClick={stat.onClick}
+            >
               <span className="font-display text-xl text-foreground leading-tight">{formatCount(stat.value)}</span>
               <span className="text-xs text-muted-foreground">{stat.label}</span>
             </div>
@@ -217,7 +222,19 @@ const PlayerProfile = () => {
                 {profile.team ? ` · ${profile.team}` : ""}
               </p>
             )}
-            {profile.bio && <p className="text-sm text-muted-foreground leading-snug">{profile.bio}</p>}
+            {profile.bio && (
+              <p className="text-sm text-muted-foreground leading-snug">
+                {bioExpanded || profile.bio.length <= 80 ? profile.bio : `${profile.bio.slice(0, 80)}...`}
+                {profile.bio.length > 80 && (
+                  <button
+                    onClick={() => setBioExpanded(!bioExpanded)}
+                    className="text-foreground font-semibold ms-1"
+                  >
+                    {bioExpanded ? t("profile.bioLess") : t("profile.bioMore")}
+                  </button>
+                )}
+              </p>
+            )}
           </div>
         )}
       </div>
@@ -247,8 +264,12 @@ const PlayerProfile = () => {
         {activeTab === "videos" &&
           (videos.length > 0 ? (
             <div className="grid grid-cols-3 gap-px">
-              {videos.map((video) => (
-                <div key={video.id} className="relative aspect-[9/16] overflow-hidden bg-secondary group">
+              {videos.map((video, index) => (
+                <div
+                  key={video.id}
+                  className="relative aspect-[9/16] overflow-hidden bg-secondary group cursor-pointer"
+                  onClick={() => navigate(`/profile/feed?start=${index}`, { state: { videos } })}
+                >
                   {video.media_type === "image" ? (
                     <img src={video.video_url} className="h-full w-full object-cover" alt="" loading="lazy" />
                   ) : (

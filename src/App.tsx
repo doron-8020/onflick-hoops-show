@@ -24,6 +24,7 @@ import NotFound from "./pages/NotFound";
 import Terms from "./pages/Terms";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ProfileFeed from "./pages/ProfileFeed";
+import FollowList from "./pages/FollowList";
 import AppShell from "./components/AppShell";
 
 const queryClient = new QueryClient();
@@ -47,6 +48,7 @@ const App = () => (
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/player/:userId" element={<PlayerProfile />} />
                     <Route path="/profile/feed" element={<ProfileFeed />} />
+                    <Route path="/user/:userId/follows" element={<FollowList />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/blog" element={<Blog />} />
