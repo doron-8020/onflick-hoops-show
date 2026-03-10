@@ -95,16 +95,22 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     return () => cancelAnimationFrame(progressRAF.current);
   }, [isVideo]);
 
-  // Check bookmark + repost status
+  // Check bookmark + repost status — all in parallel
   useEffect(() => {
     const fetchStatus = async () => {
-      const { count } = await supabase.from("bookmarks").select("*", { count: "exact", head: true }).eq("video_id", video.id);
-      setSavesCount(count || 0);
-      if (!user) return;
-      const { data: bm } = await supabase.from("bookmarks").select("id").eq("user_id", user.id).eq("video_id", video.id).maybeSingle();
-      setSaved(!!bm);
-      const { data: rp } = await supabase.from("reposts").select("id").eq("user_id", user.id).eq("video_id", video.id).maybeSingle();
-      setReposted(!!rp);
+      if (!user) {
+        const { count } = await supabase.from("bookmarks").select("*", { count: "exact", head: true }).eq("video_id", video.id);
+        setSavesCount(count || 0);
+        return;
+      }
+      const [countRes, bmRes, rpRes] = await Promise.all([
+        supabase.from("bookmarks").select("*", { count: "exact", head: true }).eq("video_id", video.id).then(r => r),
+        supabase.from("bookmarks").select("id").eq("user_id", user.id).eq("video_id", video.id).maybeSingle().then(r => r),
+        supabase.from("reposts").select("id").eq("user_id", user.id).eq("video_id", video.id).maybeSingle().then(r => r),
+      ]);
+      setSavesCount(countRes.count || 0);
+      setSaved(!!bmRes.data);
+      setReposted(!!rpRes.data);
     };
     fetchStatus();
   }, [user, video.id]);

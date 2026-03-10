@@ -135,12 +135,15 @@ const Profile = () => {
 
   useEffect(() => {
     if (!user) return;
-    fetchProfile();
-    fetchVideos();
-    fetchSavedVideos();
-    fetchRepostedVideos();
-    fetchLikedVideos();
-    fetchProfileViewStats();
+    // Fetch all data in parallel for faster loading
+    Promise.all([
+      fetchProfile(),
+      fetchVideos(),
+      fetchSavedVideos(),
+      fetchRepostedVideos(),
+      fetchLikedVideos(),
+      fetchProfileViewStats(),
+    ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
@@ -268,7 +271,7 @@ const Profile = () => {
           }`}
         >
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate(-1 as any)} className="p-1">
+            <button onClick={() => navigate(-1)} className="p-1">
               <Share2 className="h-5 w-5 text-white" />
             </button>
             <button onClick={() => navigate("/discover")} className="p-1">
