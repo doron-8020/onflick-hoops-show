@@ -121,7 +121,7 @@ export const translations = {
   "create.maxImages": { he: "מקסימום", en: "Maximum" },
   "create.images": { he: "תמונות", en: "images" },
   "create.addMore": { he: "הוסף עוד", en: "Add more" },
-  "create.upTo20Images": { he: "עד 20 תמונות בגלריה", en: "Up to 20 images gallery" },
+  "create.upTo20Images": { he: "עד 35 תמונות בגלריה", en: "Up to 35 images gallery" },
 
   // Settings
   "settings.title": { he: "הגדרות", en: "Settings" },
