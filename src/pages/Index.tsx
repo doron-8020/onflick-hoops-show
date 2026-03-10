@@ -44,6 +44,7 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [newPostsCount, setNewPostsCount] = useState(0);
   const [activeTab, setActiveTab] = useState<FeedTab>(() =>
     new URLSearchParams(window.location.search).get("tab") === "following" ? "following" : "foryou"
   );
@@ -54,6 +55,7 @@ const Index = () => {
   const [searchParams] = useSearchParams();
   const scrollRef = useRef<HTMLDivElement>(null);
   const trackView = useViewTracker();
+  const latestCreatedAt = useRef<string | null>(null);
 
   const fetchVideos = useCallback(async (cursor?: string, append = false) => {
     if (!append) setLoading(true); else setLoadingMore(true);
