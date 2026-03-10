@@ -23,6 +23,7 @@ import Onflick from "./pages/Onflick";
 import NotFound from "./pages/NotFound";
 import Terms from "./pages/Terms";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import ProfileFeed from "./pages/ProfileFeed";
 import AppShell from "./components/AppShell";
 
 const queryClient = new QueryClient();
