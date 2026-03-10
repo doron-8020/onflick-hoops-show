@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useMemo, forwardRef } from "react";
+import { Star } from "lucide-react";
 import {
   Grid3X3,
   Lock,
