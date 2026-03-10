@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Heart, MessageCircle, UserPlus, Bell, Trash2 } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, UserPlus, Bell, Trash2, Repeat2 } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 
 interface Notification {
@@ -20,12 +20,14 @@ const typeIcons: Record<string, typeof Heart> = {
   like: Heart,
   comment: MessageCircle,
   follow: UserPlus,
+  repost: Repeat2,
 };
 
 const typeColors: Record<string, string> = {
   like: "bg-primary/15 text-primary",
   comment: "bg-blue-500/15 text-blue-400",
   follow: "bg-green-500/15 text-green-400",
+  repost: "bg-yellow-500/15 text-yellow-400",
 };
 
 const Notifications = () => {
@@ -92,7 +94,7 @@ const Notifications = () => {
   const handleClick = (notif: Notification) => {
     if (notif.type === "follow" && notif.from_user_id) {
       navigate(`/player/${notif.from_user_id}`);
-    } else if ((notif.type === "like" || notif.type === "comment") && notif.video_id) {
+    } else if ((notif.type === "like" || notif.type === "comment" || notif.type === "repost") && notif.video_id) {
       navigate(`/?v=${notif.video_id}`);
     }
   };

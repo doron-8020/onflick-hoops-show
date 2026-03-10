@@ -8,6 +8,7 @@ import {
   Play,
   User,
   BadgeCheck,
+  BarChart3,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -230,8 +231,8 @@ const Profile = () => {
             <button className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground transition-colors hover:bg-secondary/80">
               {t("profile.shareProfile")}
             </button>
-            <button className="rounded-md bg-secondary px-3 py-2 transition-colors hover:bg-secondary/80">
-              <UserPlus className="h-4 w-4 text-foreground" />
+            <button onClick={() => navigate("/analytics")} className="rounded-md bg-secondary px-3 py-2 transition-colors hover:bg-secondary/80" title="Analytics">
+              <BarChart3 className="h-4 w-4 text-foreground" />
             </button>
           </div>
 

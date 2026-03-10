@@ -123,6 +123,8 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     const now = Date.now();
     if (now - lastTapRef.current < 300) {
       if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current);
+      // Double-tap: like (or redirect guest to auth)
+      if (!user) { navigate("/auth"); lastTapRef.current = 0; return; }
       if (!liked) handleLike(); else haptic(40);
       setShowHeart(true);
       setTimeout(() => setShowHeart(false), 800);
@@ -138,7 +140,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         setTimeout(() => setShowPlayIcon(false), 600);
       }, 300);
     }
-  }, [liked, handleLike]);
+  }, [liked, handleLike, user, navigate]);
 
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();

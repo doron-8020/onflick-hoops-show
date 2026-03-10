@@ -29,6 +29,7 @@ import TagFeed from "./pages/TagFeed";
 import Messages from "./pages/Messages";
 import Conversation from "./pages/Conversation";
 import AppShell from "./components/AppShell";
+import Analytics from "./pages/Analytics";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -110,6 +111,7 @@ const App = () => (
                     <Route path="/blog" element={<Blog />} />
                     <Route path="/onflick" element={<Onflick />} />
                     <Route path="/admin" element={<Admin />} />
+                    <Route path="/analytics" element={<Analytics />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/onboarding/role" element={<RoleOnboarding />} />
                     <Route path="/terms" element={<Terms />} />
