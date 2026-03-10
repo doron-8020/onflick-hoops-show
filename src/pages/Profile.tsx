@@ -271,7 +271,7 @@ const Profile = () => {
           }`}
         >
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate(-1 as any)} className="p-1">
+            <button onClick={() => navigate(-1)} className="p-1">
               <Share2 className="h-5 w-5 text-white" />
             </button>
             <button onClick={() => navigate("/discover")} className="p-1">

@@ -44,10 +44,10 @@ const BottomNav = () => {
   useEffect(() => {
     if (!user) return;
     const fetchUnreadDMs = async () => {
-      const { data: convos } = await (supabase as any).from("conversations").select("id").or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`);
+      const { data: convos } = await supabase.from("conversations").select("id").or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`);
       if (!convos || convos.length === 0) { setUnreadMsgCount(0); return; }
       const ids = convos.map((c: any) => c.id);
-      const { count } = await (supabase as any).from("direct_messages").select("*", { count: "exact", head: true }).in("conversation_id", ids).neq("sender_id", user.id).eq("read", false);
+      const { count } = await supabase.from("direct_messages").select("*", { count: "exact", head: true }).in("conversation_id", ids).neq("sender_id", user.id).eq("read", false);
       setUnreadMsgCount(count || 0);
     };
     fetchUnreadDMs();
