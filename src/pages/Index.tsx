@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useViewTracker } from "@/hooks/useViewTracker";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import VideoCard from "@/components/VideoCard";
@@ -51,6 +52,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const trackView = useViewTracker();
 
   const fetchVideos = useCallback(async (cursor?: string, append = false) => {
     if (!append) setLoading(true); else setLoadingMore(true);
@@ -101,7 +103,11 @@ const Index = () => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const index = Number(entry.target.getAttribute("data-index"));
-          if (!isNaN(index)) { setActiveIndex(index); if (index >= videos.length - 3) loadMore(); }
+          if (!isNaN(index)) {
+            setActiveIndex(index);
+            if (index >= videos.length - 3) loadMore();
+            if (videos[index]) trackView(videos[index].id);
+          }
         }
         const videoEl = entry.target.querySelector("video");
         if (!videoEl) return;

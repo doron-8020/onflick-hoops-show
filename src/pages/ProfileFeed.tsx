@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useViewTracker } from "@/hooks/useViewTracker";
 import VideoCard from "@/components/VideoCard";
 
 const ProfileFeed = () => {
@@ -18,6 +19,7 @@ const ProfileFeed = () => {
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
   const [activeIndex, setActiveIndex] = useState(startIndex);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const trackView = useViewTracker();
 
   useEffect(() => {
     if (videos.length === 0) {
@@ -52,7 +54,10 @@ const ProfileFeed = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const index = Number(entry.target.getAttribute("data-index"));
-            if (!isNaN(index)) setActiveIndex(index);
+            if (!isNaN(index)) {
+              setActiveIndex(index);
+              if (videos[index]) trackView(videos[index].id);
+            }
           }
           const videoEl = entry.target.querySelector("video");
           if (!videoEl) return;

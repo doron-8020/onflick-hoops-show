@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
+import { useViewTracker } from "@/hooks/useViewTracker";
 import VideoCard from "@/components/VideoCard";
 import VideoThumbnail from "@/components/VideoThumbnail";
 import BottomNav from "@/components/BottomNav";
@@ -113,6 +114,7 @@ const Discover = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const feedRef = useRef<HTMLDivElement>(null);
+  const trackView = useViewTracker();
 
   // Search logic for players
   useEffect(() => {
@@ -193,7 +195,10 @@ const Discover = () => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const index = Number(entry.target.getAttribute("data-index"));
-          if (!isNaN(index)) setActiveIndex(index);
+          if (!isNaN(index)) {
+            setActiveIndex(index);
+            if (videos[index]) trackView(videos[index].id);
+          }
         }
         const videoEl = entry.target.querySelector("video");
         if (!videoEl) return;
