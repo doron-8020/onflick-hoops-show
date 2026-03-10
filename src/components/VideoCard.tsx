@@ -142,14 +142,36 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     }
   }, [liked, handleLike, user, navigate]);
 
+  const [sharesCount, setSharesCount] = useState(video.shares_count);
+
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const shareData = { title: video.caption || "Check this highlight!", url: `${window.location.origin}/?v=${video.id}` };
+    const shareUrl = `${window.location.origin}/?v=${video.id}`;
+    const shareData = { title: video.caption || "Check this highlight!", url: shareUrl };
+    let shared = false;
     try {
-      if (navigator.share) await navigator.share(shareData);
-      else { await navigator.clipboard.writeText(shareData.url); toast.success(t("video.linkCopied")); }
+      if (navigator.share) {
+        await navigator.share(shareData);
+        shared = true;
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success(t("video.linkCopied"));
+        shared = true;
+      }
+    } catch (err: any) {
+      // User cancelled native share — don't count
+      if (err?.name === "AbortError") return;
+      // Fallback: try clipboard
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success(t("video.linkCopied"));
+        shared = true;
+      } catch { toast.error("Could not share"); }
+    }
+    if (shared) {
+      setSharesCount((c) => c + 1);
       await supabase.rpc("increment_shares", { p_video_id: video.id });
-    } catch {}
+    }
   };
 
   const handleRepost = async (e: React.MouseEvent) => {
