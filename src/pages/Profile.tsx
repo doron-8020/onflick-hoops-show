@@ -119,6 +119,9 @@ const Profile = () => {
   const [bioExpanded, setBioExpanded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [profileViews, setProfileViews] = useState<{ coach: number; scout: number } | null>(null);
+  const { storyGroups, fetchStories, hasActiveStory } = useStories();
+  const [storyViewerGroup, setStoryViewerGroup] = useState<any>(null);
+  const [storyUploadOpen, setStoryUploadOpen] = useState(false);
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
     liked: null,
