@@ -211,7 +211,7 @@ const PlayerProfile = () => {
                 {isFollowing ? <UserCheck className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
                 {isFollowing ? t("video.followingBtn") : t("profile.follow")}
               </button>
-              <button className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground">{t("profile.message")}</button>
+              <button onClick={() => userId && startConversation(userId)} className="flex-1 rounded-md bg-secondary py-2 text-sm font-semibold text-foreground">{t("profile.message")}</button>
             </>
           )}
         </div>

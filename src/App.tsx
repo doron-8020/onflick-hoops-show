@@ -103,6 +103,8 @@ const App = () => (
                     <Route path="/profile/feed" element={<ProfileFeed />} />
                     <Route path="/user/:userId/follows" element={<FollowList />} />
                     <Route path="/tag/:tagName" element={<TagFeed />} />
+                    <Route path="/messages" element={<Messages />} />
+                    <Route path="/messages/:conversationId" element={<Conversation />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/blog" element={<Blog />} />

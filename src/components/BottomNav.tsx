@@ -15,7 +15,7 @@ const BottomNav = () => {
     { icon: Home, label: t("nav.home"), path: "/" },
     { icon: Search, label: t("nav.discover"), path: "/discover" },
     { icon: Plus, label: t("nav.create"), path: "/create", isCreate: true },
-    { icon: Bell, label: t("nav.notifications"), path: "/notifications" },
+    { icon: MessageCircle, label: t("nav.messages"), path: "/messages" },
     { icon: User, label: t("nav.profile"), path: "/profile" },
   ];
 
