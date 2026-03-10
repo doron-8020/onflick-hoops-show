@@ -19,6 +19,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
 import { useStartConversation } from "@/hooks/useStartConversation";
 import BottomNav from "@/components/BottomNav";
+import { useStories } from "@/hooks/useStories";
+import StoryViewer from "@/components/StoryViewer";
+import { AnimatePresence } from "framer-motion";
 
 type TabKey = "videos" | "private" | "saved" | "about";
 
