@@ -60,7 +60,7 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
     setProgress(10);
 
     const ext = file.name.split(".").pop();
-    const path = `stories/${user.id}/${Date.now()}.${ext}`;
+    const path = `${user.id}/stories/${Date.now()}.${ext}`;
 
     setProgress(30);
     const { error: uploadErr } = await supabase.storage.from("videos").upload(path, file);
