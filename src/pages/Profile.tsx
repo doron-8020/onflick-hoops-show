@@ -296,18 +296,29 @@ const Profile = () => {
 
         {/* ── Avatar + Info ── */}
         <div className="flex flex-col items-center px-4" style={{ paddingTop: 68 }}>
+          {/* ONFLICK branding above avatar */}
+          <button
+            onClick={() => navigate("/onflick")}
+            className="mb-2 tracking-[0.15em]"
+            style={{ marginTop: 12 }}
+          >
+            <span className="text-[#FE2C55] font-bold text-sm opacity-80 hover:opacity-100 transition-opacity" style={{ letterSpacing: "0.2em" }}>
+              ONFLICK
+            </span>
+          </button>
+
           {/* Avatar with story ring */}
-          <div className="relative" style={{ marginTop: 16, marginBottom: 12 }}>
+          <div className="relative" style={{ marginBottom: 12 }}>
             {(() => {
               const myStoryGroup = storyGroups.find((g) => g.userId === user?.id);
               const hasStory = !!myStoryGroup;
               const avatarContent = (
-                <div className="h-24 w-24 rounded-full overflow-hidden">
+                <div className="h-28 w-28 rounded-full overflow-hidden">
                   {profile?.avatar_url ? (
                     <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
                   ) : (
                     <div className="h-full w-full gradient-fire flex items-center justify-center">
-                      <span className="font-display text-4xl text-white">
+                      <span className="font-display text-5xl text-white">
                         {displayName.charAt(0).toUpperCase()}
                       </span>
                     </div>
@@ -329,7 +340,7 @@ const Profile = () => {
                 </div>
               );
             })()}
-            {/* Add story / Change photo button */}
+            {/* Add story button — bigger */}
             <button
               onClick={() => {
                 const myStoryGroup = storyGroups.find((g) => g.userId === user?.id);
@@ -341,18 +352,18 @@ const Profile = () => {
               }}
               className="absolute flex items-center justify-center rounded-full"
               style={{
-                bottom: -4,
+                bottom: -5,
                 left: "50%",
                 transform: "translateX(-50%)",
-                width: 24,
-                height: 24,
+                width: 30,
+                height: 30,
                 background: "#20D5EC",
-                border: "2px solid black",
+                border: "2.5px solid black",
                 zIndex: 10,
               }}
               aria-label="Add story"
             >
-              <Plus className="text-white" style={{ width: 14, height: 14 }} strokeWidth={3} />
+              <Plus className="text-white" style={{ width: 16, height: 16 }} strokeWidth={3} />
             </button>
           </div>
 
