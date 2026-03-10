@@ -421,30 +421,20 @@ const Profile = () => {
             {handle}
           </p>
 
-          {/* Stats */}
-          <div className="flex items-center" style={{ marginTop: 16, marginBottom: 16, gap: 0 }}>
+          {/* Stats — Row 1: TikTok style */}
+          <div className="flex items-center justify-center" style={{ marginTop: 16, gap: 0 }}>
             {[
               { value: profile?.following_count || 0, label: t("profile.following"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=following`) },
               { value: profile?.followers_count || 0, label: t("profile.followers"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=followers`) },
               { value: totalLikes, label: t("profile.likes") },
-              { value: profileViews?.coach ?? 0, label: "🏀 " + t("profile.coachViews") },
-              { value: profileViews?.scout ?? 0, label: "🔍 " + t("profile.scoutViews") },
             ].map((stat, i) => (
               <div key={stat.label} className="flex items-center">
                 {i > 0 && (
-                  <div
-                    style={{
-                      width: 1,
-                      height: 24,
-                      background: "rgba(255,255,255,0.2)",
-                      alignSelf: "center",
-                      margin: "0 12px",
-                    }}
-                  />
+                  <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", margin: "0 16px" }} />
                 )}
                 <div
                   className={`flex flex-col items-center ${stat.onClick ? "cursor-pointer active:opacity-70" : ""}`}
-                  style={{ minWidth: 44 }}
+                  style={{ minWidth: 48 }}
                   onClick={stat.onClick}
                 >
                   <span className="text-white" style={{ fontSize: 17, fontWeight: 700, lineHeight: 1.2 }}>
@@ -454,6 +444,46 @@ const Profile = () => {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Stats — Row 2: Scout metrics */}
+          <div className="flex items-center justify-center" style={{ marginTop: 10, marginBottom: 16, gap: 0 }}>
+            {/* Scout views */}
+            <div className="flex flex-col items-center" style={{ minWidth: 48 }}>
+              <span className="text-white" style={{ fontSize: 17, fontWeight: 700, lineHeight: 1.2 }}>
+                {formatCount(profileViews?.scout ?? 0)}
+              </span>
+              <span className="text-white/60" style={{ fontSize: 11 }}>🔍 {language === "he" ? "צפיות סקאוטים" : "Scout Views"}</span>
+            </div>
+
+            <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", margin: "0 16px" }} />
+
+            {/* Scout followers */}
+            <div className="flex flex-col items-center" style={{ minWidth: 48 }}>
+              <span className="text-white" style={{ fontSize: 17, fontWeight: 700, lineHeight: 1.2 }}>
+                {formatCount(scoutFollowers)}
+              </span>
+              <span className="text-white/60" style={{ fontSize: 11 }}>🎯 {language === "he" ? "סקאוטים עוקבים" : "Scout Followers"}</span>
+            </div>
+
+            <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", margin: "0 16px" }} />
+
+            {/* Scout rating */}
+            <div className="flex flex-col items-center" style={{ minWidth: 48 }}>
+              <div className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className="h-3.5 w-3.5"
+                    fill={scoutRating && star <= Math.round(scoutRating) ? "#FBBF24" : "transparent"}
+                    stroke={scoutRating && star <= Math.round(scoutRating) ? "#FBBF24" : "rgba(255,255,255,0.3)"}
+                  />
+                ))}
+              </div>
+              <span className="text-white/60" style={{ fontSize: 11 }}>
+                {scoutRating ? `${scoutRating}/5` : (language === "he" ? "אין דירוג" : "No rating")}
+              </span>
+            </div>
           </div>
 
 
