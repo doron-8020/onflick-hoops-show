@@ -52,6 +52,33 @@ const BottomNav = () => {
     };
   }, [user]);
 
+  // Unread DM count
+  useEffect(() => {
+    if (!user) return;
+    const fetchUnreadDMs = async () => {
+      // Get all conversation IDs for this user
+      const { data: convos } = await (supabase as any)
+        .from("conversations")
+        .select("id")
+        .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`);
+      if (!convos || convos.length === 0) { setUnreadMsgCount(0); return; }
+      const ids = convos.map((c: any) => c.id);
+      const { count } = await (supabase as any)
+        .from("direct_messages")
+        .select("*", { count: "exact", head: true })
+        .in("conversation_id", ids)
+        .neq("sender_id", user.id)
+        .eq("read", false);
+      setUnreadMsgCount(count || 0);
+    };
+    fetchUnreadDMs();
+    const ch = supabase
+      .channel("nav-dm-unread")
+      .on("postgres_changes", { event: "*", schema: "public", table: "direct_messages" }, () => fetchUnreadDMs())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [user]);
+
   useEffect(() => {
     if (location.pathname === "/notifications") {
       setUnreadCount(0);
