@@ -102,7 +102,11 @@ const Index = () => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const index = Number(entry.target.getAttribute("data-index"));
-          if (!isNaN(index)) { setActiveIndex(index); if (index >= videos.length - 3) loadMore(); }
+          if (!isNaN(index)) {
+            setActiveIndex(index);
+            if (index >= videos.length - 3) loadMore();
+            if (videos[index]) trackView(videos[index].id);
+          }
         }
         const videoEl = entry.target.querySelector("video");
         if (!videoEl) return;
