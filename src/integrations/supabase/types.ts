@@ -610,6 +610,33 @@ export type Database = {
           },
         ]
       }
+      scout_ratings: {
+        Row: {
+          created_at: string
+          id: string
+          player_id: string
+          rating: number
+          scout_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          player_id: string
+          rating: number
+          scout_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          player_id?: string
+          rating?: number
+          scout_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       stories: {
         Row: {
           caption: string | null
