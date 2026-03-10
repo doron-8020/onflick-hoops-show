@@ -47,6 +47,7 @@ const PlayerProfile = () => {
   const [scrolled, setScrolled] = useState(false);
   const [bioExpanded, setBioExpanded] = useState(false);
   const { isFollowing, toggleFollow, loading: followLoading } = useFollow(userId);
+  const startConversation = useStartConversation();
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
     videos: null,
