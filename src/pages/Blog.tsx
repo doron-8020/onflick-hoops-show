@@ -97,6 +97,8 @@ const Blog = () => {
         await navigator.clipboard.writeText(shareData.url);
         toast.success(t("video.linkCopied"));
       }
+      // Increment shares_count in DB
+      await (supabase as any).from("blog_posts").update({ shares_count: post.shares_count + 1 }).eq("id", post.id);
     } catch {}
   };
 
