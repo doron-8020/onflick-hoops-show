@@ -8,9 +8,10 @@ import BottomNav from "@/components/BottomNav";
 import { mockVideos } from "@/data/mockData";
 import VideoCardMock from "@/components/VideoCardMock";
 import PullToRefresh from "@/components/PullToRefresh";
-import { Search } from "lucide-react";
+import { Search, ArrowUp } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import FeedHeader from "@/components/FeedHeader";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface VideoWithProfile {
   id: string;
@@ -43,6 +44,7 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [newPostsCount, setNewPostsCount] = useState(0);
   const [activeTab, setActiveTab] = useState<FeedTab>(() =>
     new URLSearchParams(window.location.search).get("tab") === "following" ? "following" : "foryou"
   );
@@ -53,6 +55,7 @@ const Index = () => {
   const [searchParams] = useSearchParams();
   const scrollRef = useRef<HTMLDivElement>(null);
   const trackView = useViewTracker();
+  const latestCreatedAt = useRef<string | null>(null);
 
   const fetchVideos = useCallback(async (cursor?: string, append = false) => {
     if (!append) setLoading(true); else setLoadingMore(true);
@@ -73,6 +76,9 @@ const Index = () => {
       const typed = data as unknown as VideoWithProfile[];
       setVideos((prev) => append ? [...prev, ...typed] : typed);
       setHasMore(typed.length === PAGE_SIZE);
+      if (!append && typed.length > 0 && typed[0].created_at) {
+        latestCreatedAt.current = typed[0].created_at;
+      }
     }
     if (user) {
       const { data: likes } = await supabase.from("video_likes").select("video_id").eq("user_id", user.id);
@@ -80,6 +86,7 @@ const Index = () => {
     }
     setLoading(false);
     setLoadingMore(false);
+    setNewPostsCount(0);
   }, [user, activeTab]);
 
   useEffect(() => {
@@ -89,6 +96,24 @@ const Index = () => {
   }, [searchParams]);
 
   useEffect(() => { setHasMore(true); fetchVideos(); }, [fetchVideos]);
+
+  // Realtime: listen for new posts
+  useEffect(() => {
+    const channel = supabase
+      .channel("new-videos-feed")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "videos" },
+        (payload) => {
+          const newRow = payload.new as any;
+          if (latestCreatedAt.current && newRow.created_at > latestCreatedAt.current) {
+            setNewPostsCount((c) => c + 1);
+          }
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   const loadMore = useCallback(() => {
     if (loadingMore || !hasMore || videos.length === 0) return;
@@ -131,6 +156,25 @@ const Index = () => {
       {/* Desktop: centered feed container */}
       <div className="mx-auto w-full max-w-lg relative h-full">
         <FeedHeader />
+
+        {/* New posts banner */}
+        <AnimatePresence>
+          {newPostsCount > 0 && (
+            <motion.button
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              onClick={() => {
+                scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+                fetchVideos();
+              }}
+              className="absolute top-16 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 rounded-full gradient-fire px-4 py-2 text-xs font-bold text-primary-foreground shadow-glow"
+            >
+              <ArrowUp className="h-3.5 w-3.5" />
+              {newPostsCount} {newPostsCount === 1 ? t("feed.newPost") : t("feed.newPosts")}
+            </motion.button>
+          )}
+        </AnimatePresence>
 
         <PullToRefresh onRefresh={handleRefresh} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide relative">
           <div ref={scrollRef} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide">

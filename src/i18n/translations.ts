@@ -20,6 +20,8 @@ export const translations = {
   "feed.noVideosYet": { he: "אין עדיין סרטונים", en: "No videos yet" },
   "feed.discoverPlayers": { he: "גלה שחקנים", en: "Discover players" },
   "feed.views": { he: "צפיות", en: "views" },
+  "feed.newPost": { he: "פוסט חדש", en: "new post" },
+  "feed.newPosts": { he: "פוסטים חדשים", en: "new posts" },
   "feed.playerData": { he: "נתונים", en: "Data" },
 
   // Auth

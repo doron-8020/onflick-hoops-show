@@ -90,8 +90,10 @@ const Notifications = () => {
   };
 
   const handleClick = (notif: Notification) => {
-    if (notif.from_user_id && notif.type === "follow") {
+    if (notif.type === "follow" && notif.from_user_id) {
       navigate(`/player/${notif.from_user_id}`);
+    } else if ((notif.type === "like" || notif.type === "comment") && notif.video_id) {
+      navigate(`/?v=${notif.video_id}`);
     }
   };
 
