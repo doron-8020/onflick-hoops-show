@@ -214,7 +214,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           </>
         ) : (
           <>
-            <video ref={videoRef} src={video.video_url} className="h-full w-full object-cover" loop playsInline muted={globalMuted} poster={video.thumbnail_url || undefined} preload="metadata" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
+            <video ref={videoRef} src={video.video_url} className="h-full w-full object-cover" loop playsInline autoPlay muted={globalMuted} poster={video.thumbnail_url || undefined} preload="auto" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
             <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/30" />
           </>
         )}
