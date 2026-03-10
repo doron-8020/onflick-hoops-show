@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFollow } from "@/hooks/useFollow";
+import { useViewTracker } from "@/hooks/useViewTracker";
 import VideoCard from "@/components/VideoCard";
 import VideoThumbnail from "@/components/VideoThumbnail";
 import BottomNav from "@/components/BottomNav";
