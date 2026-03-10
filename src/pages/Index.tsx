@@ -8,9 +8,10 @@ import BottomNav from "@/components/BottomNav";
 import { mockVideos } from "@/data/mockData";
 import VideoCardMock from "@/components/VideoCardMock";
 import PullToRefresh from "@/components/PullToRefresh";
-import { Search } from "lucide-react";
+import { Search, ArrowUp } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import FeedHeader from "@/components/FeedHeader";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface VideoWithProfile {
   id: string;
