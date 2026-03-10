@@ -173,9 +173,8 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     } catch {}
   };
 
-  const profile = video.profiles;
-  const displayName = profile?.display_name || "Player";
-  const isVideo = video.media_type !== "image" && video.media_type !== "gallery";
+
+
 
   return (
     <div className="relative h-full w-full" onClick={isVideo ? handleTap : undefined}>
