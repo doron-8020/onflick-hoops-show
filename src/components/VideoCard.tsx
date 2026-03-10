@@ -39,6 +39,7 @@ interface VideoCardProps {
     } | null;
   };
   isLiked?: boolean;
+  onDeleted?: (videoId: string) => void;
 }
 
 const formatNumber = (n: number) => {
