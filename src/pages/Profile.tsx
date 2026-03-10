@@ -257,12 +257,6 @@ const Profile = () => {
   const displayName = profile?.display_name || "Player";
   const handle = `@${(profile?.display_name || "player").toLowerCase().replace(/\s+/g, "")}`;
 
-  const stats = [
-    { value: profile?.following_count || 0, label: t("profile.following"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=following`) },
-    { value: profile?.followers_count || 0, label: t("profile.followers"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=followers`) },
-    { value: totalLikes, label: t("profile.likes") },
-  ];
-
   return (
     <div className="min-h-screen bg-black pb-24">
       <div className="mx-auto max-w-lg">
