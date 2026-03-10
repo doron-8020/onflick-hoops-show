@@ -334,7 +334,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCar
 
       {/* Video progress bar */}
       {isVideo && (
-        <div className="absolute bottom-[76px] inset-x-0 h-[3px] bg-foreground/10 z-10">
+        <div className="absolute bottom-[88px] inset-x-0 h-[3px] bg-foreground/10 z-10">
           <div className="h-full bg-primary transition-[width] duration-200 ease-linear" style={{ width: `${progress}%` }} />
         </div>
       )}
