@@ -27,11 +27,13 @@ interface VideoWithProfile {
   media_type: string;
   gallery_urls: string[] | null;
   created_at?: string;
+  reposts_count?: number;
   profiles: {
     display_name: string | null;
     avatar_url: string | null;
     position: string | null;
     team: string | null;
+    verified?: boolean;
   } | null;
 }
 
@@ -45,6 +47,7 @@ const Index = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [newPostsCount, setNewPostsCount] = useState(0);
+  const [blockedIds, setBlockedIds] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<FeedTab>(() =>
     new URLSearchParams(window.location.search).get("tab") === "following" ? "following" : "foryou"
   );
@@ -56,6 +59,17 @@ const Index = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const trackView = useViewTracker();
   const latestCreatedAt = useRef<string | null>(null);
+  const touchStartX = useRef<number>(0);
+
+  // Fetch blocked users
+  useEffect(() => {
+    if (!user) return;
+    const fetchBlocked = async () => {
+      const { data } = await supabase.from("blocked_users").select("blocked_id").eq("blocker_id", user.id);
+      if (data) setBlockedIds(new Set(data.map((b) => b.blocked_id)));
+    };
+    fetchBlocked();
+  }, [user]);
 
   const fetchVideos = useCallback(async (cursor?: string, append = false) => {
     if (!append) setLoading(true); else setLoadingMore(true);
@@ -73,7 +87,11 @@ const Index = () => {
     if (cursor) query = query.lt("created_at", cursor);
     const { data, error } = await query;
     if (!error && data) {
-      const typed = data as unknown as VideoWithProfile[];
+      let typed = data as unknown as VideoWithProfile[];
+      // Filter out blocked users
+      if (blockedIds.size > 0) {
+        typed = typed.filter((v) => !blockedIds.has(v.user_id));
+      }
       setVideos((prev) => append ? [...prev, ...typed] : typed);
       setHasMore(typed.length === PAGE_SIZE);
       if (!append && typed.length > 0 && typed[0].created_at) {
@@ -87,7 +105,7 @@ const Index = () => {
     setLoading(false);
     setLoadingMore(false);
     setNewPostsCount(0);
-  }, [user, activeTab]);
+  }, [user, activeTab, blockedIds]);
 
   useEffect(() => {
     const tab = searchParams.get("tab");
@@ -101,16 +119,12 @@ const Index = () => {
   useEffect(() => {
     const channel = supabase
       .channel("new-videos-feed")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "videos" },
-        (payload) => {
-          const newRow = payload.new as any;
-          if (latestCreatedAt.current && newRow.created_at > latestCreatedAt.current) {
-            setNewPostsCount((c) => c + 1);
-          }
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "videos" }, (payload) => {
+        const newRow = payload.new as any;
+        if (latestCreatedAt.current && newRow.created_at > latestCreatedAt.current) {
+          setNewPostsCount((c) => c + 1);
         }
-      )
+      })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, []);
@@ -151,9 +165,18 @@ const Index = () => {
   const handleRefresh = async () => { setHasMore(true); await fetchVideos(); };
   const hasRealVideos = videos.length > 0;
 
+  // Swipe between tabs
+  const handleTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const diff = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(diff) > 60) {
+      if (diff < 0 && activeTab === "foryou") navigate("/?tab=following");
+      else if (diff > 0 && activeTab === "following") navigate("/");
+    }
+  };
+
   return (
     <div className="relative min-h-screen bg-background">
-      {/* Desktop: centered feed container */}
       <div className="mx-auto w-full max-w-lg relative h-full">
         <FeedHeader />
 
@@ -161,13 +184,8 @@ const Index = () => {
         <AnimatePresence>
           {newPostsCount > 0 && (
             <motion.button
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              onClick={() => {
-                scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-                fetchVideos();
-              }}
+              initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+              onClick={() => { scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" }); fetchVideos(); }}
               className="absolute top-16 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 rounded-full gradient-fire px-4 py-2 text-xs font-bold text-primary-foreground shadow-glow"
             >
               <ArrowUp className="h-3.5 w-3.5" />
@@ -177,7 +195,9 @@ const Index = () => {
         </AnimatePresence>
 
         <PullToRefresh onRefresh={handleRefresh} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide relative">
-          <div ref={scrollRef} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide">
+          <div ref={scrollRef} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
+            onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}
+          >
             {loading ? (
               <div className="h-[100dvh] flex flex-col items-center justify-center gap-4">
                 <div className="animate-pulse-glow rounded-full gradient-fire p-6">

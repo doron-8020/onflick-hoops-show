@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Heart, MessageCircle, Share2, Play, Pause, UserPlus, UserCheck, Bookmark, Repeat2, BadgeCheck } from "lucide-react";
+import { Heart, MessageCircle, Share2, Play, Pause, UserPlus, UserCheck, Bookmark, Repeat2, BadgeCheck, MoreHorizontal } from "lucide-react";
 import BasketballLikeButton from "./BasketballLikeButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CommentsSheet from "./CommentsSheet";
 import GalleryCarousel from "./GalleryCarousel";
 import SpinningSoundIcon from "./SpinningSoundIcon";
+import VideoActionSheet from "./VideoActionSheet";
 
 interface VideoCardProps {
   video: {
@@ -27,6 +28,7 @@ interface VideoCardProps {
     views_count: number;
     media_type?: string;
     gallery_urls?: string[] | null;
+    reposts_count?: number;
     profiles?: {
       display_name: string | null;
       avatar_url: string | null;
@@ -58,10 +60,13 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   const [showHeart, setShowHeart] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
+  const [actionSheetOpen, setActionSheetOpen] = useState(false);
   const [showPlayIcon, setShowPlayIcon] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [reposted, setReposted] = useState(false);
+  const [repostsCount, setRepostsCount] = useState(video.reposts_count || 0);
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { globalMuted } = useMute();
   const navigate = useNavigate();
   const { isFollowing, toggleFollow, loading: followLoading } = useFollow(video.user_id);
@@ -79,7 +84,6 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     if (videoRef.current) videoRef.current.muted = globalMuted;
   }, [globalMuted]);
 
-  // Video progress tracking
   useEffect(() => {
     const el = videoRef.current;
     if (!el || !isVideo) return;
@@ -91,50 +95,35 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
     return () => cancelAnimationFrame(progressRAF.current);
   }, [isVideo]);
 
-  // Check if bookmarked + count
+  // Check bookmark + repost status
   useEffect(() => {
-    const fetchBookmark = async () => {
-      const { count } = await supabase
-        .from("bookmarks")
-        .select("*", { count: "exact", head: true })
-        .eq("video_id", video.id);
+    const fetchStatus = async () => {
+      const { count } = await supabase.from("bookmarks").select("*", { count: "exact", head: true }).eq("video_id", video.id);
       setSavesCount(count || 0);
-
       if (!user) return;
-      const { data } = await supabase
-        .from("bookmarks")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("video_id", video.id)
-        .maybeSingle();
-      setSaved(!!data);
+      const { data: bm } = await supabase.from("bookmarks").select("id").eq("user_id", user.id).eq("video_id", video.id).maybeSingle();
+      setSaved(!!bm);
+      const { data: rp } = await supabase.from("reposts").select("id").eq("user_id", user.id).eq("video_id", video.id).maybeSingle();
+      setReposted(!!rp);
     };
-    fetchBookmark();
+    fetchStatus();
   }, [user, video.id]);
 
   const handleLike = useCallback(async () => {
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
+    if (!user) { navigate("/auth"); return; }
     const newLiked = !liked;
     setLiked(newLiked);
     setLikes((prev) => (newLiked ? prev + 1 : prev - 1));
     haptic(newLiked ? 40 : 20);
     const { error } = await supabase.rpc("toggle_video_like", { p_video_id: video.id });
-    if (error) {
-      setLiked(!newLiked);
-      setLikes((prev) => (newLiked ? prev - 1 : prev + 1));
-      toast.error(t("video.likeError"));
-    }
+    if (error) { setLiked(!newLiked); setLikes((prev) => (newLiked ? prev - 1 : prev + 1)); toast.error(t("video.likeError")); }
   }, [liked, user, video.id, t, navigate]);
 
   const handleTap = useCallback(() => {
     const now = Date.now();
     if (now - lastTapRef.current < 300) {
       if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current);
-      if (!liked) handleLike();
-      else haptic(40);
+      if (!liked) handleLike(); else haptic(40);
       setShowHeart(true);
       setTimeout(() => setShowHeart(false), 800);
       lastTapRef.current = 0;
@@ -143,13 +132,8 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       tapTimeoutRef.current = setTimeout(() => {
         const videoEl = videoRef.current;
         if (!videoEl) return;
-        if (videoEl.paused) {
-          videoEl.play().catch(() => {});
-          setPlaying(true);
-        } else {
-          videoEl.pause();
-          setPlaying(false);
-        }
+        if (videoEl.paused) { videoEl.play().catch(() => {}); setPlaying(true); }
+        else { videoEl.pause(); setPlaying(false); }
         setShowPlayIcon(true);
         setTimeout(() => setShowPlayIcon(false), 600);
       }, 300);
@@ -158,23 +142,40 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const shareData = {
-      title: video.caption || "Check this highlight!",
-      url: `${window.location.origin}/?v=${video.id}`,
-    };
+    const shareData = { title: video.caption || "Check this highlight!", url: `${window.location.origin}/?v=${video.id}` };
     try {
       if (navigator.share) await navigator.share(shareData);
-      else {
-        await navigator.clipboard.writeText(shareData.url);
-        toast.success(t("video.linkCopied"));
-      }
-      // Atomic increment shares_count in DB
+      else { await navigator.clipboard.writeText(shareData.url); toast.success(t("video.linkCopied")); }
       await supabase.rpc("increment_shares", { p_video_id: video.id });
     } catch {}
   };
 
+  const handleRepost = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) { navigate("/auth"); return; }
+    haptic(20);
+    const wasReposted = reposted;
+    setReposted(!wasReposted);
+    setRepostsCount((c) => wasReposted ? c - 1 : c + 1);
 
-
+    if (wasReposted) {
+      await supabase.from("reposts").delete().eq("user_id", user.id).eq("video_id", video.id);
+      // Decrement manually - no RPC exists
+    } else {
+      await supabase.from("reposts").insert({ user_id: user.id, video_id: video.id });
+      // Create notification if not own video
+      if (video.user_id && video.user_id !== user.id) {
+        await supabase.from("notifications").insert({
+          user_id: video.user_id,
+          from_user_id: user.id,
+          type: "repost",
+          video_id: video.id,
+          message: `${displayName} reposted your highlight`,
+        });
+      }
+      toast.success(language === "he" ? "שותף מחדש!" : "Reposted!");
+    }
+  };
 
   return (
     <div className="relative h-full w-full" onClick={isVideo ? handleTap : undefined}>
@@ -184,48 +185,33 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           <GalleryCarousel urls={video.gallery_urls} alt={video.caption || "Gallery"} />
         ) : video.media_type === "image" ? (
           <>
-            <img
-              src={video.video_url}
-              className="h-full w-full object-cover"
-              alt={video.caption || "Highlight"}
-              loading="lazy"
-            />
+            <img src={video.video_url} className="h-full w-full object-cover" alt={video.caption || "Highlight"} loading="lazy" />
             <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/30" />
           </>
         ) : (
           <>
-            <video
-              ref={videoRef}
-              src={video.video_url}
-              className="h-full w-full object-cover"
-              loop
-              playsInline
-              muted={globalMuted}
-              poster={video.thumbnail_url || undefined}
-              preload="metadata"
-              onPlay={() => setPlaying(true)}
-              onPause={() => setPlaying(false)}
-            />
+            <video ref={videoRef} src={video.video_url} className="h-full w-full object-cover" loop playsInline muted={globalMuted} poster={video.thumbnail_url || undefined} preload="metadata" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
             <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/30" />
           </>
         )}
       </div>
 
+      {/* More button (top-right, not for own videos) */}
+      {user && video.user_id && user.id !== video.user_id && (
+        <button
+          onClick={(e) => { e.stopPropagation(); setActionSheetOpen(true); }}
+          className="absolute top-14 end-3 z-20 rounded-full bg-background/40 p-2 backdrop-blur-sm"
+        >
+          <MoreHorizontal className="h-5 w-5 text-foreground" />
+        </button>
+      )}
+
       {/* Play/Pause flash */}
       <AnimatePresence>
         {isVideo && showPlayIcon && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
-          >
+          <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }} className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
             <div className="rounded-full bg-background/40 p-4 backdrop-blur-sm">
-              {playing ? (
-                <Pause className="h-10 w-10 text-primary-foreground" fill="currentColor" />
-              ) : (
-                <Play className="h-10 w-10 text-primary-foreground" fill="currentColor" />
-              )}
+              {playing ? <Pause className="h-10 w-10 text-primary-foreground" fill="currentColor" /> : <Play className="h-10 w-10 text-primary-foreground" fill="currentColor" />}
             </div>
           </motion.div>
         )}
@@ -234,23 +220,14 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       {/* Double tap heart */}
       <AnimatePresence>
         {showHeart && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.2 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.5, y: -60 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
-          >
+          <motion.div initial={{ opacity: 0, scale: 0.2 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.5, y: -60 }} transition={{ duration: 0.4, ease: "easeOut" }} className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
             <Heart className="h-28 w-28 text-primary drop-shadow-lg" fill="currentColor" />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Left side actions (RTL) */}
-      <div
-        className="absolute start-3 bottom-20 flex flex-col items-center gap-4 z-10"
-        onClick={(e) => e.stopPropagation()}
-      >
+      {/* Left side actions */}
+      <div className="absolute start-3 bottom-20 flex flex-col items-center gap-4 z-10" onClick={(e) => e.stopPropagation()}>
         {video.user_id && (
           <button onClick={() => navigate(`/player/${video.user_id}`)} className="relative mb-1">
             <div className="h-11 w-11 rounded-full overflow-hidden ring-2 ring-primary/50 ring-offset-1 ring-offset-background">
@@ -258,9 +235,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
                 <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
               ) : (
                 <div className="h-full w-full gradient-fire flex items-center justify-center">
-                  <span className="font-display text-sm text-primary-foreground">
-                    {displayName.charAt(0).toUpperCase()}
-                  </span>
+                  <span className="font-display text-sm text-primary-foreground">{displayName.charAt(0).toUpperCase()}</span>
                 </div>
               )}
             </div>
@@ -276,9 +251,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
         <button onClick={() => setCommentsOpen(true)} className="flex flex-col items-center gap-0.5">
           <MessageCircle className="h-7 w-7 text-foreground drop-shadow-md" fill="none" />
-          <span className="text-[11px] font-semibold text-foreground drop-shadow-md">
-            {formatNumber(video.comments_count)}
-          </span>
+          <span className="text-[11px] font-semibold text-foreground drop-shadow-md">{formatNumber(video.comments_count)}</span>
         </button>
 
         <button
@@ -287,17 +260,13 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
             if (!user) { navigate("/auth"); return; }
             haptic(20);
             if (saved) {
-              setSaved(false);
-              setSavesCount((c) => c - 1);
+              setSaved(false); setSavesCount((c) => c - 1);
               const { error } = await supabase.from("bookmarks").delete().eq("user_id", user.id).eq("video_id", video.id);
-              if (error) { setSaved(true); setSavesCount((c) => c + 1); }
-              else toast.success(t("video.unsaved"));
+              if (error) { setSaved(true); setSavesCount((c) => c + 1); } else toast.success(t("video.unsaved"));
             } else {
-              setSaved(true);
-              setSavesCount((c) => c + 1);
+              setSaved(true); setSavesCount((c) => c + 1);
               const { error } = await supabase.from("bookmarks").insert({ user_id: user.id, video_id: video.id });
-              if (error) { setSaved(false); setSavesCount((c) => c - 1); }
-              else toast.success(t("video.saved"));
+              if (error) { setSaved(false); setSavesCount((c) => c - 1); } else toast.success(t("video.saved"));
             }
           }}
           className="flex flex-col items-center gap-0.5"
@@ -310,20 +279,14 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           <Share2 className="h-7 w-7 text-foreground drop-shadow-md" />
         </button>
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            haptic(20);
-            toast.success("Reposted!");
-          }}
-          className="flex flex-col items-center"
-        >
-          <Repeat2 className="h-7 w-7 text-foreground drop-shadow-md" />
+        <button onClick={handleRepost} className="flex flex-col items-center gap-0.5">
+          <Repeat2 className={`h-7 w-7 drop-shadow-md ${reposted ? "text-primary" : "text-foreground"}`} />
+          {repostsCount > 0 && (
+            <span className="text-[11px] font-semibold text-foreground drop-shadow-md">{formatNumber(repostsCount)}</span>
+          )}
         </button>
 
-        {isVideo && (
-          <SpinningSoundIcon imageUrl={profile?.avatar_url} isPlaying={playing} />
-        )}
+        {isVideo && <SpinningSoundIcon imageUrl={profile?.avatar_url} isPlaying={playing} />}
       </div>
 
       {/* Bottom info */}
@@ -333,35 +296,20 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
             <div className="flex items-center gap-1.5">
               <span
                 className="inline-block rounded-md bg-destructive px-2 py-0.5 font-semibold text-destructive-foreground text-sm cursor-pointer hover:opacity-90 transition-opacity"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (video.user_id) navigate(`/player/${video.user_id}`);
-                }}
+                onClick={(e) => { e.stopPropagation(); if (video.user_id) navigate(`/player/${video.user_id}`); }}
               >
                 {displayName}
               </span>
-              {profile?.verified && (
-                <BadgeCheck className="h-4 w-4 text-primary shrink-0" fill="currentColor" />
-              )}
+              {profile?.verified && <BadgeCheck className="h-4 w-4 text-primary shrink-0" fill="currentColor" />}
             </div>
             <p className="text-xs text-foreground/50 mt-0.5">{handle}</p>
             {profile?.position && (
-              <p className="text-xs text-foreground/60">
-                {profile.position}
-                {profile.team ? ` · ${profile.team}` : ""}
-              </p>
+              <p className="text-xs text-foreground/60">{profile.position}{profile.team ? ` · ${profile.team}` : ""}</p>
             )}
           </div>
           {user && video.user_id && user.id !== video.user_id && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleFollow();
-              }}
-              disabled={followLoading}
-              className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
-                isFollowing ? "bg-secondary/80 text-secondary-foreground" : "gradient-fire text-primary-foreground shadow-glow"
-              }`}
+            <button onClick={(e) => { e.stopPropagation(); toggleFollow(); }} disabled={followLoading}
+              className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${isFollowing ? "bg-secondary/80 text-secondary-foreground" : "gradient-fire text-primary-foreground shadow-glow"}`}
             >
               {isFollowing ? <UserCheck className="h-3.5 w-3.5" /> : <UserPlus className="h-3.5 w-3.5" />}
               {isFollowing ? t("video.followingBtn") : t("video.followBtn")}
@@ -372,28 +320,26 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         {video.tags && video.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {video.tags.map((tag) => (
-              <span key={tag} className="text-xs text-primary font-medium">
+              <button key={tag} onClick={(e) => { e.stopPropagation(); navigate(`/tag/${tag}`); }} className="text-xs text-primary font-medium hover:underline">
                 #{tag}
-              </span>
+              </button>
             ))}
           </div>
         )}
-        <p className="mt-2 text-xs text-foreground/50">
-          {formatNumber(video.views_count)} {t("feed.views")}
-        </p>
+        <p className="mt-2 text-xs text-foreground/50">{formatNumber(video.views_count)} {t("feed.views")}</p>
       </div>
 
       {/* Video progress bar */}
       {isVideo && (
         <div className="absolute bottom-[76px] inset-x-0 h-[3px] bg-foreground/10 z-10">
-          <div
-            className="h-full bg-primary transition-[width] duration-200 ease-linear"
-            style={{ width: `${progress}%` }}
-          />
+          <div className="h-full bg-primary transition-[width] duration-200 ease-linear" style={{ width: `${progress}%` }} />
         </div>
       )}
 
       <CommentsSheet videoId={video.id} open={commentsOpen} onOpenChange={setCommentsOpen} />
+      {video.user_id && (
+        <VideoActionSheet videoId={video.id} videoUserId={video.user_id} open={actionSheetOpen} onOpenChange={setActionSheetOpen} />
+      )}
     </div>
   );
 };
