@@ -41,7 +41,6 @@ const GridCell = ({
   index: number;
   onClick: () => void;
 }) => {
-  const { t } = useLanguage();
   const isGallery = video.media_type === "gallery";
   const isImage = video.media_type === "image";
 
