@@ -33,6 +33,7 @@ const Profile = () => {
   const [savedVideos, setSavedVideos] = useState<any[]>([]);
   const [editOpen, setEditOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("videos");
+  const [bioExpanded, setBioExpanded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [profileViews, setProfileViews] = useState<{ coach: number; scout: number } | null>(null);
 
