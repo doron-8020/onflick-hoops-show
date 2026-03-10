@@ -445,17 +445,20 @@ const PlayerAboutSection = ({ profile }: { profile: any }) => {
           </div>
         );
       })}
-  /* Story viewer overlay */
-  <AnimatePresence>
-    {storyViewerGroup && (
-      <StoryViewer
-        group={storyViewerGroup}
-        onClose={() => { setStoryViewerGroup(null); fetchStories(); }}
-      />
-    )}
-  </AnimatePresence>
     </div>
-  );
+
+      {/* Story viewer overlay */}
+      <AnimatePresence>
+        {storyViewerGroup && (
+          <StoryViewer
+            group={storyViewerGroup}
+            onClose={() => { setStoryViewerGroup(null); fetchStories(); }}
+          />
+        )}
+      </AnimatePresence>
+
+      <BottomNav />
+    </div>
 };
 
 export default PlayerProfile;
