@@ -123,6 +123,8 @@ const Profile = () => {
   const { storyGroups, fetchStories, hasActiveStory } = useStories();
   const [storyViewerGroup, setStoryViewerGroup] = useState<any>(null);
   const [storyUploadOpen, setStoryUploadOpen] = useState(false);
+  const [scoutFollowers, setScoutFollowers] = useState(0);
+  const [scoutRating, setScoutRating] = useState<number | null>(null);
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
     liked: null,
