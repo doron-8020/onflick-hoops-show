@@ -76,6 +76,9 @@ const Index = () => {
       const typed = data as unknown as VideoWithProfile[];
       setVideos((prev) => append ? [...prev, ...typed] : typed);
       setHasMore(typed.length === PAGE_SIZE);
+      if (!append && typed.length > 0 && typed[0].created_at) {
+        latestCreatedAt.current = typed[0].created_at;
+      }
     }
     if (user) {
       const { data: likes } = await supabase.from("video_likes").select("video_id").eq("user_id", user.id);
@@ -83,6 +86,7 @@ const Index = () => {
     }
     setLoading(false);
     setLoadingMore(false);
+    setNewPostsCount(0);
   }, [user, activeTab]);
 
   useEffect(() => {
