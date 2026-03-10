@@ -296,22 +296,49 @@ const Profile = () => {
 
         {/* ── Avatar + Info ── */}
         <div className="flex flex-col items-center px-4" style={{ paddingTop: 68 }}>
-          {/* Avatar */}
+          {/* Avatar with story ring */}
           <div className="relative" style={{ marginTop: 16, marginBottom: 12 }}>
-            <div className="h-24 w-24 rounded-full overflow-hidden ring-2 ring-white/20 ring-offset-2 ring-offset-black">
-              {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
-              ) : (
-                <div className="h-full w-full gradient-fire flex items-center justify-center">
-                  <span className="font-display text-4xl text-white">
-                    {displayName.charAt(0).toUpperCase()}
-                  </span>
+            {(() => {
+              const myStoryGroup = storyGroups.find((g) => g.userId === user?.id);
+              const hasStory = !!myStoryGroup;
+              const avatarContent = (
+                <div className="h-24 w-24 rounded-full overflow-hidden">
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="h-full w-full gradient-fire flex items-center justify-center">
+                      <span className="font-display text-4xl text-white">
+                        {displayName.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            {/* Change photo button */}
+              );
+              return hasStory ? (
+                <button
+                  onClick={() => setStoryViewerGroup(myStoryGroup)}
+                  className="rounded-full p-[3px] bg-gradient-to-tr from-blue-500 to-purple-500"
+                >
+                  <div className="rounded-full p-[2px] bg-black">
+                    {avatarContent}
+                  </div>
+                </button>
+              ) : (
+                <div className="ring-2 ring-white/20 ring-offset-2 ring-offset-black rounded-full">
+                  {avatarContent}
+                </div>
+              );
+            })()}
+            {/* Add story / Change photo button */}
             <button
-              onClick={() => setEditOpen(true)}
+              onClick={() => {
+                const myStoryGroup = storyGroups.find((g) => g.userId === user?.id);
+                if (myStoryGroup) {
+                  setStoryViewerGroup(myStoryGroup);
+                } else {
+                  setStoryUploadOpen(true);
+                }
+              }}
               className="absolute flex items-center justify-center rounded-full"
               style={{
                 bottom: -4,
@@ -323,7 +350,7 @@ const Profile = () => {
                 border: "2px solid black",
                 zIndex: 10,
               }}
-              aria-label="Change photo"
+              aria-label="Add story"
             >
               <Plus className="text-white" style={{ width: 14, height: 14 }} strokeWidth={3} />
             </button>
