@@ -59,6 +59,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   const [playing, setPlaying] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [showPlayIcon, setShowPlayIcon] = useState(false);
+  const [progress, setProgress] = useState(0);
   const { user } = useAuth();
   const { t } = useLanguage();
   const { globalMuted } = useMute();
@@ -67,6 +68,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
   const videoRef = useRef<HTMLVideoElement>(null);
   const tapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastTapRef = useRef<number>(0);
+  const progressRAF = useRef<number>(0);
 
   useEffect(() => {
     if (videoRef.current) videoRef.current.muted = globalMuted;
