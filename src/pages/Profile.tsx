@@ -23,6 +23,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
 import EditProfileDialog from "@/components/EditProfileDialog";
+import { useStories } from "@/hooks/useStories";
+import StoryViewer from "@/components/StoryViewer";
+import StoryUploadModal from "@/components/StoryUploadModal";
+import { AnimatePresence } from "framer-motion";
 
 type TabKey = "liked" | "videos" | "repost" | "private" | "saved" | "about";
 
