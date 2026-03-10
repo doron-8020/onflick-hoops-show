@@ -322,7 +322,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         </button>
 
         {isVideo && (
-          <SpinningSoundIcon imageUrl={profile?.avatar_url} />
+          <SpinningSoundIcon imageUrl={profile?.avatar_url} isPlaying={playing} />
         )}
       </div>
 
