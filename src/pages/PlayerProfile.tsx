@@ -44,6 +44,7 @@ const PlayerProfile = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabKey>("videos");
   const [scrolled, setScrolled] = useState(false);
+  const [bioExpanded, setBioExpanded] = useState(false);
   const { isFollowing, toggleFollow, loading: followLoading } = useFollow(userId);
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
