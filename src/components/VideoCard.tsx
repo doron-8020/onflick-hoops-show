@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Heart, MessageCircle, Share2, Play, Pause, UserPlus, UserCheck, Bookmark, Repeat2 } from "lucide-react";
+import { Heart, MessageCircle, Share2, Play, Pause, UserPlus, UserCheck, Bookmark, Repeat2, BadgeCheck } from "lucide-react";
 import BasketballLikeButton from "./BasketballLikeButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
