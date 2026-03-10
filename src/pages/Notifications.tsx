@@ -20,12 +20,14 @@ const typeIcons: Record<string, typeof Heart> = {
   like: Heart,
   comment: MessageCircle,
   follow: UserPlus,
+  repost: Repeat2,
 };
 
 const typeColors: Record<string, string> = {
   like: "bg-primary/15 text-primary",
   comment: "bg-blue-500/15 text-blue-400",
   follow: "bg-green-500/15 text-green-400",
+  repost: "bg-yellow-500/15 text-yellow-400",
 };
 
 const Notifications = () => {
