@@ -104,6 +104,7 @@ const Profile = () => {
   const { user, loading: authLoading } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [profile, setProfile] = useState<any>(null);
   const [videos, setVideos] = useState<any[]>([]);
   const [savedVideos, setSavedVideos] = useState<any[]>([]);
