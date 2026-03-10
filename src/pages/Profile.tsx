@@ -8,6 +8,7 @@ import {
   Play,
   User,
   BadgeCheck,
+  MoreHorizontal,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,6 +16,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
 import EditProfileDialog from "@/components/EditProfileDialog";
+import VideoActionSheet from "@/components/VideoActionSheet";
 
 type TabKey = "videos" | "private" | "saved" | "about";
 
