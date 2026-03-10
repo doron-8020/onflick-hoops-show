@@ -319,6 +319,13 @@ const Profile = () => {
                           {formatCount(video.views_count || 0)}
                         </span>
                       </div>
+                      {/* Delete button on own grid */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setDeleteVideoId(video.id); setDeleteVideoUrl(video.video_url); }}
+                        className="absolute top-1 end-1 rounded-full bg-background/60 p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                      >
+                        <MoreHorizontal className="h-4 w-4 text-foreground" />
+                      </button>
                       <div className="absolute inset-0 bg-background/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                   ))}
