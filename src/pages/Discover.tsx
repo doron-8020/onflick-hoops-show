@@ -9,6 +9,7 @@ import VideoCard from "@/components/VideoCard";
 import VideoThumbnail from "@/components/VideoThumbnail";
 import BottomNav from "@/components/BottomNav";
 import FeedHeader from "@/components/FeedHeader";
+import StoriesBar from "@/components/StoriesBar";
 
 interface VideoWithProfile {
   id: string;
