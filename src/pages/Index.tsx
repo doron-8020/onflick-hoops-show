@@ -98,9 +98,11 @@ const Index = () => {
         latestCreatedAt.current = typed[0].created_at;
       }
     }
+    // Fetch likes in parallel (don't block rendering)
     if (user) {
-      const { data: likes } = await supabase.from("video_likes").select("video_id").eq("user_id", user.id);
-      if (likes) setLikedIds(new Set(likes.map((l) => l.video_id)));
+      supabase.from("video_likes").select("video_id").eq("user_id", user.id).then(({ data: likes }) => {
+        if (likes) setLikedIds(new Set(likes.map((l) => l.video_id)));
+      });
     }
     setLoading(false);
     setLoadingMore(false);
