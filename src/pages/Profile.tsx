@@ -7,6 +7,7 @@ import {
   UserPlus,
   Play,
   User,
+  BadgeCheck,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -182,7 +183,10 @@ const Profile = () => {
             </div>
           </div>
 
-          <h2 className="font-display text-2xl text-foreground tracking-wide">{displayName}</h2>
+          <div className="flex items-center gap-1.5">
+            <h2 className="font-display text-2xl text-foreground tracking-wide">{displayName}</h2>
+            {profile?.verified && <BadgeCheck className="h-5 w-5 text-primary" fill="currentColor" />}
+          </div>
           <p className="text-sm text-muted-foreground mb-2">{handle}</p>
 
           {profileViews && (profileViews.coach > 0 || profileViews.scout > 0) && (

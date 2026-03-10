@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Trash2 } from "lucide-react";
+import { Send, Trash2, BadgeCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -17,6 +17,7 @@ interface Comment {
   profiles: {
     display_name: string | null;
     avatar_url: string | null;
+    verified?: boolean;
   } | null;
 }
 
@@ -76,7 +77,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
     const { data, error } = await supabase
       .from("comments")
       .select(
-        "id, content, created_at, user_id, profiles!comments_user_id_fkey(display_name, avatar_url)"
+        "id, content, created_at, user_id, profiles!comments_user_id_fkey(display_name, avatar_url, verified)"
       )
       .eq("video_id", videoId)
       .order("created_at", { ascending: true });
@@ -172,6 +173,9 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold text-foreground">{name}</span>
+                      {comment.profiles?.verified && (
+                        <BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0" fill="currentColor" />
+                      )}
                       <span className="text-[10px] text-muted-foreground">
                         {timeAgo(comment.created_at, language)}
                       </span>

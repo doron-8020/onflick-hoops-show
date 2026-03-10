@@ -3,13 +3,16 @@ import { Music2 } from "lucide-react";
 
 type Props = {
   imageUrl?: string | null;
+  isPlaying?: boolean;
 };
 
-const SpinningSoundIcon = forwardRef<HTMLDivElement, Props>(({ imageUrl }, ref) => {
+const SpinningSoundIcon = forwardRef<HTMLDivElement, Props>(({ imageUrl, isPlaying = true }, ref) => {
   return (
     <div
       ref={ref}
-      className="relative h-11 w-11 rounded-full bg-background/30 backdrop-blur-sm ring-1 ring-border/60 overflow-hidden motion-safe:animate-spin motion-reduce:animate-none motion-safe:[animation-duration:4.5s]"
+      className={`relative h-11 w-11 rounded-full bg-background/30 backdrop-blur-sm ring-1 ring-border/60 overflow-hidden ${
+        isPlaying ? "motion-safe:animate-spin motion-reduce:animate-none motion-safe:[animation-duration:4.5s]" : ""
+      }`}
       aria-hidden="true"
     >
       {imageUrl ? (

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
+  BadgeCheck,
   Bookmark,
   Grid3X3,
   Info,
@@ -157,7 +158,10 @@ const PlayerProfile = () => {
           </div>
         </div>
 
-        <h2 className="font-display text-2xl text-foreground tracking-wide">{displayName}</h2>
+        <div className="flex items-center gap-1.5 justify-center">
+          <h2 className="font-display text-2xl text-foreground tracking-wide">{displayName}</h2>
+          {profile.verified && <BadgeCheck className="h-5 w-5 text-primary" fill="currentColor" />}
+        </div>
         <p className="text-sm text-muted-foreground mb-3">{handle}</p>
 
         <div className="flex gap-0 mb-4">

@@ -61,10 +61,10 @@ const Index = () => {
       const { data: follows } = await supabase.from("follows").select("following_id").eq("follower_id", user.id);
       const followingIds = follows?.map((f) => f.following_id) || [];
       if (followingIds.length === 0) { setVideos([]); setLoading(false); setHasMore(false); return; }
-      query = supabase.from("videos").select("*, profiles!videos_user_id_fkey(display_name, avatar_url, position, team)")
+      query = supabase.from("videos").select("*, profiles!videos_user_id_fkey(display_name, avatar_url, position, team, verified)")
         .in("user_id", followingIds).order("created_at", { ascending: false }).limit(PAGE_SIZE);
     } else {
-      query = supabase.from("videos").select("*, profiles!videos_user_id_fkey(display_name, avatar_url, position, team)")
+      query = supabase.from("videos").select("*, profiles!videos_user_id_fkey(display_name, avatar_url, position, team, verified)")
         .order("created_at", { ascending: false }).limit(PAGE_SIZE);
     }
     if (cursor) query = query.lt("created_at", cursor);
