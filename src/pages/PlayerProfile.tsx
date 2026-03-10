@@ -222,7 +222,19 @@ const PlayerProfile = () => {
                 {profile.team ? ` · ${profile.team}` : ""}
               </p>
             )}
-            {profile.bio && <p className="text-sm text-muted-foreground leading-snug">{profile.bio}</p>}
+            {profile.bio && (
+              <p className="text-sm text-muted-foreground leading-snug">
+                {bioExpanded || profile.bio.length <= 80 ? profile.bio : `${profile.bio.slice(0, 80)}...`}
+                {profile.bio.length > 80 && (
+                  <button
+                    onClick={() => setBioExpanded(!bioExpanded)}
+                    className="text-foreground font-semibold ms-1"
+                  >
+                    {bioExpanded ? t("profile.bioLess") : t("profile.bioMore")}
+                  </button>
+                )}
+              </p>
+            )}
           </div>
         )}
       </div>
