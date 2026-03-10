@@ -640,6 +640,23 @@ const Profile = () => {
         <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} profile={profile || {}} onSaved={fetchProfile} />
       </div>
       <BottomNav />
+
+      {/* Story viewer */}
+      <AnimatePresence>
+        {storyViewerGroup && (
+          <StoryViewer
+            group={storyViewerGroup}
+            onClose={() => { setStoryViewerGroup(null); fetchStories(); }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Story upload */}
+      <StoryUploadModal
+        open={storyUploadOpen}
+        onClose={() => setStoryUploadOpen(false)}
+        onUploaded={fetchStories}
+      />
     </div>
   );
 };
