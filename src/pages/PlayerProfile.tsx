@@ -264,8 +264,12 @@ const PlayerProfile = () => {
         {activeTab === "videos" &&
           (videos.length > 0 ? (
             <div className="grid grid-cols-3 gap-px">
-              {videos.map((video) => (
-                <div key={video.id} className="relative aspect-[9/16] overflow-hidden bg-secondary group">
+              {videos.map((video, index) => (
+                <div
+                  key={video.id}
+                  className="relative aspect-[9/16] overflow-hidden bg-secondary group cursor-pointer"
+                  onClick={() => navigate(`/profile/feed?start=${index}`, { state: { videos } })}
+                >
                   {video.media_type === "image" ? (
                     <img src={video.video_url} className="h-full w-full object-cover" alt="" loading="lazy" />
                   ) : (
