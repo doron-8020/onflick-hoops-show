@@ -93,6 +93,12 @@ export const translations = {
   "profile.aboutMe": { he: "אודותיי", en: "About Me" },
   "profile.noDataYet": { he: "אין מידע עדיין", en: "No info yet" },
   "profile.fillProfile": { he: "מלא את הפרופיל שלך כדי להציג מידע", en: "Fill your profile to display info" },
+  "profile.bioMore": { he: "עוד", en: "more" },
+  "profile.bioLess": { he: "פחות", en: "less" },
+  "profile.followersList": { he: "עוקבים", en: "Followers" },
+  "profile.followingList": { he: "נעקבים", en: "Following" },
+  "profile.noFollowers": { he: "אין עוקבים עדיין", en: "No followers yet" },
+  "profile.noFollowing": { he: "לא עוקב אחרי אף אחד", en: "Not following anyone" },
 
   // Create
   "create.title": { he: "העלאת תוכן", en: "Upload Content" },
