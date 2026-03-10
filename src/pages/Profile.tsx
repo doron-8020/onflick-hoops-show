@@ -344,18 +344,40 @@ const Profile = () => {
             {handle}
           </p>
 
-          {/* Profile views */}
-          {profileViews && (profileViews.coach > 0 || profileViews.scout > 0) && (
-            <div className="flex items-center gap-3 text-xs text-white/50" style={{ marginTop: 8 }}>
-              <span>
-                {t("profile.coachViews")}: <span className="text-white font-semibold">{formatCount(profileViews.coach)}</span>
-              </span>
-              <span className="text-white/30">•</span>
-              <span>
-                {t("profile.scoutViews")}: <span className="text-white font-semibold">{formatCount(profileViews.scout)}</span>
-              </span>
-            </div>
-          )}
+          {/* Stats */}
+          <div className="flex items-center" style={{ marginTop: 16, marginBottom: 16, gap: 0 }}>
+            {[
+              { value: profile?.following_count || 0, label: t("profile.following"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=following`) },
+              { value: profile?.followers_count || 0, label: t("profile.followers"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=followers`) },
+              { value: totalLikes, label: t("profile.likes") },
+              { value: profileViews?.coach ?? 0, label: "🏀 " + t("profile.coachViews") },
+              { value: profileViews?.scout ?? 0, label: "🔍 " + t("profile.scoutViews") },
+            ].map((stat, i) => (
+              <div key={stat.label} className="flex items-center">
+                {i > 0 && (
+                  <div
+                    style={{
+                      width: 1,
+                      height: 24,
+                      background: "rgba(255,255,255,0.2)",
+                      alignSelf: "center",
+                      margin: "0 12px",
+                    }}
+                  />
+                )}
+                <div
+                  className={`flex flex-col items-center ${stat.onClick ? "cursor-pointer active:opacity-70" : ""}`}
+                  style={{ minWidth: 44 }}
+                  onClick={stat.onClick}
+                >
+                  <span className="text-white" style={{ fontSize: 17, fontWeight: 700, lineHeight: 1.2 }}>
+                    {formatCount(stat.value)}
+                  </span>
+                  <span className="text-white/60" style={{ fontSize: 11 }}>{stat.label}</span>
+                </div>
+              </div>
+            ))}
+          </div>
 
           {/* Stats */}
           <div className="flex items-center" style={{ marginTop: 16, marginBottom: 16, gap: 0 }}>
