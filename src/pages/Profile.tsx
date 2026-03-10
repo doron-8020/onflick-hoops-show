@@ -8,6 +8,7 @@ import {
   Play,
   User,
   BadgeCheck,
+  BarChart3,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
