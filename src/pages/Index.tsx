@@ -97,6 +97,24 @@ const Index = () => {
 
   useEffect(() => { setHasMore(true); fetchVideos(); }, [fetchVideos]);
 
+  // Realtime: listen for new posts
+  useEffect(() => {
+    const channel = supabase
+      .channel("new-videos-feed")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "videos" },
+        (payload) => {
+          const newRow = payload.new as any;
+          if (latestCreatedAt.current && newRow.created_at > latestCreatedAt.current) {
+            setNewPostsCount((c) => c + 1);
+          }
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
   const loadMore = useCallback(() => {
     if (loadingMore || !hasMore || videos.length === 0) return;
     const lastVideo = videos[videos.length - 1];
