@@ -223,30 +223,15 @@ const WebsiteGallery = () => {
     <div className="min-h-screen bg-black text-white">
       <FloatingNav />
 
-      {/* Hero */}
-      <section className="relative pt-32 pb-10 px-6">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent" />
-        <div className="relative max-w-4xl mx-auto text-center">
-          <motion.h1
-            className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider mb-4"
-            initial="hidden"
-            animate="visible"
-            variants={fade}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="text-primary">GALLERY</span>
-          </motion.h1>
-          <motion.p
-            className="text-lg text-white/60 max-w-xl mx-auto"
-            initial="hidden"
-            animate="visible"
-            variants={fade}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            Moments from the court, the community, and everything in between.
-          </motion.p>
-        </div>
-      </section>
+      <VideoHero
+        videoId="6nwz_zx5jGo"
+        title={
+          <>
+            OUR <span className="text-primary">GALLERY</span>
+          </>
+        }
+        subtitle="Moments from the court, the community, and everything in between."
+      />
 
       {/* Reels Slider */}
       <section className="py-8">
