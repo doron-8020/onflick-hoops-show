@@ -159,7 +159,7 @@ const PlayerProfile = () => {
             const playerStoryGroup = storyGroups.find((g) => g.userId === userId);
             const hasStory = !!playerStoryGroup;
             const avatarEl = (
-              <div className="h-24 w-24 rounded-full overflow-hidden">
+              <div className="h-24 w-24 md:h-28 md:w-28 lg:h-[120px] lg:w-[120px] rounded-full overflow-hidden">
                 {profile.avatar_url ? (
                   <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
                 ) : (
