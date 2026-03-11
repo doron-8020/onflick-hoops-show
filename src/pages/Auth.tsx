@@ -63,16 +63,13 @@ const Auth = () => {
   };
 
   const roleLabel = (type: UserType) => {
-    if (language === "he") {
-      if (type === "player") return "שחקן";
-      if (type === "coach") return "מאמן";
-      if (type === "scout") return "סקאוט";
-      return "בעל מקצוע";
-    }
-    if (type === "player") return "Player";
-    if (type === "coach") return "Coach";
-    if (type === "scout") return "Scout";
-    return "Professional";
+    const map: Record<UserType, string> = {
+      player: t("auth.rolePlayer"),
+      coach: t("auth.roleCoach"),
+      scout: t("auth.roleScout"),
+      professional: t("auth.roleProfessional"),
+    };
+    return map[type];
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
