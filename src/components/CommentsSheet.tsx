@@ -328,7 +328,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
                 <CommentRow
                   comment={comment}
                   user={user}
-                  language={language}
+                  t={t}
                   isRTL={isRTL}
                   onReply={handleReply}
                   onDelete={handleDelete}
