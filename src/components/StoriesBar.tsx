@@ -10,7 +10,7 @@ import StoryUploadModal from "@/components/StoryUploadModal";
 
 const StoriesBar = () => {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   const { storyGroups, fetchStories } = useStories();
   const [viewingGroup, setViewingGroup] = useState<StoryGroup | null>(null);
   const [uploadOpen, setUploadOpen] = useState(false);
@@ -30,28 +30,19 @@ const StoriesBar = () => {
             className="flex flex-col items-center gap-1 shrink-0"
           >
             <div className="relative">
-              <div className={`h-16 w-16 rounded-full border-2 ${hasMyStory ? "border-primary" : "border-muted"} flex items-center justify-center overflow-hidden`}>
-                {myGroup?.avatarUrl ? (
-                  <img src={myGroup.avatarUrl} className="h-full w-full object-cover" alt="" />
-                ) : (
-                  <div className="h-full w-full bg-secondary flex items-center justify-center">
-                    <Plus className="h-6 w-6 text-muted-foreground" />
-                  </div>
-                )}
-              </div>
-              {!hasMyStory && (
-                <div className="absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full bg-primary flex items-center justify-center">
-                  <Plus className="h-3 w-3 text-primary-foreground" />
+              <div className={`h-16 w-16 rounded-full overflow-hidden ${hasMyStory ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-1 ring-border"}`}>
+                <div className="h-full w-full bg-secondary flex items-center justify-center">
+                  <Plus className="h-5 w-5 text-muted-foreground" />
                 </div>
-              )}
+              </div>
             </div>
             <span className="text-[10px] text-muted-foreground truncate w-16 text-center">
-              {language === "he" ? "הסטורי שלי" : "Your story"}
+              {t("stories.myStory")}
             </span>
           </button>
         )}
 
-        {/* Other users */}
+        {/* Other stories */}
         {storyGroups
           .filter((g) => g.userId !== user?.id)
           .map((group) => (
@@ -60,24 +51,16 @@ const StoriesBar = () => {
               onClick={() => openStory(group)}
               className="flex flex-col items-center gap-1 shrink-0"
             >
-              <div
-                className={`h-16 w-16 rounded-full p-[2px] ${
-                  group.hasUnviewed
-                    ? "bg-gradient-to-tr from-blue-500 to-purple-500"
-                    : "bg-muted"
-                }`}
-              >
-                <div className="h-full w-full rounded-full overflow-hidden bg-background p-[2px]">
-                  <Avatar className="h-full w-full">
-                    <AvatarImage src={group.avatarUrl || undefined} />
-                    <AvatarFallback className="bg-secondary text-foreground text-xs">
-                      {group.displayName.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
+              <div className="h-16 w-16 rounded-full overflow-hidden ring-2 ring-primary ring-offset-2 ring-offset-background">
+                <Avatar className="h-full w-full">
+                  <AvatarImage src={group.avatarUrl || undefined} />
+                  <AvatarFallback className="bg-secondary text-foreground">
+                    {(group.displayName || "U").charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
               </div>
               <span className="text-[10px] text-muted-foreground truncate w-16 text-center">
-                {group.displayName}
+                {group.displayName || "User"}
               </span>
             </button>
           ))}
@@ -88,12 +71,15 @@ const StoriesBar = () => {
         {viewingGroup && (
           <StoryViewer
             group={viewingGroup}
-            onClose={() => { setViewingGroup(null); fetchStories(); }}
+            onClose={() => {
+              setViewingGroup(null);
+              fetchStories();
+            }}
           />
         )}
       </AnimatePresence>
 
-      {/* Upload modal */}
+      {/* Story upload */}
       <StoryUploadModal
         open={uploadOpen}
         onClose={() => setUploadOpen(false)}
