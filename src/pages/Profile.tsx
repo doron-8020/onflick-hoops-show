@@ -773,6 +773,8 @@ const Profile = () => {
                       video={video}
                       index={index}
                       scoutViews={videoScoutViews[video.id] ?? 0}
+                      isOwn={true}
+                      onDelete={handleDeleteVideo}
                       onClick={() => navigate(`/profile/feed?start=${index}`, { state: { videos } })}
                     />
                   ))}
