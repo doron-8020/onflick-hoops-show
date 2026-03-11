@@ -10,6 +10,7 @@ const DesktopSidebar = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const { isAdmin } = useAdmin();
   const [unreadCount, setUnreadCount] = useState(0);
 
   const navItems = [
