@@ -214,10 +214,10 @@ const Auth = () => {
           <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-6" onClick={() => setShowForgotPassword(false)}>
             <div className="w-full max-w-sm bg-background rounded-2xl p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
               <h2 className="font-display text-xl text-foreground text-center">
-                {language === "he" ? "איפוס סיסמה" : "Reset Password"}
+                {t("auth.resetPassword")}
               </h2>
               <p className="text-sm text-muted-foreground text-center">
-                {language === "he" ? "נשלח לך אימייל עם קישור לאיפוס" : "We'll send you a reset link"}
+                {t("auth.resetDescription")}
               </p>
               <form onSubmit={handleForgotPassword} className="space-y-3">
                 <input
