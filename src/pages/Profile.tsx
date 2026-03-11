@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useMemo, forwardRef, useCallback } from "react";
+import VideoFrameThumb from "@/components/VideoFrameThumb";
 
 import {
   Grid3X3,
