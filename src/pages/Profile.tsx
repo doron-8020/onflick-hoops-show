@@ -44,12 +44,18 @@ const GridCell = forwardRef<HTMLDivElement, {
   index: number;
   onClick: () => void;
   scoutViews?: number;
+  isOwn?: boolean;
+  onDelete?: (videoId: string) => void;
 }>(({
   video,
   index,
   onClick,
   scoutViews,
+  isOwn,
+  onDelete,
 }, ref) => {
+  const [showMenu, setShowMenu] = useState(false);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isGallery = video.media_type === "gallery";
   const isImage = video.media_type === "image";
 
@@ -59,11 +65,29 @@ const GridCell = forwardRef<HTMLDivElement, {
     ? video.video_url
     : video.thumbnail_url ?? null;
 
+  const handleTouchStart = () => {
+    if (!isOwn) return;
+    longPressTimer.current = setTimeout(() => {
+      setShowMenu(true);
+      try { if ("vibrate" in navigator) navigator.vibrate(30); } catch {}
+    }, 500);
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
+  };
+
   return (
     <div
       key={video.id}
       className="relative aspect-[9/16] overflow-hidden bg-secondary group cursor-pointer"
-      onClick={onClick}
+      onClick={() => { if (!showMenu) onClick(); }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+      onContextMenu={(e) => {
+        if (isOwn) { e.preventDefault(); setShowMenu(true); }
+      }}
     >
       {thumbSrc ? (
         <img src={thumbSrc} className="h-full w-full object-cover" alt="" loading="lazy" />
@@ -122,6 +146,26 @@ const GridCell = forwardRef<HTMLDivElement, {
         )}
       </div>
       <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+      {/* Delete overlay menu */}
+      {showMenu && isOwn && (
+        <div
+          className="absolute inset-0 z-10 bg-black/70 flex items-center justify-center backdrop-blur-sm animate-fade-in"
+          onClick={(e) => { e.stopPropagation(); setShowMenu(false); }}
+        >
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowMenu(false);
+              onDelete?.(video.id);
+            }}
+            className="flex flex-col items-center gap-2 rounded-xl bg-destructive/90 px-5 py-3 text-destructive-foreground active:scale-95 transition-transform"
+          >
+            <Trash2 className="h-6 w-6" />
+            <span className="text-xs font-bold">Delete</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 });
