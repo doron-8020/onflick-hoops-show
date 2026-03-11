@@ -7,7 +7,10 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { MuteProvider } from "@/contexts/MuteContext";
+import { RemoteConfigProvider } from "@/contexts/RemoteConfigContext";
 import OfflineBanner from "@/components/OfflineBanner";
+import MaintenanceScreen from "@/components/MaintenanceScreen";
+import AppBanner from "@/components/AppBanner";
 import Index from "./pages/Index";
 import Discover from "./pages/Discover";
 import Create from "./pages/Create";
@@ -88,42 +91,46 @@ const App = () => (
     <ThemeProvider>
       <LanguageProvider>
         <MuteProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <OfflineBanner />
-            <BrowserRouter>
-              <AuthProvider>
-                <OGTagUpdater />
-                <AppShell>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/discover" element={<Discover />} />
-                    <Route path="/create" element={<Create />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/player/:userId" element={<PlayerProfile />} />
-                    <Route path="/profile/feed" element={<ProfileFeed />} />
-                    <Route path="/user/:userId/follows" element={<FollowList />} />
-                    <Route path="/tag/:tagName" element={<TagFeed />} />
-                    <Route path="/messages" element={<Messages />} />
-                    <Route path="/messages/:conversationId" element={<Conversation />} />
-                    <Route path="/notifications" element={<Notifications />} />
-                    <Route path="/settings" element={<Settings />} />
-                    <Route path="/blog" element={<Blog />} />
-                    <Route path="/onflick" element={<Onflick />} />
-                    <Route path="/admin" element={<Admin />} />
-                    <Route path="/analytics" element={<Analytics />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/onboarding/role" element={<RoleOnboarding />} />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    <Route path="/terms" element={<Terms />} />
-                    <Route path="/privacy" element={<PrivacyPolicy />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </AppShell>
-              </AuthProvider>
-            </BrowserRouter>
-          </TooltipProvider>
+          <RemoteConfigProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <OfflineBanner />
+              <MaintenanceScreen />
+              <AppBanner />
+              <BrowserRouter>
+                <AuthProvider>
+                  <OGTagUpdater />
+                  <AppShell>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/discover" element={<Discover />} />
+                      <Route path="/create" element={<Create />} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/player/:userId" element={<PlayerProfile />} />
+                      <Route path="/profile/feed" element={<ProfileFeed />} />
+                      <Route path="/user/:userId/follows" element={<FollowList />} />
+                      <Route path="/tag/:tagName" element={<TagFeed />} />
+                      <Route path="/messages" element={<Messages />} />
+                      <Route path="/messages/:conversationId" element={<Conversation />} />
+                      <Route path="/notifications" element={<Notifications />} />
+                      <Route path="/settings" element={<Settings />} />
+                      <Route path="/blog" element={<Blog />} />
+                      <Route path="/onflick" element={<Onflick />} />
+                      <Route path="/admin" element={<Admin />} />
+                      <Route path="/analytics" element={<Analytics />} />
+                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/onboarding/role" element={<RoleOnboarding />} />
+                      <Route path="/reset-password" element={<ResetPassword />} />
+                      <Route path="/terms" element={<Terms />} />
+                      <Route path="/privacy" element={<PrivacyPolicy />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </AppShell>
+                </AuthProvider>
+              </BrowserRouter>
+            </TooltipProvider>
+          </RemoteConfigProvider>
         </MuteProvider>
       </LanguageProvider>
     </ThemeProvider>
