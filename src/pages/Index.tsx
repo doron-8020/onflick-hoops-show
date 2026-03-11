@@ -48,6 +48,7 @@ const Index = () => {
   const [hasMore, setHasMore] = useState(true);
   const [newPostsCount, setNewPostsCount] = useState(0);
   const [blockedIds, setBlockedIds] = useState<Set<string>>(new Set());
+  const [notInterestedIds, setNotInterestedIds] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<FeedTab>(() =>
     new URLSearchParams(window.location.search).get("tab") === "following" ? "following" : "foryou"
   );
