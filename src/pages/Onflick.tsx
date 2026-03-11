@@ -29,25 +29,25 @@ const fadeUp = {
 };
 
 const Onflick = () => {
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   const isHe = language === "he";
 
   const contactLinks = [
     {
       icon: <MessageCircle className="h-5 w-5" />,
-      label: isHe ? "וואטסאפ" : "WhatsApp",
+      label: t("onflick.whatsapp"),
       href: "https://wa.me/972501234567",
       color: "bg-green-600 hover:bg-green-700",
     },
     {
       icon: <Phone className="h-5 w-5" />,
-      label: isHe ? "טלפון" : "Phone",
+      label: t("onflick.phone"),
       href: "tel:+972501234567",
       color: "bg-blue-600 hover:bg-blue-700",
     },
     {
       icon: <Mail className="h-5 w-5" />,
-      label: isHe ? "אימייל" : "Email",
+      label: t("onflick.email"),
       href: "mailto:info@onflick.com",
       color: "bg-[hsl(25,85%,50%)] hover:bg-[hsl(25,85%,45%)]",
     },

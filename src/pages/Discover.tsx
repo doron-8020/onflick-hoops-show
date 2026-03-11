@@ -85,6 +85,7 @@ const PlayerCard = ({ player }: { player: PlayerProfile }) => {
 
 // Compact horizontal card for suggested
 const SuggestedPlayerCard = ({ player }: { player: PlayerProfile }) => {
+  const { t } = useLanguage();
   const displayName = player.display_name || "Player";
   return (
     <a href={`/player/${player.user_id}`} className="shrink-0 w-28 flex flex-col items-center gap-2 rounded-xl bg-secondary p-3 hover:bg-secondary/80 transition-all">
@@ -98,7 +99,7 @@ const SuggestedPlayerCard = ({ player }: { player: PlayerProfile }) => {
         )}
       </div>
       <p className="text-xs font-semibold text-foreground truncate w-full text-center">{displayName}</p>
-      <p className="text-[10px] text-muted-foreground">{player.followers_count} followers</p>
+      <p className="text-[10px] text-muted-foreground">{player.followers_count} {t("discover.followersCount")}</p>
     </a>
   );
 };
@@ -288,7 +289,7 @@ const Discover = () => {
 
             {!showSearch && topPlayers.length > 0 && (
               <div className="px-4 pb-3">
-                <h2 className="text-sm font-bold text-foreground mb-2">{language === "he" ? "שחקנים מובילים 🔥" : "Top Players 🔥"}</h2>
+                <h2 className="text-sm font-bold text-foreground mb-2">{t("discover.topPlayers")}</h2>
                 <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
                   {topPlayers.map((p) => <SuggestedPlayerCard key={p.user_id} player={p} />)}
                 </div>

@@ -14,7 +14,7 @@ interface StoryUploadModalProps {
 
 const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) => {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [preview, setPreview] = useState<string | null>(null);
@@ -42,7 +42,7 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
       video.onloadedmetadata = () => {
         URL.revokeObjectURL(video.src);
         if (video.duration > 15) {
-          toast.error(language === "he" ? "סרטון מקסימלי 15 שניות" : "Max video length is 15 seconds");
+          toast.error(t("stories.maxLength"));
           return;
         }
         setFile(f);
@@ -68,7 +68,7 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
     setProgress(70);
 
     if (uploadErr) {
-      toast.error(language === "he" ? "שגיאה בהעלאה" : "Upload failed");
+      toast.error(t("stories.uploadFailed"));
       setUploading(false);
       return;
     }
@@ -84,7 +84,7 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
     });
 
     setProgress(100);
-    toast.success(language === "he" ? "הסטורי עלה! 🎉" : "Story posted! 🎉");
+    toast.success(t("stories.posted"));
     reset();
     onUploaded();
     onClose();
@@ -96,8 +96,8 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
     {
       key: "gallery",
       icon: ImagePlus,
-      label: language === "he" ? "גלריה" : "Gallery",
-      subtitle: language === "he" ? "בחר מהטלפון או מהמחשב" : "Choose from device",
+      label: t("stories.gallery"),
+      subtitle: t("stories.gallerySubtitle"),
       gradient: "from-violet-600 to-indigo-600",
       glow: "shadow-[0_0_30px_-5px_rgba(139,92,246,0.5)]",
       onClick: () => galleryInputRef.current?.click(),
@@ -105,8 +105,8 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
     {
       key: "photo",
       icon: Upload,
-      label: language === "he" ? "העלאת תמונות" : "Upload Photos",
-      subtitle: language === "he" ? "תמונה מהמכשיר" : "Image from device",
+      label: t("stories.uploadPhotos"),
+      subtitle: t("stories.uploadPhotosSubtitle"),
       gradient: "from-emerald-500 to-teal-600",
       glow: "shadow-[0_0_30px_-5px_rgba(16,185,129,0.5)]",
       onClick: () => photoInputRef.current?.click(),
@@ -114,8 +114,8 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
     {
       key: "video",
       icon: Video,
-      label: language === "he" ? "הקלטת וידאו" : "Record Video",
-      subtitle: language === "he" ? "עד 15 שניות" : "Up to 15 seconds",
+      label: t("stories.recordVideo"),
+      subtitle: t("stories.recordVideoSubtitle"),
       gradient: "from-red-500 to-rose-600",
       glow: "shadow-[0_0_30px_-5px_rgba(239,68,68,0.5)]",
       onClick: () => {
@@ -130,8 +130,8 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
     {
       key: "selfie",
       icon: Camera,
-      label: language === "he" ? "צילום סלפי" : "Take Selfie",
-      subtitle: language === "he" ? "מצלמה קדמית" : "Front camera",
+      label: t("stories.takeSelfie"),
+      subtitle: t("stories.takeSelfieSubtitle"),
       gradient: "from-amber-500 to-orange-600",
       glow: "shadow-[0_0_30px_-5px_rgba(245,158,11,0.5)]",
       onClick: () => selfieInputRef.current?.click(),
@@ -140,11 +140,11 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
       key: "drive",
       icon: CloudUpload,
       label: "Google Drive",
-      subtitle: language === "he" ? "בחר מהענן" : "Choose from cloud",
+      subtitle: t("stories.cloudSubtitle"),
       gradient: "from-blue-500 to-cyan-500",
       glow: "shadow-[0_0_30px_-5px_rgba(59,130,246,0.5)]",
       onClick: () => {
-        toast.info(language === "he" ? "Google Drive יהיה זמין בקרוב" : "Google Drive coming soon");
+        toast.info(t("stories.cloudComingSoon"));
       },
     },
   ];
@@ -166,7 +166,7 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
             <X className="h-5 w-5 text-white" />
           </button>
           <span className="text-white font-bold text-lg tracking-tight">
-            {language === "he" ? "סטורי חדש" : "New Story"}
+            {t("stories.newStory")}
           </span>
           <div className="w-9" />
         </div>
@@ -208,7 +208,7 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
               caption={caption}
               setCaption={setCaption}
               handleUpload={handleUpload}
-              language={language}
+              t={t}
             />
           )}
         </div>
@@ -224,7 +224,7 @@ const StoryUploadModal = ({ open, onClose, onUploaded }: StoryUploadModalProps) 
 
 /* ── Preview & Upload Section ── */
 const PreviewSection = ({
-  preview, file, uploading, progress, caption, setCaption, handleUpload, language,
+  preview, file, uploading, progress, caption, setCaption, handleUpload, t,
 }: {
   preview: string;
   file: File | null;
@@ -233,7 +233,7 @@ const PreviewSection = ({
   caption: string;
   setCaption: (v: string) => void;
   handleUpload: () => void;
-  language: string;
+  t: (key: any) => string;
 }) => (
   <div className="w-full max-w-sm flex flex-col items-center gap-4">
     <div className="relative w-full aspect-[9/16] rounded-2xl overflow-hidden bg-black/50">
@@ -269,7 +269,7 @@ const PreviewSection = ({
     <input
       value={caption}
       onChange={(e) => setCaption(e.target.value)}
-      placeholder={language === "he" ? "הוסף כיתוב..." : "Add a caption..."}
+      placeholder={t("stories.addCaption")}
       maxLength={100}
       className="w-full rounded-full px-4 py-2.5 text-sm bg-white/15 text-white placeholder:text-white/50 border border-white/20 outline-none focus:border-white/50"
     />
@@ -279,9 +279,7 @@ const PreviewSection = ({
       disabled={uploading}
       className="w-full py-3 rounded-full bg-primary text-primary-foreground font-bold text-sm disabled:opacity-50 transition-opacity"
     >
-      {uploading
-        ? (language === "he" ? "מעלה..." : "Uploading...")
-        : (language === "he" ? "פרסם סטורי" : "Post Story")}
+      {uploading ? t("stories.uploading") : t("stories.postStory")}
     </button>
   </div>
 );

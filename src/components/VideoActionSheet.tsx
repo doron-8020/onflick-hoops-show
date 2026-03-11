@@ -17,15 +17,15 @@ interface VideoActionSheetProps {
 }
 
 const REPORT_REASONS = [
-  { key: "spam", emoji: "📧", en: "Spam", he: "ספאם" },
-  { key: "inappropriate", emoji: "🔞", en: "Inappropriate content", he: "תוכן לא הולם" },
-  { key: "fake", emoji: "🎭", en: "Fake", he: "מזויף" },
-  { key: "other", emoji: "📝", en: "Other", he: "אחר" },
+  { key: "spam", emoji: "📧", translationKey: "report.spam" as const },
+  { key: "inappropriate", emoji: "🔞", translationKey: "report.inappropriate" as const },
+  { key: "fake", emoji: "🎭", translationKey: "report.fake" as const },
+  { key: "other", emoji: "📝", translationKey: "report.other" as const },
 ];
 
 const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked, onDeleted }: VideoActionSheetProps) => {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   const [showReport, setShowReport] = useState(false);
   const [showBlockConfirm, setShowBlockConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -34,21 +34,21 @@ const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked,
 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(`${window.location.origin}/?v=${videoId}`);
-    toast.success(language === "he" ? "הקישור הועתק" : "Link copied");
+    toast.success(t("action.linkCopied"));
     onOpenChange(false);
   };
 
   const handleNotInterested = async () => {
     if (!user) return;
     await supabase.from("not_interested").insert({ user_id: user.id, video_id: videoId });
-    toast.success(language === "he" ? "הבנו, נציג פחות כאלה" : "Got it, we'll show less like this");
+    toast.success(t("action.notInterestedConfirm"));
     onOpenChange(false);
   };
 
   const handleReport = async (reason: string) => {
     if (!user) return;
     await supabase.from("reports").insert({ reporter_id: user.id, video_id: videoId, reason, status: "pending" });
-    toast.success(language === "he" ? "הדיווח נשלח" : "Report submitted");
+    toast.success(t("action.reportSubmitted"));
     setShowReport(false);
     onOpenChange(false);
   };
@@ -56,7 +56,7 @@ const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked,
   const handleBlock = async () => {
     if (!user) return;
     await supabase.from("blocked_users").insert({ blocker_id: user.id, blocked_id: videoUserId });
-    toast.success(language === "he" ? "המשתמש נחסם" : "User blocked");
+    toast.success(t("action.userBlocked"));
     setShowBlockConfirm(false);
     onOpenChange(false);
     onBlocked?.();
@@ -64,14 +64,12 @@ const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked,
 
   const handleDelete = async () => {
     if (!user || !isOwnPost) return;
-    // Delete video from DB (cascade will handle likes, comments, etc.)
     const { data: video } = await supabase.from("videos").select("video_url, gallery_urls, media_type").eq("id", videoId).single();
     const { error } = await supabase.from("videos").delete().eq("id", videoId);
     if (error) {
-      toast.error(language === "he" ? "שגיאה במחיקה" : "Error deleting post");
+      toast.error(t("action.deleteError"));
       return;
     }
-    // Best-effort: delete from storage
     if (video) {
       try {
         const urlsToDelete: string[] = [];
@@ -85,7 +83,7 @@ const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked,
         }
       } catch {}
     }
-    toast.success(language === "he" ? "הפוסט נמחק" : "Post deleted");
+    toast.success(t("action.postDeleted"));
     setShowDeleteConfirm(false);
     onOpenChange(false);
     onDeleted?.();
@@ -101,28 +99,28 @@ const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked,
           <div className="px-4 pb-6 space-y-1">
             <button onClick={handleCopyLink} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
               <Copy className="h-5 w-5 text-foreground" />
-              <span className="text-sm font-medium text-foreground">{language === "he" ? "📋 העתק קישור" : "📋 Copy Link"}</span>
+              <span className="text-sm font-medium text-foreground">{t("action.copyLink")}</span>
             </button>
             {!isOwnPost && (
               <>
                 <button onClick={handleNotInterested} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
                   <EyeOff className="h-5 w-5 text-foreground" />
-                  <span className="text-sm font-medium text-foreground">{language === "he" ? "🚫 לא מעניין" : "🚫 Not Interested"}</span>
+                  <span className="text-sm font-medium text-foreground">{t("action.notInterested")}</span>
                 </button>
                 <button onClick={() => setShowReport(true)} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
                   <Flag className="h-5 w-5 text-foreground" />
-                  <span className="text-sm font-medium text-foreground">{language === "he" ? "🚨 דווח" : "🚨 Report"}</span>
+                  <span className="text-sm font-medium text-foreground">{t("action.report")}</span>
                 </button>
                 <button onClick={() => { onOpenChange(false); setShowBlockConfirm(true); }} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
                   <UserX className="h-5 w-5 text-destructive" />
-                  <span className="text-sm font-medium text-destructive">{language === "he" ? "🔇 חסום משתמש" : "🔇 Block User"}</span>
+                  <span className="text-sm font-medium text-destructive">{t("action.blockUser")}</span>
                 </button>
               </>
             )}
             {isOwnPost && (
               <button onClick={() => { onOpenChange(false); setShowDeleteConfirm(true); }} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
                 <Trash2 className="h-5 w-5 text-destructive" />
-                <span className="text-sm font-medium text-destructive">{language === "he" ? "🗑️ מחק פוסט" : "🗑️ Delete Post"}</span>
+                <span className="text-sm font-medium text-destructive">{t("action.deletePost")}</span>
               </button>
             )}
           </div>
@@ -136,13 +134,13 @@ const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked,
             <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
           </div>
           <SheetHeader className="px-4 pb-2">
-            <SheetTitle className="text-center text-sm">{language === "he" ? "בחר סיבה" : "Select a reason"}</SheetTitle>
+            <SheetTitle className="text-center text-sm">{t("action.selectReason")}</SheetTitle>
           </SheetHeader>
           <div className="px-4 pb-6 space-y-1">
             {REPORT_REASONS.map((r) => (
               <button key={r.key} onClick={() => handleReport(r.key)} className="flex items-center gap-3 w-full rounded-xl px-4 py-3 hover:bg-secondary transition-colors">
                 <span className="text-lg">{r.emoji}</span>
-                <span className="text-sm font-medium text-foreground">{language === "he" ? r.he : r.en}</span>
+                <span className="text-sm font-medium text-foreground">{t(r.translationKey)}</span>
               </button>
             ))}
           </div>
@@ -153,15 +151,13 @@ const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked,
       <AlertDialog open={showBlockConfirm} onOpenChange={setShowBlockConfirm}>
         <AlertDialogContent onClick={(e) => e.stopPropagation()}>
           <AlertDialogHeader>
-            <AlertDialogTitle>{language === "he" ? "חסום משתמש?" : "Block this user?"}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {language === "he" ? "לא תראה את התוכן שלהם יותר." : "You won't see their content."}
-            </AlertDialogDescription>
+            <AlertDialogTitle>{t("action.blockConfirm")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("action.blockDesc")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{language === "he" ? "ביטול" : "Cancel"}</AlertDialogCancel>
+            <AlertDialogCancel>{t("auth.cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={handleBlock} className="bg-destructive text-destructive-foreground">
-              {language === "he" ? "חסום" : "Block"}
+              {t("action.block")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -171,15 +167,13 @@ const VideoActionSheet = ({ videoId, videoUserId, open, onOpenChange, onBlocked,
       <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
         <AlertDialogContent onClick={(e) => e.stopPropagation()}>
           <AlertDialogHeader>
-            <AlertDialogTitle>{language === "he" ? "מחק פוסט?" : "Delete this post?"}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {language === "he" ? "הפוסט יימחק לצמיתות ולא ניתן יהיה לשחזר אותו." : "This post will be permanently deleted and cannot be recovered."}
-            </AlertDialogDescription>
+            <AlertDialogTitle>{t("action.deleteConfirm")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("action.deleteDesc")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{language === "he" ? "ביטול" : "Cancel"}</AlertDialogCancel>
+            <AlertDialogCancel>{t("auth.cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
-              {language === "he" ? "מחק" : "Delete"}
+              {t("action.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
