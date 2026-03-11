@@ -570,7 +570,7 @@ const Profile = () => {
                 }
                 try {
                   await navigator.clipboard.writeText(profileUrl);
-                  toast({ title: "✅ הלינק הועתק!" });
+                  toast({ title: t("profile.linkCopied") });
                 } catch {
                   const ta = document.createElement("textarea");
                   ta.value = profileUrl;
