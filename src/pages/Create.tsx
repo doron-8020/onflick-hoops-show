@@ -38,6 +38,8 @@ const Create = () => {
   const [activePreview, setActivePreview] = useState(0);
   const [privacy, setPrivacy] = useState("public");
   const [showCategoryError, setShowCategoryError] = useState(false);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
 
   // Combined tag count
   const customTagsArray = customTags.split(",").map((t) => t.trim().replace("#", "")).filter(Boolean);
