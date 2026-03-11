@@ -685,7 +685,7 @@ const Profile = () => {
                   ))}
                 </div>
               ) : (
-                <EmptyTabState icon={Heart} title="Liked" subtitle="No liked videos yet" />
+                <EmptyTabState icon={Heart} title={t("profile.likes")} subtitle={t("profile.noLikedVideos")} />
               )}
             </>
           )}
