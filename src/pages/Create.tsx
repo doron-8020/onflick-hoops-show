@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Camera, Video, Image, Upload, X, Loader2, Plus, Check, Globe, Users, Lock } from "lucide-react";
+import { Camera, Video, Image, Upload, X, Loader2, Plus, Check, Globe, Users, Lock, ImagePlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
