@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import VideoFrameThumb from "@/components/VideoFrameThumb";
 import { Search, X, UserPlus, UserCheck, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
