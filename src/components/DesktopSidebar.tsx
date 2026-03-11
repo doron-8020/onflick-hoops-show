@@ -1,7 +1,8 @@
-import { Home, Search, Plus, Bell, User, MessageCircle, Settings } from "lucide-react";
+import { Home, Search, Plus, Bell, User, MessageCircle, Settings, Globe } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAdmin } from "@/hooks/useAdmin";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
