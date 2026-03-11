@@ -796,6 +796,38 @@ export type Database = {
           },
         ]
       }
+      video_views: {
+        Row: {
+          created_at: string
+          id: string
+          video_id: string
+          viewed_on: string
+          viewer_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          video_id: string
+          viewed_on?: string
+          viewer_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          video_id?: string
+          viewed_on?: string
+          viewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_views_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       videos: {
         Row: {
           caption: string | null
@@ -906,6 +938,7 @@ export type Database = {
         Args: { p_viewed_user_id: string }
         Returns: undefined
       }
+      record_video_view: { Args: { p_video_id: string }; Returns: undefined }
       toggle_blog_like: { Args: { p_post_id: string }; Returns: boolean }
       toggle_video_like: { Args: { p_video_id: string }; Returns: boolean }
     }

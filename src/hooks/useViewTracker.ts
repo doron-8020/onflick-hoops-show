@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Tracks video views — increments views_count once per session per video.
+ * Also records an identified view for scout tracking.
  */
 export const useViewTracker = () => {
   const viewedIds = useRef<Set<string>>(new Set());
@@ -13,6 +14,8 @@ export const useViewTracker = () => {
     // Delay 3s so only meaningful views are counted
     setTimeout(() => {
       supabase.rpc("increment_views", { p_video_id: videoId }).then(() => {});
+      // Record identified view for scout/coach tracking
+      supabase.rpc("record_video_view", { p_video_id: videoId }).then(() => {});
     }, 3000);
   }, []);
 
