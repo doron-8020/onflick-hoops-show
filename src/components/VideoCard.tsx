@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Heart, MessageCircle, Share2, Play, Pause, Bookmark, Repeat2, BadgeCheck, MoreHorizontal, Music2 } from "lucide-react";
+import { Heart, MessageCircle, Share2, Play, Pause, Bookmark, Repeat2, BadgeCheck, Music2 } from "lucide-react";
 import BasketballLikeButton from "./BasketballLikeButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CommentsSheet from "./CommentsSheet";
 import GalleryCarousel from "./GalleryCarousel";
 import SoundWheel from "./SoundWheel";
-import VideoActionSheet from "./VideoActionSheet";
+
 
 interface VideoCardProps {
   video: {
@@ -61,7 +61,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCar
   const [showHeart, setShowHeart] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
-  const [actionSheetOpen, setActionSheetOpen] = useState(false);
+  
   const [showPlayIcon, setShowPlayIcon] = useState(false);
   const [progress, setProgress] = useState(0);
   const [reposted, setReposted] = useState(false);
@@ -225,15 +225,6 @@ const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCar
         )}
       </div>
 
-      {/* More button (top-right) */}
-      {user && video.user_id && (
-        <button
-          onClick={(e) => { e.stopPropagation(); haptic(10); setActionSheetOpen(true); }}
-          className="absolute top-[56px] end-[14px] z-20 rounded-full bg-black/30 h-8 w-8 flex items-center justify-center backdrop-blur-sm"
-        >
-          <MoreHorizontal className="h-5 w-5 text-white" />
-        </button>
-      )}
 
       {/* Play/Pause flash */}
       <AnimatePresence>
@@ -394,16 +385,6 @@ const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCar
       )}
 
       <CommentsSheet videoId={video.id} open={commentsOpen} onOpenChange={setCommentsOpen} />
-      {video.user_id && (
-        <VideoActionSheet
-          videoId={video.id}
-          videoUserId={video.user_id}
-          open={actionSheetOpen}
-          onOpenChange={setActionSheetOpen}
-          onDeleted={() => onDeleted?.(video.id)}
-          onBlocked={() => onDeleted?.(video.id)}
-        />
-      )}
     </div>
   );
 };
