@@ -184,6 +184,16 @@ const Auth = () => {
             </button>
           </div>
 
+          {isLogin && (
+            <button
+              type="button"
+              onClick={() => setShowForgotPassword(true)}
+              className="w-full text-end text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {language === "he" ? "שכחת סיסמה?" : "Forgot password?"}
+            </button>
+          )}
+
           <button
             type="submit"
             disabled={loading}
@@ -201,6 +211,47 @@ const Auth = () => {
             )}
           </button>
         </form>
+
+        {/* Forgot password modal */}
+        {showForgotPassword && (
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-6" onClick={() => setShowForgotPassword(false)}>
+            <div className="w-full max-w-sm bg-background rounded-2xl p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
+              <h2 className="font-display text-xl text-foreground text-center">
+                {language === "he" ? "איפוס סיסמה" : "Reset Password"}
+              </h2>
+              <p className="text-sm text-muted-foreground text-center">
+                {language === "he" ? "נשלח לך אימייל עם קישור לאיפוס" : "We'll send you a reset link"}
+              </p>
+              <form onSubmit={handleForgotPassword} className="space-y-3">
+                <input
+                  type="email"
+                  placeholder={t("auth.email")}
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  required
+                  dir="ltr"
+                  className="w-full rounded-xl bg-secondary px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary"
+                />
+                <button
+                  type="submit"
+                  disabled={resetLoading}
+                  className="w-full rounded-xl gradient-fire py-3 text-sm font-bold text-primary-foreground shadow-glow disabled:opacity-50"
+                >
+                  {resetLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                    </span>
+                  ) : (
+                    language === "he" ? "שלח קישור" : "Send Reset Link"
+                  )}
+                </button>
+              </form>
+              <button onClick={() => setShowForgotPassword(false)} className="w-full text-center text-sm text-muted-foreground">
+                {language === "he" ? "ביטול" : "Cancel"}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="mt-6 flex items-center gap-3">
           <div className="h-px flex-1 bg-border" />
