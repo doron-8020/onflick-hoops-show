@@ -76,6 +76,20 @@ const DesktopSidebar = () => {
             </Link>
           );
         })}
+        {/* Admin-only: Website editor link */}
+        {isAdmin && (
+          <Link
+            to="/website"
+            className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold transition-colors mt-4 ${
+              location.pathname === "/website"
+                ? "bg-primary text-primary-foreground"
+                : "bg-primary/10 text-primary hover:bg-primary/20"
+            }`}
+          >
+            <Globe className="h-6 w-6 shrink-0" strokeWidth={2} />
+            <span>ONFLICK Website</span>
+          </Link>
+        )}
       </nav>
 
       {/* User avatar at bottom */}
