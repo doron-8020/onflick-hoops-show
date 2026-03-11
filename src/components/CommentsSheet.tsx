@@ -55,7 +55,7 @@ const CommentRow = ({
 }: {
   comment: Comment;
   user: any;
-  language: string;
+  t: (key: any) => string;
   isRTL: boolean;
   onReply: (comment: Comment) => void;
   onDelete: (id: string) => void;
