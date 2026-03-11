@@ -385,9 +385,9 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         </div>
       </div>
 
-      {/* Video progress bar — thin white line */}
+      {/* Video progress bar — thin white line, above home indicator */}
       {isVideo && (
-        <div className="absolute bottom-[72px] inset-x-0 h-[2px] bg-white/10 z-10">
+        <div className="absolute inset-x-0 h-[2px] bg-white/10 z-10" style={{ bottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
           <div className="h-full bg-white/80 transition-[width] duration-200 ease-linear" style={{ width: `${progress}%` }} />
         </div>
       )}
