@@ -35,13 +35,13 @@ const Onflick = () => {
   const contactLinks = [
     {
       icon: <MessageCircle className="h-5 w-5" />,
-      label: isHe ? "וואטסאפ" : "WhatsApp",
+      label: t("onflick.whatsapp"),
       href: "https://wa.me/972501234567",
       color: "bg-green-600 hover:bg-green-700",
     },
     {
       icon: <Phone className="h-5 w-5" />,
-      label: isHe ? "טלפון" : "Phone",
+      label: t("onflick.phone"),
       href: "tel:+972501234567",
       color: "bg-blue-600 hover:bg-blue-700",
     },
