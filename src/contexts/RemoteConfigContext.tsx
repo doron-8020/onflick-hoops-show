@@ -47,7 +47,7 @@ export const RemoteConfigProvider = ({ children }: { children: React.ReactNode }
     try {
       const [flagsRes, settingsRes, hashtagsRes] = await Promise.all([
         adminPanel.from("feature_flags").select("key, enabled"),
-        adminPanel.from("app_settings").select("key, enabled, message, text_he, text_en"),
+        adminPanel.from("app_settings").select("*"),
         adminPanel.from("trending_hashtags").select("tag, pinned, hidden"),
       ]);
 
