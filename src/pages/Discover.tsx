@@ -85,6 +85,7 @@ const PlayerCard = ({ player }: { player: PlayerProfile }) => {
 
 // Compact horizontal card for suggested
 const SuggestedPlayerCard = ({ player }: { player: PlayerProfile }) => {
+  const { t } = useLanguage();
   const displayName = player.display_name || "Player";
   return (
     <a href={`/player/${player.user_id}`} className="shrink-0 w-28 flex flex-col items-center gap-2 rounded-xl bg-secondary p-3 hover:bg-secondary/80 transition-all">
