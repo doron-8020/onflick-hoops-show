@@ -122,7 +122,7 @@ const Auth = () => {
 
               <div className="rounded-xl bg-secondary p-2">
                 <p className="px-2 pb-2 text-xs font-semibold text-muted-foreground">
-                  {t("auth.role") || (language === "he" ? "סוג חשבון" : "Account type")}
+                  {t("auth.role")}
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   {(["player", "coach", "scout", "professional"] as UserType[]).map((type) => {
