@@ -262,10 +262,17 @@ const Create = () => {
               ) : (
                 <img src={previewUrl} className="h-full w-full object-cover" alt="" />
               )}
-              <button onClick={() => { setSelectedFile(null); setPreviewUrl(null); }}
+              <button onClick={() => { setSelectedFile(null); setPreviewUrl(null); setCoverFile(null); setCoverPreview(null); }}
                 className="absolute top-2 end-2 rounded-full bg-background/70 p-1.5 backdrop-blur-sm">
                 <X className="h-4 w-4 text-foreground" />
               </button>
+              {mediaType === "video" && (
+                <button onClick={() => coverInputRef.current?.click()}
+                  className="absolute bottom-3 end-3 rounded-full bg-background/70 px-3 py-1.5 backdrop-blur-sm flex items-center gap-1.5">
+                  <ImagePlus className="h-3.5 w-3.5 text-foreground" />
+                  <span className="text-xs font-semibold text-foreground">{language === "he" ? "תמונת קאבר" : "Cover image"}</span>
+                </button>
+              )}
               {mediaType === "image" && (
                 <button onClick={() => {
                   setGalleryFiles([selectedFile!]); setGalleryPreviews([previewUrl!]);
@@ -276,6 +283,20 @@ const Create = () => {
                 </button>
               )}
             </div>
+            {/* Cover image preview */}
+            {coverPreview && mediaType === "video" && (
+              <div className="flex items-center gap-3 rounded-xl bg-secondary px-3 py-2">
+                <img src={coverPreview} className="h-14 w-10 rounded-lg object-cover" alt="" />
+                <div className="flex-1">
+                  <p className="text-xs font-semibold text-foreground">{language === "he" ? "תמונת קאבר נבחרה" : "Cover image selected"}</p>
+                  <p className="text-[11px] text-muted-foreground">{language === "he" ? "תוצג בגריד הפרופיל" : "Shown in profile grid"}</p>
+                </div>
+                <button onClick={() => { setCoverFile(null); setCoverPreview(null); }}
+                  className="rounded-full bg-destructive/20 p-1.5">
+                  <X className="h-3.5 w-3.5 text-destructive" />
+                </button>
+              </div>
+            )}
           ) : (
             <button onClick={() => fileInputRef.current?.click()}
               className="w-full aspect-[9/16] max-h-[40vh] rounded-2xl bg-secondary border-2 border-dashed border-border flex flex-col items-center justify-center gap-3">
