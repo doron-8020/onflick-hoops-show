@@ -37,6 +37,7 @@ import Website from "./pages/Website";
 import WebsiteAbout from "./pages/WebsiteAbout";
 import WebsiteGallery from "./pages/WebsiteGallery";
 import WebsiteContact from "./pages/WebsiteContact";
+import WebsiteFeed from "./pages/WebsiteFeed";
 import Analytics from "./pages/Analytics";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -131,6 +132,7 @@ const App = () => (
                       <Route path="/website/about" element={<WebsiteAbout />} />
                       <Route path="/website/gallery" element={<WebsiteGallery />} />
                       <Route path="/website/contact" element={<WebsiteContact />} />
+                      <Route path="/website/feed" element={<WebsiteFeed />} />
                       <Route path="/privacy" element={<PrivacyPolicy />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
