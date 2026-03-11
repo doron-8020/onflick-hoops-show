@@ -21,6 +21,7 @@ const Create = () => {
   const { user, loading: authLoading } = useAuth();
   const { t, isRTL, language } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadDone, setUploadDone] = useState(false);
