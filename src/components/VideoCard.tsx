@@ -333,7 +333,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </div>
 
       {/* Bottom-left info area */}
-      <div className="absolute bottom-[72px] left-3 right-[72px] z-10">
+      <div className="absolute left-3 right-[72px] z-10" style={{ bottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
         {/* Gradient readability overlay */}
         <div className="absolute inset-0 -left-3 -bottom-[72px] -right-[72px] pointer-events-none" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 40%, transparent 100%)" }} />
 
