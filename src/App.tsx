@@ -33,6 +33,7 @@ import TagFeed from "./pages/TagFeed";
 import Messages from "./pages/Messages";
 import Conversation from "./pages/Conversation";
 import AppShell from "./components/AppShell";
+import Website from "./pages/Website";
 import Analytics from "./pages/Analytics";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -123,6 +124,7 @@ const App = () => (
                       <Route path="/onboarding/role" element={<RoleOnboarding />} />
                       <Route path="/reset-password" element={<ResetPassword />} />
                       <Route path="/terms" element={<Terms />} />
+                      <Route path="/website" element={<Website />} />
                       <Route path="/privacy" element={<PrivacyPolicy />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
