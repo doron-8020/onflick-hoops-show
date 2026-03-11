@@ -315,9 +315,8 @@ const Discover = () => {
                           alt={video.caption || ""} loading="lazy"
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       ) : (
-                        <video src={video.video_url + "#t=0.5"}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          muted preload="metadata" playsInline />
+                        <VideoFrameThumb videoUrl={video.video_url}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                         <div className="absolute bottom-2 left-2 flex items-center gap-1 text-white/90 text-[11px] font-medium">
