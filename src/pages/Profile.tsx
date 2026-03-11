@@ -164,7 +164,7 @@ const GridCell = forwardRef<HTMLDivElement, {
             className="flex flex-col items-center gap-2 rounded-xl bg-destructive/90 px-5 py-3 text-destructive-foreground active:scale-95 transition-transform"
           >
             <Trash2 className="h-6 w-6" />
-            <span className="text-xs font-bold">Delete</span>
+            <span className="text-xs font-bold">{t("action.delete")}</span>
           </button>
         </div>
       )}
