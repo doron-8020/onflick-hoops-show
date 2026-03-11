@@ -21,13 +21,6 @@ const WebsiteAbout = () => {
         }
         subtitle="We're a basketball media company on a mission to give every player a stage."
       />
-            variants={fade}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            We're a basketball media company on a mission to give every player a stage.
-          </motion.p>
-        </div>
-      </section>
 
       {/* Story */}
       <section className="py-20 px-6">
