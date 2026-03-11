@@ -42,10 +42,12 @@ const GridCell = ({
   video,
   index,
   onClick,
+  scoutViews,
 }: {
   video: any;
   index: number;
   onClick: () => void;
+  scoutViews?: number;
 }) => {
   const isGallery = video.media_type === "gallery";
   const isImage = video.media_type === "image";
@@ -87,18 +89,36 @@ const GridCell = ({
         </div>
       )}
 
-      <div className="absolute bottom-1 start-1 flex items-center gap-0.5 pointer-events-none">
-        <Play className="h-3 w-3 text-white" fill="currentColor" />
-        <span
-          className="text-white"
-          style={{
-            fontSize: 12,
-            fontWeight: 600,
-            textShadow: "0px 1px 3px rgba(0,0,0,0.8)",
-          }}
-        >
-          {formatCount(video.views_count || 0)}
-        </span>
+      {/* Bottom stats */}
+      <div className="absolute bottom-1 start-1 end-1 flex items-center justify-between pointer-events-none">
+        <div className="flex items-center gap-0.5">
+          <Play className="h-3 w-3 text-white" fill="currentColor" />
+          <span
+            className="text-white"
+            style={{
+              fontSize: 12,
+              fontWeight: 600,
+              textShadow: "0px 1px 3px rgba(0,0,0,0.8)",
+            }}
+          >
+            {formatCount(video.views_count || 0)}
+          </span>
+        </div>
+        {typeof scoutViews === "number" && (
+          <div className="flex items-center gap-0.5 bg-black/50 rounded-full px-1.5 py-0.5 backdrop-blur-sm">
+            <span style={{ fontSize: 10 }}>🔍</span>
+            <span
+              className="text-white"
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                textShadow: "0px 1px 3px rgba(0,0,0,0.8)",
+              }}
+            >
+              {formatCount(scoutViews)}
+            </span>
+          </div>
+        )}
       </div>
       <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
     </div>
