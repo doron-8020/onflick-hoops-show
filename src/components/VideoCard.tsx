@@ -255,7 +255,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </AnimatePresence>
 
       {/* RIGHT side action column */}
-      <div className="absolute right-3 bottom-[88px] flex flex-col items-center gap-4 z-10" onClick={(e) => e.stopPropagation()}>
+      <div className="absolute right-3 flex flex-col items-center gap-4 z-10" style={{ bottom: "calc(88px + env(safe-area-inset-bottom, 0px))" }} onClick={(e) => e.stopPropagation()}>
         {/* Avatar */}
         {video.user_id && (
           <button onClick={() => { haptic(10); navigate(`/player/${video.user_id}`); }} className="relative mb-1">
@@ -333,7 +333,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </div>
 
       {/* Bottom-left info area */}
-      <div className="absolute bottom-[72px] left-3 right-[72px] z-10">
+      <div className="absolute left-3 right-[72px] z-10" style={{ bottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
         {/* Gradient readability overlay */}
         <div className="absolute inset-0 -left-3 -bottom-[72px] -right-[72px] pointer-events-none" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 40%, transparent 100%)" }} />
 
@@ -385,9 +385,9 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         </div>
       </div>
 
-      {/* Video progress bar — thin white line */}
+      {/* Video progress bar — thin white line, above home indicator */}
       {isVideo && (
-        <div className="absolute bottom-[72px] inset-x-0 h-[2px] bg-white/10 z-10">
+        <div className="absolute inset-x-0 h-[2px] bg-white/10 z-10" style={{ bottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
           <div className="h-full bg-white/80 transition-[width] duration-200 ease-linear" style={{ width: `${progress}%` }} />
         </div>
       )}

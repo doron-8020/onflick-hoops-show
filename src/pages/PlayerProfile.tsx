@@ -132,7 +132,8 @@ const PlayerProfile = () => {
   const handle = `@${displayName.toLowerCase().replace(/\s+/g, "")}`;
 
   return (
-    <div className="min-h-screen bg-background pb-24 md:pb-4">
+      <div className="min-h-screen bg-background pb-24 md:pb-4">
+      <div className="mx-auto max-w-[480px]">
       <div
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-300 ${
           scrolled ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-card" : "bg-transparent"
@@ -159,7 +160,7 @@ const PlayerProfile = () => {
             const playerStoryGroup = storyGroups.find((g) => g.userId === userId);
             const hasStory = !!playerStoryGroup;
             const avatarEl = (
-              <div className="h-24 w-24 rounded-full overflow-hidden">
+              <div className="h-24 w-24 md:h-28 md:w-28 lg:h-[120px] lg:w-[120px] rounded-full overflow-hidden">
                 {profile.avatar_url ? (
                   <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
                 ) : (
@@ -187,10 +188,10 @@ const PlayerProfile = () => {
         </div>
 
         <div className="flex items-center gap-1.5 justify-center">
-          <h2 className="font-display text-2xl text-foreground tracking-wide">{displayName}</h2>
+          <h2 className="font-display text-2xl md:text-[20px] lg:text-[22px] text-foreground tracking-wide">{displayName}</h2>
           {profile.verified && <BadgeCheck className="h-5 w-5 text-primary" fill="currentColor" />}
         </div>
-        <p className="text-sm text-muted-foreground mb-3">{handle}</p>
+        <p className="text-[13px] md:text-[15px] lg:text-[16px] text-muted-foreground mb-3">{handle}</p>
 
         <div className="flex gap-0 mb-4">
           {[
@@ -203,8 +204,8 @@ const PlayerProfile = () => {
               className={`flex flex-col items-center px-6 ${stat.onClick ? "cursor-pointer active:opacity-70" : ""}`}
               onClick={stat.onClick}
             >
-              <span className="font-display text-xl text-foreground leading-tight">{formatCount(stat.value)}</span>
-              <span className="text-xs text-muted-foreground">{stat.label}</span>
+              <span className="font-display text-lg md:text-xl lg:text-[22px] text-foreground leading-tight">{formatCount(stat.value)}</span>
+              <span className="text-xs md:text-[13px] text-muted-foreground">{stat.label}</span>
             </div>
           ))}
         </div>
@@ -360,6 +361,7 @@ const PlayerProfile = () => {
       </AnimatePresence>
 
       <BottomNav />
+    </div>
     </div>
   );
 };

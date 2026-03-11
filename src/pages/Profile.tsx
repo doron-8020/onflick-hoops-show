@@ -390,13 +390,13 @@ const Profile = () => {
             </span>
           </button>
 
-          {/* Avatar with story ring */}
+          {/* Avatar with story ring — responsive sizing */}
           <div className="relative" style={{ marginBottom: 12 }}>
             {(() => {
               const myStoryGroup = storyGroups.find((g) => g.userId === user?.id);
               const hasStory = !!myStoryGroup;
               const avatarContent = (
-                <div className="h-28 w-28 rounded-full overflow-hidden">
+                <div className="h-24 w-24 md:h-28 md:w-28 lg:h-[120px] lg:w-[120px] rounded-full overflow-hidden">
                   {profile?.avatar_url ? (
                     <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
                   ) : (

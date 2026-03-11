@@ -105,6 +105,18 @@
     user-select: none;
   }
 
+  /* Touch targets minimum 44px — only for standalone interactive elements */
+  button:not(.inline-btn), [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Active scale for touch feedback */
+  button:active, a:active, [role="button"]:active {
+    transform: scale(0.96);
+    transition: transform 0.1s ease;
+  }
+
   /* FIX #34: Smooth focus styles */
   input:focus-visible, textarea:focus-visible {
     outline: none;
@@ -183,6 +195,14 @@
 
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .safe-left {
+    padding-left: env(safe-area-inset-left, 0px);
+  }
+
+  .safe-right {
+    padding-right: env(safe-area-inset-right, 0px);
   }
 
   /* FIX #36: Scale-in animation for badges and icons */
