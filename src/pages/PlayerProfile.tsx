@@ -190,7 +190,7 @@ const PlayerProfile = () => {
           <h2 className="font-display text-2xl md:text-[20px] lg:text-[22px] text-foreground tracking-wide">{displayName}</h2>
           {profile.verified && <BadgeCheck className="h-5 w-5 text-primary" fill="currentColor" />}
         </div>
-        <p className="text-sm text-muted-foreground mb-3">{handle}</p>
+        <p className="text-[13px] md:text-[15px] lg:text-[16px] text-muted-foreground mb-3">{handle}</p>
 
         <div className="flex gap-0 mb-4">
           {[
