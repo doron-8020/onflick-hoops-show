@@ -66,8 +66,12 @@ const Index = () => {
   useEffect(() => {
     if (!user) return;
     const fetchBlocked = async () => {
-      const { data } = await supabase.from("blocked_users").select("blocked_id").eq("blocker_id", user.id);
-      if (data) setBlockedIds(new Set(data.map((b) => b.blocked_id)));
+      const [{ data: blocked }, { data: ni }] = await Promise.all([
+        supabase.from("blocked_users").select("blocked_id").eq("blocker_id", user.id),
+        supabase.from("not_interested").select("video_id").eq("user_id", user.id),
+      ]);
+      if (blocked) setBlockedIds(new Set(blocked.map((b) => b.blocked_id)));
+      if (ni) setNotInterestedIds(new Set(ni.map((n) => n.video_id)));
     };
     fetchBlocked();
   }, [user]);
