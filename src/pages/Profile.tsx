@@ -281,6 +281,26 @@ const Profile = () => {
     }
   };
 
+  const fetchVideoScoutViews = async () => {
+    if (!user) return;
+    try {
+      const { data: scoutTypes } = await supabase.from("user_types").select("user_id").eq("type", "scout");
+      const scoutIds = (scoutTypes || []).map((r: any) => r.user_id);
+      if (scoutIds.length === 0) { setVideoScoutViews({}); return; }
+      const { data: views } = await (supabase as any)
+        .from("video_views")
+        .select("video_id")
+        .in("viewer_id", scoutIds);
+      const counts: Record<string, number> = {};
+      (views || []).forEach((v: any) => {
+        counts[v.video_id] = (counts[v.video_id] || 0) + 1;
+      });
+      setVideoScoutViews(counts);
+    } catch {
+      setVideoScoutViews({});
+    }
+  };
+
   const totalLikes = useMemo(() => videos.reduce((sum, v) => sum + (v.likes_count || 0), 0), [videos]);
   const totalShares = useMemo(() => videos.reduce((sum, v) => sum + (v.shares_count || 0), 0), [videos]);
   const totalReposts = useMemo(() => videos.reduce((sum, v) => sum + (v.reposts_count || 0), 0), [videos]);
