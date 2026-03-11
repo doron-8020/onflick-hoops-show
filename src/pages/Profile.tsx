@@ -472,8 +472,8 @@ const Profile = () => {
               { value: profile?.following_count || 0, label: t("profile.following"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=following`) },
               { value: profile?.followers_count || 0, label: t("profile.followers"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=followers`) },
               { value: totalLikes, label: t("profile.likes") },
-              { value: totalShares, label: language === "he" ? "שיתופים" : "Shares" },
-              { value: totalReposts, label: language === "he" ? "ריפוסט" : "Reposts" },
+              { value: totalShares, label: t("profile.shares") },
+              { value: totalReposts, label: t("profile.reposts") },
             ].map((stat, i) => (
               <div key={stat.label} className="flex items-center">
                 {i > 0 && (
