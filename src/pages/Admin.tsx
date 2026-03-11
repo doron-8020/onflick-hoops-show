@@ -56,7 +56,7 @@ const statusConfig = {
   blocked: { icon: Ban, color: "text-destructive", bg: "bg-destructive/10", label: { he: "חסום", en: "Blocked" } },
 };
 
-type AdminTab = "users" | "moderation" | "analytics" | "verified" | "roles";
+type AdminTab = "users" | "moderation" | "analytics" | "verified" | "roles" | "media";
 
 const Admin = () => {
   const navigate = useNavigate();
