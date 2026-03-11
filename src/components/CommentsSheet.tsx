@@ -340,9 +340,9 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
                     className="ms-10 flex items-center gap-1 text-[11px] text-primary font-medium"
                   >
                     {expandedReplies.has(comment.id) ? (
-                      <><ChevronUp className="h-3 w-3" />{language === "he" ? "הסתר תגובות" : "Hide replies"}</>
+                      <><ChevronUp className="h-3 w-3" />{t("comments.hideReplies")}</>
                     ) : (
-                      <><ChevronDown className="h-3 w-3" />{language === "he" ? `צפה ב-${replyCounts[comment.id]} תגובות` : `View ${replyCounts[comment.id]} replies`}</>
+                      <><ChevronDown className="h-3 w-3" />{t("comments.viewReplies").replace("{count}", String(replyCounts[comment.id]))}</>
                     )}
                   </button>
                 )}
