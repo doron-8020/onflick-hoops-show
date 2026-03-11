@@ -1,5 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
+import { useAdmin } from "@/hooks/useAdmin";
+import { Settings } from "lucide-react";
 
 const navLinks = [
   { label: "ראשי", path: "/website" },
