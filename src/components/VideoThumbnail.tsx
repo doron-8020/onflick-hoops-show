@@ -1,4 +1,5 @@
 import { Play, Eye } from "lucide-react";
+import VideoFrameThumb from "@/components/VideoFrameThumb";
 
 interface VideoThumbnailProps {
   thumbnailUrl: string | null;
@@ -31,13 +32,7 @@ const VideoThumbnail = ({ thumbnailUrl, videoUrl, viewsCount, mediaType, onClick
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
       ) : (
-        <video
-          src={videoUrl + "#t=0.5"}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          muted
-          preload="metadata"
-          playsInline
-        />
+        <VideoFrameThumb videoUrl={videoUrl} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
       )}
       
       {/* Gradient overlay */}
