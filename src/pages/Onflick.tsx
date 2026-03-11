@@ -76,10 +76,10 @@ const Onflick = () => {
       ];
 
   return (
-    <div className="min-h-screen bg-background pb-24" dir={isHe ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-background pb-24 md:pb-4" dir={isHe ? "rtl" : "ltr"}>
       <FeedHeader />
 
-      <div className="mx-auto max-w-lg px-4 pt-16">
+      <div className="mx-auto max-w-[480px] px-4 pt-16">
         {/* Hero */}
         <motion.div
           initial="hidden"

@@ -225,7 +225,7 @@ const Discover = () => {
 
         {showSearch && !isFullScreen && (
           <div className="fixed inset-0 z-40 bg-background pt-14">
-            <div className="mx-auto max-w-lg px-4">
+            <div className="mx-auto max-w-[480px] px-4">
               <div className="flex items-center gap-3 rounded-xl bg-secondary px-4 py-3 mb-4">
                 <Search className="h-5 w-5 text-muted-foreground shrink-0" />
                 <input type="text" placeholder={t("discover.searchPlaceholder")} value={query}

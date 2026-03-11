@@ -178,7 +178,7 @@ const Settings = () => {
         </div>
       </div>
 
-      <div className="mx-auto max-w-lg px-4 pt-16 space-y-6 pb-4">
+      <div className="mx-auto max-w-[480px] px-4 pt-16 space-y-6 pb-4">
         {/* Account */}
         {user && (
           <Section title={t("settings.account")}>
