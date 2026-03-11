@@ -61,7 +61,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCar
   const [showHeart, setShowHeart] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
-  const [actionSheetOpen, setActionSheetOpen] = useState(false);
+  
   const [showPlayIcon, setShowPlayIcon] = useState(false);
   const [progress, setProgress] = useState(0);
   const [reposted, setReposted] = useState(false);
