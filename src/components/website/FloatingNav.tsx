@@ -16,6 +16,7 @@ const FloatingNav = () => {
   const [isDarkBg, setIsDarkBg] = useState(true);
   const navRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const { isAdmin } = useAdmin();
 
   // Detect background brightness behind nav
   const detectBackground = useCallback(() => {
