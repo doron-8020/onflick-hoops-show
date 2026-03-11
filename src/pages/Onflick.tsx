@@ -29,7 +29,7 @@ const fadeUp = {
 };
 
 const Onflick = () => {
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   const isHe = language === "he";
 
   const contactLinks = [
