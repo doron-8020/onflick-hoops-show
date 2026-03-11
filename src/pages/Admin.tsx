@@ -63,7 +63,14 @@ const Admin = () => {
   const { user } = useAuth();
   const { isAdmin, loading: adminLoading } = useAdmin();
   const { t, language } = useLanguage();
-  const [activeTab, setActiveTab] = useState<AdminTab>("users");
+  const [activeTab, setActiveTab] = useState<AdminTab>(() => {
+    const saved = sessionStorage.getItem("adminTab");
+    if (saved) {
+      sessionStorage.removeItem("adminTab");
+      return saved as AdminTab;
+    }
+    return "users";
+  });
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [analytics, setAnalytics] = useState<Analytics>({ totalUsers: 0, newVideos24h: 0, totalLikes: 0, totalComments: 0 });
