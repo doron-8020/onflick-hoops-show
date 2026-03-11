@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useViewTracker } from "@/hooks/useViewTracker";
 import VideoCard from "@/components/VideoCard";
 import BottomNav from "@/components/BottomNav";
-import { ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 interface VideoWithProfile {
   id: string;
