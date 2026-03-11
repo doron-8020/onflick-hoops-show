@@ -187,7 +187,7 @@ const Auth = () => {
               onClick={() => setShowForgotPassword(true)}
               className="w-full text-end text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
-              {language === "he" ? "שכחת סיסמה?" : "Forgot password?"}
+              {t("auth.forgotPassword")}
             </button>
           )}
 
