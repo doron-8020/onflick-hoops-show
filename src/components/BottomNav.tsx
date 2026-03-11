@@ -60,8 +60,8 @@ const BottomNav = () => {
   }, [location.pathname]);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/80 backdrop-blur-xl safe-bottom">
-      <div className="mx-auto max-w-lg flex items-center justify-around px-2 h-[56px] pb-[env(safe-area-inset-bottom,0px)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/80 backdrop-blur-xl safe-bottom md:hidden">
+      <div className="mx-auto max-w-[480px] flex items-center justify-around px-2 h-[56px] pb-[env(safe-area-inset-bottom,0px)]">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
 
