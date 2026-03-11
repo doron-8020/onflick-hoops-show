@@ -580,7 +580,7 @@ const Profile = () => {
                   ta.select();
                   document.execCommand("copy");
                   document.body.removeChild(ta);
-                  toast({ title: "✅ הלינק הועתק!" });
+                  toast({ title: t("profile.linkCopied") });
                 }
               }}
             >
