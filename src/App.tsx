@@ -128,7 +128,7 @@ const App = () => (
                 </AppShell>
               </AuthProvider>
             </BrowserRouter>
-          </TooltipProvider>
+          </RemoteConfigProvider>
         </MuteProvider>
       </LanguageProvider>
     </ThemeProvider>
