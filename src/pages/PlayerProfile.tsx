@@ -203,8 +203,8 @@ const PlayerProfile = () => {
               className={`flex flex-col items-center px-6 ${stat.onClick ? "cursor-pointer active:opacity-70" : ""}`}
               onClick={stat.onClick}
             >
-              <span className="font-display text-xl text-foreground leading-tight">{formatCount(stat.value)}</span>
-              <span className="text-xs text-muted-foreground">{stat.label}</span>
+              <span className="font-display text-lg md:text-xl lg:text-[22px] text-foreground leading-tight">{formatCount(stat.value)}</span>
+              <span className="text-xs md:text-[13px] text-muted-foreground">{stat.label}</span>
             </div>
           ))}
         </div>
