@@ -47,7 +47,7 @@ export const RemoteConfigProvider = ({ children }: { children: React.ReactNode }
     try {
       const [flagsRes, settingsRes, hashtagsRes] = await Promise.all([
         adminPanel.from("feature_flags").select("key, enabled"),
-        adminPanel.from("app_settings").select("key, enabled, message, text_he, text_en"),
+        adminPanel.from("app_settings").select("key, value, updated_at"),
         adminPanel.from("trending_hashtags").select("tag, pinned, hidden"),
       ]);
 
@@ -60,17 +60,18 @@ export const RemoteConfigProvider = ({ children }: { children: React.ReactNode }
         setFeatureFlags(flags);
       }
 
-      // App settings
+      // App settings (value is a JSON column)
       if (settingsRes.data) {
         const newSettings = { ...defaultSettings };
         settingsRes.data.forEach((s: any) => {
+          const val = s.value || {};
           if (s.key === "maintenance") {
-            newSettings.maintenance = { enabled: s.enabled ?? false, message: s.message };
+            newSettings.maintenance = { enabled: val.enabled ?? false, message: val.message };
           } else if (s.key === "banner") {
             newSettings.banner = {
-              enabled: s.enabled ?? false,
-              text_he: s.text_he,
-              text_en: s.text_en,
+              enabled: val.enabled ?? false,
+              text_he: val.text_he,
+              text_en: val.text_en,
             };
           }
         });
