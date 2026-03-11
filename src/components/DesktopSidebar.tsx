@@ -14,11 +14,11 @@ const DesktopSidebar = () => {
   const navItems = [
     { icon: Home, label: t("nav.home"), path: "/" },
     { icon: Search, label: t("nav.discover"), path: "/discover" },
-    { icon: Plus, label: t("nav.create") || "Create", path: "/create" },
+    { icon: Plus, label: "Create", path: "/create" },
     { icon: Bell, label: t("nav.notifications"), path: "/notifications" },
-    { icon: MessageCircle, label: t("nav.messages") || "Messages", path: "/messages" },
+    { icon: MessageCircle, label: "Messages", path: "/messages" },
     { icon: User, label: t("nav.profile"), path: "/profile" },
-    { icon: Settings, label: t("nav.settings") || "Settings", path: "/settings" },
+    { icon: Settings, label: "Settings", path: "/settings" },
   ];
 
   useEffect(() => {
