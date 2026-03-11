@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { lovable } from "@/integrations/lovable/index";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft, KeyRound } from "lucide-react";
 
 type UserType = "player" | "coach" | "scout" | "professional";
 
@@ -16,6 +17,9 @@ const Auth = () => {
   const [userType, setUserType] = useState<UserType>("player");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
   const { signIn, signUp } = useAuth();
   const { t, isRTL, language } = useLanguage();
   const navigate = useNavigate();
@@ -69,6 +73,24 @@ const Auth = () => {
     if (type === "coach") return "Coach";
     if (type === "scout") return "Scout";
     return "Professional";
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail.trim()) return;
+    setResetLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast.success(language === "he" ? "נשלח אימייל לאיפוס סיסמה!" : "Password reset email sent!");
+      setShowForgotPassword(false);
+    } catch (error: any) {
+      toast.error(error.message || t("auth.error"));
+    } finally {
+      setResetLoading(false);
+    }
   };
 
   return (
@@ -162,6 +184,16 @@ const Auth = () => {
             </button>
           </div>
 
+          {isLogin && (
+            <button
+              type="button"
+              onClick={() => setShowForgotPassword(true)}
+              className="w-full text-end text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {language === "he" ? "שכחת סיסמה?" : "Forgot password?"}
+            </button>
+          )}
+
           <button
             type="submit"
             disabled={loading}
@@ -179,6 +211,47 @@ const Auth = () => {
             )}
           </button>
         </form>
+
+        {/* Forgot password modal */}
+        {showForgotPassword && (
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-6" onClick={() => setShowForgotPassword(false)}>
+            <div className="w-full max-w-sm bg-background rounded-2xl p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
+              <h2 className="font-display text-xl text-foreground text-center">
+                {language === "he" ? "איפוס סיסמה" : "Reset Password"}
+              </h2>
+              <p className="text-sm text-muted-foreground text-center">
+                {language === "he" ? "נשלח לך אימייל עם קישור לאיפוס" : "We'll send you a reset link"}
+              </p>
+              <form onSubmit={handleForgotPassword} className="space-y-3">
+                <input
+                  type="email"
+                  placeholder={t("auth.email")}
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  required
+                  dir="ltr"
+                  className="w-full rounded-xl bg-secondary px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary"
+                />
+                <button
+                  type="submit"
+                  disabled={resetLoading}
+                  className="w-full rounded-xl gradient-fire py-3 text-sm font-bold text-primary-foreground shadow-glow disabled:opacity-50"
+                >
+                  {resetLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                    </span>
+                  ) : (
+                    language === "he" ? "שלח קישור" : "Send Reset Link"
+                  )}
+                </button>
+              </form>
+              <button onClick={() => setShowForgotPassword(false)} className="w-full text-center text-sm text-muted-foreground">
+                {language === "he" ? "ביטול" : "Cancel"}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="mt-6 flex items-center gap-3">
           <div className="h-px flex-1 bg-border" />

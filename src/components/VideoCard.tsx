@@ -225,7 +225,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </div>
 
       {/* More button (top-right) */}
-      {user && video.user_id && user.id !== video.user_id && (
+      {user && video.user_id && (
         <button
           onClick={(e) => { e.stopPropagation(); haptic(10); setActionSheetOpen(true); }}
           className="absolute top-[56px] end-[14px] z-20 rounded-full bg-black/30 h-8 w-8 flex items-center justify-center backdrop-blur-sm"

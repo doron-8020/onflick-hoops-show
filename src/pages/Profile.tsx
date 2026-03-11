@@ -38,17 +38,17 @@ const formatCount = (n: number) => {
 };
 
 /* ───── Grid cell ───── */
-const GridCell = ({
-  video,
-  index,
-  onClick,
-  scoutViews,
-}: {
+const GridCell = forwardRef<HTMLDivElement, {
   video: any;
   index: number;
   onClick: () => void;
   scoutViews?: number;
-}) => {
+}>(({
+  video,
+  index,
+  onClick,
+  scoutViews,
+}, ref) => {
   const isGallery = video.media_type === "gallery";
   const isImage = video.media_type === "image";
 
@@ -123,7 +123,8 @@ const GridCell = ({
       <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
     </div>
   );
-};
+});
+GridCell.displayName = "GridCell";
 
 const Profile = () => {
   const { user, loading: authLoading } = useAuth();

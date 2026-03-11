@@ -23,6 +23,7 @@ import Onflick from "./pages/Onflick";
 import NotFound from "./pages/NotFound";
 import Terms from "./pages/Terms";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import ResetPassword from "./pages/ResetPassword";
 import ProfileFeed from "./pages/ProfileFeed";
 import FollowList from "./pages/FollowList";
 import TagFeed from "./pages/TagFeed";
@@ -114,6 +115,7 @@ const App = () => (
                     <Route path="/analytics" element={<Analytics />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/onboarding/role" element={<RoleOnboarding />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/terms" element={<Terms />} />
                     <Route path="/privacy" element={<PrivacyPolicy />} />
                     <Route path="*" element={<NotFound />} />

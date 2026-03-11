@@ -291,16 +291,26 @@ const PlayerProfile = () => {
         {activeTab === "videos" &&
           (videos.length > 0 ? (
             <div className="grid grid-cols-3 gap-px">
-              {videos.map((video, index) => (
+              {videos.map((video, index) => {
+                const isGallery = video.media_type === "gallery";
+                const isImage = video.media_type === "image";
+                const thumbSrc = isGallery
+                  ? video.gallery_urls?.[0] ?? null
+                  : isImage
+                  ? video.video_url
+                  : video.thumbnail_url ?? null;
+                return (
                 <div
                   key={video.id}
                   className="relative aspect-[9/16] overflow-hidden bg-secondary group cursor-pointer"
                   onClick={() => navigate(`/profile/feed?start=${index}`, { state: { videos } })}
                 >
-                  {video.media_type === "image" ? (
-                    <img src={video.video_url} className="h-full w-full object-cover" alt="" loading="lazy" />
+                  {thumbSrc ? (
+                    <img src={thumbSrc} className="h-full w-full object-cover" alt="" loading="lazy" />
                   ) : (
-                    <video src={video.video_url} className="h-full w-full object-cover" muted playsInline preload="metadata" />
+                    <div className="h-full w-full bg-secondary flex items-center justify-center">
+                      <Play className="h-3 w-3 text-foreground" />
+                    </div>
                   )}
                   <div className="absolute bottom-1 start-1 flex items-center gap-0.5 pointer-events-none">
                     <Play className="h-3 w-3 text-primary-foreground" fill="currentColor" />
@@ -309,7 +319,8 @@ const PlayerProfile = () => {
                     </span>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-20 px-8">

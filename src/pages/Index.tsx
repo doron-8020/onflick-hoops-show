@@ -48,6 +48,7 @@ const Index = () => {
   const [hasMore, setHasMore] = useState(true);
   const [newPostsCount, setNewPostsCount] = useState(0);
   const [blockedIds, setBlockedIds] = useState<Set<string>>(new Set());
+  const [notInterestedIds, setNotInterestedIds] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<FeedTab>(() =>
     new URLSearchParams(window.location.search).get("tab") === "following" ? "following" : "foryou"
   );
@@ -65,8 +66,12 @@ const Index = () => {
   useEffect(() => {
     if (!user) return;
     const fetchBlocked = async () => {
-      const { data } = await supabase.from("blocked_users").select("blocked_id").eq("blocker_id", user.id);
-      if (data) setBlockedIds(new Set(data.map((b) => b.blocked_id)));
+      const [{ data: blocked }, { data: ni }] = await Promise.all([
+        supabase.from("blocked_users").select("blocked_id").eq("blocker_id", user.id),
+        supabase.from("not_interested").select("video_id").eq("user_id", user.id),
+      ]);
+      if (blocked) setBlockedIds(new Set(blocked.map((b) => b.blocked_id)));
+      if (ni) setNotInterestedIds(new Set(ni.map((n) => n.video_id)));
     };
     fetchBlocked();
   }, [user]);
@@ -88,9 +93,12 @@ const Index = () => {
     const { data, error } = await query;
     if (!error && data) {
       let typed = data as unknown as VideoWithProfile[];
-      // Filter out blocked users
+      // Filter out blocked users and not-interested videos
       if (blockedIds.size > 0) {
         typed = typed.filter((v) => !blockedIds.has(v.user_id));
+      }
+      if (notInterestedIds.size > 0) {
+        typed = typed.filter((v) => !notInterestedIds.has(v.id));
       }
       setVideos((prev) => append ? [...prev, ...typed] : typed);
       setHasMore(typed.length === PAGE_SIZE);
@@ -107,7 +115,7 @@ const Index = () => {
     setLoading(false);
     setLoadingMore(false);
     setNewPostsCount(0);
-  }, [user, activeTab, blockedIds]);
+  }, [user, activeTab, blockedIds, notInterestedIds]);
 
   useEffect(() => {
     const tab = searchParams.get("tab");

@@ -80,7 +80,7 @@ const Settings = () => {
     setSigningOut(true);
     try {
       await signOut();
-      navigate("/");
+      navigate("/auth");
     } catch {
       toast.error(t("auth.error"));
     } finally {
