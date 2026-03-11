@@ -78,7 +78,7 @@ const CommentRow = ({
           {comment.profiles?.verified && (
             <BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0" fill="currentColor" />
           )}
-          <span className="text-[10px] text-muted-foreground">{timeAgo(comment.created_at, language)}</span>
+          <span className="text-[10px] text-muted-foreground">{timeAgo(comment.created_at, isRTL ? "he" : "en")}</span>
         </div>
         <p className="text-sm text-foreground mt-0.5 break-words">{comment.content}</p>
         {!isReply && (

@@ -244,7 +244,7 @@ const Auth = () => {
                 </button>
               </form>
               <button onClick={() => setShowForgotPassword(false)} className="w-full text-center text-sm text-muted-foreground">
-                {language === "he" ? "ביטול" : "Cancel"}
+                {t("auth.cancel")}
               </button>
             </div>
           </div>
