@@ -47,7 +47,7 @@ const Onflick = () => {
     },
     {
       icon: <Mail className="h-5 w-5" />,
-      label: isHe ? "אימייל" : "Email",
+      label: t("onflick.email"),
       href: "mailto:info@onflick.com",
       color: "bg-[hsl(25,85%,50%)] hover:bg-[hsl(25,85%,45%)]",
     },
