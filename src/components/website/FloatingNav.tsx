@@ -121,12 +121,31 @@ const FloatingNav = () => {
           })}
         </nav>
 
-        <Link
-          to="/"
-          className="rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition-colors"
-        >
-          APP
-        </Link>
+        <div className="flex items-center gap-2">
+          {isAdmin && (
+            <Link
+              to="/admin"
+              onClick={() => {
+                // Set media tab as active when navigating from website
+                sessionStorage.setItem("adminTab", "media");
+              }}
+              className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition-colors ${
+                isDarkBg
+                  ? "border-white/20 text-white/80 hover:bg-white/10"
+                  : "border-black/20 text-black/80 hover:bg-black/10"
+              }`}
+            >
+              <Settings className="h-3.5 w-3.5" />
+              ניהול מדיה
+            </Link>
+          )}
+          <Link
+            to="/"
+            className="rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            APP
+          </Link>
+        </div>
       </div>
     </header>
   );
