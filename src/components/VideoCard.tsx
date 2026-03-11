@@ -225,15 +225,6 @@ const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCar
         )}
       </div>
 
-      {/* More button (top-right) */}
-      {user && video.user_id && (
-        <button
-          onClick={(e) => { e.stopPropagation(); haptic(10); setActionSheetOpen(true); }}
-          className="absolute top-[56px] end-[14px] z-20 rounded-full bg-black/30 h-8 w-8 flex items-center justify-center backdrop-blur-sm"
-        >
-          <MoreHorizontal className="h-5 w-5 text-white" />
-        </button>
-      )}
 
       {/* Play/Pause flash */}
       <AnimatePresence>
