@@ -209,7 +209,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCar
   return (
     <div className="relative h-full w-full" onClick={isVideo ? handleTap : undefined}>
       {/* Media */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-black">
         {video.media_type === "gallery" && video.gallery_urls && video.gallery_urls.length > 0 ? (
           <GalleryCarousel urls={video.gallery_urls} alt={video.caption || "Gallery"} />
         ) : video.media_type === "image" ? (
@@ -219,7 +219,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCar
           </>
         ) : (
           <>
-            <video ref={videoRef} src={video.video_url} className="h-full w-full object-cover" loop playsInline autoPlay muted={globalMuted} poster={video.thumbnail_url || undefined} preload="auto" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
+            <video ref={videoRef} src={video.video_url} className="h-full w-full object-contain" loop playsInline autoPlay muted={globalMuted} poster={video.thumbnail_url || undefined} preload="auto" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
           </>
         )}
