@@ -38,6 +38,7 @@ interface VideoCardProps {
     } | null;
   };
   isLiked?: boolean;
+  onDeleted?: (videoId: string) => void;
 }
 
 const formatNumber = (n: number) => {
@@ -52,7 +53,7 @@ const haptic = (ms = 30) => {
   } catch {}
 };
 
-const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => {
+const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCardProps) => {
   const [liked, setLiked] = useState(initialLiked);
   const [likes, setLikes] = useState(video.likes_count);
   const [saved, setSaved] = useState(false);
@@ -394,7 +395,14 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
 
       <CommentsSheet videoId={video.id} open={commentsOpen} onOpenChange={setCommentsOpen} />
       {video.user_id && (
-        <VideoActionSheet videoId={video.id} videoUserId={video.user_id} open={actionSheetOpen} onOpenChange={setActionSheetOpen} />
+        <VideoActionSheet
+          videoId={video.id}
+          videoUserId={video.user_id}
+          open={actionSheetOpen}
+          onOpenChange={setActionSheetOpen}
+          onDeleted={() => onDeleted?.(video.id)}
+          onBlocked={() => onDeleted?.(video.id)}
+        />
       )}
     </div>
   );

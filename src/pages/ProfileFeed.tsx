@@ -114,6 +114,13 @@ const ProfileFeed = () => {
                     },
                   }}
                   isLiked={likedIds.has(video.id)}
+                  onDeleted={(id) => {
+                    setVideos(prev => {
+                      const filtered = prev.filter(v => v.id !== id);
+                      if (filtered.length === 0) navigate(-1);
+                      return filtered;
+                    });
+                  }}
                 />
               ) : (
                 <div className="h-full w-full bg-background flex items-center justify-center">

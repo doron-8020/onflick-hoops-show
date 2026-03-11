@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo, forwardRef } from "react";
+import { useEffect, useState, useRef, useMemo, forwardRef, useCallback } from "react";
 
 import {
   Grid3X3,
@@ -16,6 +16,7 @@ import {
   Heart,
   Share2,
   Pencil,
+  Trash2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -28,6 +29,7 @@ import { useStories } from "@/hooks/useStories";
 import StoryViewer from "@/components/StoryViewer";
 import StoryUploadModal from "@/components/StoryUploadModal";
 import { AnimatePresence } from "framer-motion";
+import { toast as sonnerToast } from "sonner";
 
 type TabKey = "liked" | "videos" | "repost" | "private" | "saved" | "about";
 
@@ -43,12 +45,19 @@ const GridCell = forwardRef<HTMLDivElement, {
   index: number;
   onClick: () => void;
   scoutViews?: number;
+  isOwn?: boolean;
+  onDelete?: (videoId: string) => void;
 }>(({
   video,
   index,
   onClick,
   scoutViews,
+  isOwn,
+  onDelete,
 }, ref) => {
+  const [showMenu, setShowMenu] = useState(false);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { t } = useLanguage();
   const isGallery = video.media_type === "gallery";
   const isImage = video.media_type === "image";
 
@@ -58,11 +67,29 @@ const GridCell = forwardRef<HTMLDivElement, {
     ? video.video_url
     : video.thumbnail_url ?? null;
 
+  const handleTouchStart = () => {
+    if (!isOwn) return;
+    longPressTimer.current = setTimeout(() => {
+      setShowMenu(true);
+      try { if ("vibrate" in navigator) navigator.vibrate(30); } catch {}
+    }, 500);
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
+  };
+
   return (
     <div
       key={video.id}
       className="relative aspect-[9/16] overflow-hidden bg-secondary group cursor-pointer"
-      onClick={onClick}
+      onClick={() => { if (!showMenu) onClick(); }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+      onContextMenu={(e) => {
+        if (isOwn) { e.preventDefault(); setShowMenu(true); }
+      }}
     >
       {thumbSrc ? (
         <img src={thumbSrc} className="h-full w-full object-cover" alt="" loading="lazy" />
@@ -121,6 +148,26 @@ const GridCell = forwardRef<HTMLDivElement, {
         )}
       </div>
       <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+      {/* Delete overlay menu */}
+      {showMenu && isOwn && (
+        <div
+          className="absolute inset-0 z-10 bg-black/70 flex items-center justify-center backdrop-blur-sm animate-fade-in"
+          onClick={(e) => { e.stopPropagation(); setShowMenu(false); }}
+        >
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowMenu(false);
+              onDelete?.(video.id);
+            }}
+            className="flex flex-col items-center gap-2 rounded-xl bg-destructive/90 px-5 py-3 text-destructive-foreground active:scale-95 transition-transform"
+          >
+            <Trash2 className="h-6 w-6" />
+            <span className="text-xs font-bold">{t("action.delete")}</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 });
@@ -301,6 +348,33 @@ const Profile = () => {
       setVideoScoutViews({});
     }
   };
+
+  const handleDeleteVideo = useCallback(async (videoId: string) => {
+    const { data: video } = await supabase.from("videos").select("video_url, gallery_urls").eq("id", videoId).single();
+    const { error } = await supabase.from("videos").delete().eq("id", videoId);
+    if (error) {
+      sonnerToast.error(t("action.deleteError"));
+      return;
+    }
+    // Clean up storage
+    if (video) {
+      try {
+        const urls: string[] = [];
+        if (video.video_url) urls.push(video.video_url);
+        if (video.gallery_urls) urls.push(...(video.gallery_urls as string[]));
+        for (const url of urls) {
+          const match = url.match(/\/storage\/v1\/object\/public\/videos\/(.+)/);
+          if (match) await supabase.storage.from("videos").remove([match[1]]);
+        }
+      } catch {}
+    }
+    sonnerToast.success(t("action.postDeleted"));
+    // Remove from all local state lists
+    setVideos(prev => prev.filter(v => v.id !== videoId));
+    setSavedVideos(prev => prev.filter(v => v.id !== videoId));
+    setRepostedVideos(prev => prev.filter(v => v.id !== videoId));
+    setLikedVideos(prev => prev.filter(v => v.id !== videoId));
+  }, [t]);
 
   const totalLikes = useMemo(() => videos.reduce((sum, v) => sum + (v.likes_count || 0), 0), [videos]);
   const totalShares = useMemo(() => videos.reduce((sum, v) => sum + (v.shares_count || 0), 0), [videos]);
@@ -700,6 +774,8 @@ const Profile = () => {
                       video={video}
                       index={index}
                       scoutViews={videoScoutViews[video.id] ?? 0}
+                      isOwn={true}
+                      onDelete={handleDeleteVideo}
                       onClick={() => navigate(`/profile/feed?start=${index}`, { state: { videos } })}
                     />
                   ))}
