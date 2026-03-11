@@ -205,7 +205,7 @@ const Index = () => {
         </AnimatePresence>
 
         <PullToRefresh onRefresh={handleRefresh} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide relative">
-          <div ref={scrollRef} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
+           <div ref={scrollRef} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide touch-pan-y"
             onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}
           >
             {loading ? (
