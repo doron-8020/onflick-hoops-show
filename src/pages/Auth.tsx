@@ -239,7 +239,7 @@ const Auth = () => {
                       <span className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
                     </span>
                   ) : (
-                    language === "he" ? "שלח קישור" : "Send Reset Link"
+                    t("auth.sendResetLink")
                   )}
                 </button>
               </form>
