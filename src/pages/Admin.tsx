@@ -210,10 +210,8 @@ const Admin = () => {
     { key: "moderation", icon: Flag, label: t("admin.moderation") },
     { key: "analytics", icon: BarChart3, label: t("admin.analytics") },
     { key: "verified", icon: BadgeCheck, label: t("admin.verified") },
-    { key: "media", icon: Image, label: he ? "מדיה" : "Media" },
+    { key: "media", icon: Image, label: language === "he" ? "מדיה" : "Media" },
   ];
-
-  const he = language === "he";
 
   const getUserRole = (userId: string) => adminRoles.filter((r) => r.user_id === userId);
 
