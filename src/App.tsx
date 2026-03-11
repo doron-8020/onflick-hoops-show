@@ -33,6 +33,7 @@ import TagFeed from "./pages/TagFeed";
 import Messages from "./pages/Messages";
 import Conversation from "./pages/Conversation";
 import AppShell from "./components/AppShell";
+import Website from "./pages/Website";
 import Analytics from "./pages/Analytics";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
