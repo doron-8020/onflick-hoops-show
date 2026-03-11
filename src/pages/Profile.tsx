@@ -698,6 +698,7 @@ const Profile = () => {
                       key={video.id}
                       video={video}
                       index={index}
+                      scoutViews={videoScoutViews[video.id] ?? 0}
                       onClick={() => navigate(`/profile/feed?start=${index}`, { state: { videos } })}
                     />
                   ))}
