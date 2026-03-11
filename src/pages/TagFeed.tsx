@@ -87,10 +87,10 @@ const TagFeed = () => {
 
   return (
     <div className="relative min-h-screen bg-background">
-      <div className="mx-auto w-full max-w-lg relative h-full">
+      <div className="mx-auto w-full max-w-[480px] relative h-full">
         {/* Header */}
-        <div className="fixed top-0 left-0 right-0 z-50 safe-top">
-          <div className="mx-auto w-full max-w-lg flex items-center gap-3 px-4 py-3 bg-background/90 backdrop-blur-sm">
+        <div className="fixed top-0 left-0 right-0 z-50 safe-top md:left-[240px]">
+          <div className="mx-auto w-full max-w-[480px] flex items-center gap-3 px-4 py-3 bg-background/90 backdrop-blur-sm">
             <button onClick={() => navigate(-1)} className="p-1">
               <ArrowRight className={`h-5 w-5 text-foreground ${isRTL ? "" : "rotate-180"}`} />
             </button>

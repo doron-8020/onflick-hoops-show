@@ -214,7 +214,7 @@ const Admin = () => {
   const getUserRole = (userId: string) => adminRoles.filter((r) => r.user_id === userId);
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-24 md:pb-4">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border">
         <div className="mx-auto max-w-2xl">

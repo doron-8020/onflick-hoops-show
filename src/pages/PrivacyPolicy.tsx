@@ -21,7 +21,7 @@ const PrivacyPolicy = () => {
         </div>
       </div>
 
-      <div className="mx-auto max-w-lg px-4 pt-16 space-y-6 pb-4">
+      <div className="mx-auto max-w-[480px] px-4 pt-16 space-y-6 pb-4">
         <div className="rounded-xl bg-card border border-border p-5 space-y-4">
           <h2 className="text-lg font-semibold text-foreground">
             {isHe ? "מדיניות פרטיות - ONFLICK" : "Privacy Policy - ONFLICK"}

@@ -60,7 +60,7 @@ const FollowList = () => {
   }, [userId, tab]);
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-24 md:pb-4">
       <div className="px-4 pt-14 pb-4 flex items-center gap-3">
         <button onClick={() => navigate(-1)} className="p-1">
           <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />

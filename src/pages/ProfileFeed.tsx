@@ -82,7 +82,7 @@ const ProfileFeed = () => {
 
   return (
     <div className="relative min-h-screen bg-background">
-      <div className="mx-auto w-full max-w-lg relative h-full">
+      <div className="mx-auto w-full max-w-[480px] relative h-full">
         {/* Back button */}
         <button
           onClick={() => navigate(-1)}
