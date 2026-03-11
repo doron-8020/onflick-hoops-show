@@ -16,6 +16,9 @@ const Auth = () => {
   const [userType, setUserType] = useState<UserType>("player");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
   const { signIn, signUp } = useAuth();
   const { t, isRTL, language } = useLanguage();
   const navigate = useNavigate();
