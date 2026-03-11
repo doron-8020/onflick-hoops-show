@@ -132,7 +132,7 @@ const PlayerProfile = () => {
   const handle = `@${displayName.toLowerCase().replace(/\s+/g, "")}`;
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-24 md:pb-4">
       <div
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-300 ${
           scrolled ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-card" : "bg-transparent"
