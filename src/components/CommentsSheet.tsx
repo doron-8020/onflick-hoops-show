@@ -46,7 +46,7 @@ const timeAgo = (dateStr: string, lang: string) => {
 const CommentRow = ({
   comment,
   user,
-  language,
+  t,
   isRTL,
   onReply,
   onDelete,
