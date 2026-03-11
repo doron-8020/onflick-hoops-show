@@ -187,7 +187,7 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen bg-background">
-      <div className="mx-auto w-full max-w-lg relative h-full">
+      <div className="mx-auto w-full max-w-[480px] relative h-full">
         <FeedHeader />
 
         {/* New posts banner */}
@@ -205,7 +205,7 @@ const Index = () => {
         </AnimatePresence>
 
         <PullToRefresh onRefresh={handleRefresh} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide relative">
-          <div ref={scrollRef} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
+           <div ref={scrollRef} className="h-[100dvh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide touch-pan-y"
             onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}
           >
             {loading ? (

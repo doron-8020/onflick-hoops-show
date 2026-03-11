@@ -112,8 +112,8 @@ const Blog = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-background pb-24">
-      <div className="mx-auto w-full max-w-lg">
+    <div className="relative min-h-screen bg-background pb-24 md:pb-4">
+      <div className="mx-auto w-full max-w-[480px]">
         <FeedHeader />
 
         <div className="px-4 pt-16 space-y-4">

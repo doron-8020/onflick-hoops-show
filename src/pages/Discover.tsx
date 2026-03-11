@@ -220,12 +220,12 @@ const Discover = () => {
 
   return (
     <div className="relative min-h-screen bg-background">
-      <div className="mx-auto w-full max-w-lg relative h-full">
+      <div className="mx-auto w-full max-w-[480px] relative h-full">
         <FeedHeader />
 
         {showSearch && !isFullScreen && (
           <div className="fixed inset-0 z-40 bg-background pt-14">
-            <div className="mx-auto max-w-lg px-4">
+            <div className="mx-auto max-w-[480px] px-4">
               <div className="flex items-center gap-3 rounded-xl bg-secondary px-4 py-3 mb-4">
                 <Search className="h-5 w-5 text-muted-foreground shrink-0" />
                 <input type="text" placeholder={t("discover.searchPlaceholder")} value={query}
@@ -304,7 +304,7 @@ const Discover = () => {
               </div>
             ) : videos.length > 0 ? (
               <>
-                <div className="columns-2 gap-2 px-2">
+                <div className="columns-2 md:columns-3 gap-2 px-2">
                   {videos.map((video, index) => (
                     <div key={video.id} className="mb-2 break-inside-avoid overflow-hidden rounded-xl bg-card cursor-pointer group" onClick={() => openFullScreen(index)}>
                       <div className={`relative w-full overflow-hidden ${getHeightClass(index)}`}>

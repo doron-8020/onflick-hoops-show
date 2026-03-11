@@ -132,7 +132,7 @@ const PlayerProfile = () => {
   const handle = `@${displayName.toLowerCase().replace(/\s+/g, "")}`;
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-24 md:pb-4">
       <div
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-300 ${
           scrolled ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-card" : "bg-transparent"
@@ -290,7 +290,7 @@ const PlayerProfile = () => {
       <div className="min-h-[40vh]">
         {activeTab === "videos" &&
           (videos.length > 0 ? (
-            <div className="grid grid-cols-3 gap-px">
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-px">
               {videos.map((video, index) => {
                 const isGallery = video.media_type === "gallery";
                 const isImage = video.media_type === "image";

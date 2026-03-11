@@ -37,8 +37,8 @@ const FeedHeader = () => {
   ];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 safe-top">
-      <div className="mx-auto w-full max-w-lg flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/60 via-black/30 to-transparent">
+    <div className="fixed top-0 left-0 right-0 z-50 safe-top md:left-[240px]">
+      <div className="mx-auto w-full max-w-[480px] flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/60 via-black/30 to-transparent">
         {/* Search icon — left */}
         <button
           onClick={() => { haptic(10); navigate("/discover"); }}

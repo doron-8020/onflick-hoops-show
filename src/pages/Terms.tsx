@@ -9,9 +9,9 @@ const Terms = () => {
   const isHe = language === "he";
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-24 md:pb-4">
       <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border safe-top">
-        <div className="mx-auto max-w-lg flex items-center gap-3 px-4 py-3">
+        <div className="mx-auto max-w-[480px] flex items-center gap-3 px-4 py-3">
           <button onClick={() => navigate(-1)} className="p-1">
             <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />
           </button>
@@ -21,7 +21,7 @@ const Terms = () => {
         </div>
       </div>
 
-      <div className="mx-auto max-w-lg px-4 pt-16 space-y-6 pb-4">
+      <div className="mx-auto max-w-[480px] px-4 pt-16 space-y-6 pb-4">
         <div className="rounded-xl bg-card border border-border p-5 space-y-4">
           <h2 className="text-lg font-semibold text-foreground">
             {isHe ? "תנאי שימוש - ONFLICK" : "Terms of Service - ONFLICK"}

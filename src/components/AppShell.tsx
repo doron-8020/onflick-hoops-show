@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useBadgeCount } from "@/hooks/useBadgeCount";
 import InstallPrompt from "@/components/InstallPrompt";
+import DesktopSidebar from "@/components/DesktopSidebar";
 import { Ban, Snowflake } from "lucide-react";
 
 interface AppShellProps {
@@ -99,9 +100,20 @@ const AppShell = ({ children }: AppShellProps) => {
     );
   }
 
+  // Pages that should NOT show the desktop sidebar (fullscreen experiences)
+  const noSidebarPaths = ["/auth", "/onboarding/role", "/reset-password"];
+  const showSidebar = !noSidebarPaths.includes(location.pathname);
+
   return (
     <>
-      {children}
+      <div className={showSidebar ? "flex min-h-screen w-full bg-background" : ""}>
+        {showSidebar && <DesktopSidebar />}
+        <div className={showSidebar ? "flex-1 flex justify-center min-w-0" : ""}>
+          <div className={showSidebar ? "w-full max-w-[480px]" : "w-full"}>
+            {children}
+          </div>
+        </div>
+      </div>
       <InstallPrompt show={showInstallPrompt} onClose={() => setShowInstallPrompt(false)} />
     </>
   );

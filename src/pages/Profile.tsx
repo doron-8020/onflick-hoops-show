@@ -348,8 +348,8 @@ const Profile = () => {
   const handle = `@${(profile?.display_name || "player").toLowerCase().replace(/\s+/g, "")}`;
 
   return (
-    <div className="min-h-screen bg-black pb-24">
-      <div className="mx-auto max-w-lg">
+    <div className="min-h-screen bg-black pb-24 md:pb-4">
+      <div className="mx-auto max-w-[480px]">
         {/* ── Header ── */}
         <div
           className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-300 ${
@@ -674,7 +674,7 @@ const Profile = () => {
           {activeTab === "liked" && (
             <>
               {likedVideos.length > 0 ? (
-                <div className="grid grid-cols-3" style={{ gap: 1.5 }}>
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5" style={{ gap: 1.5 }}>
                   {likedVideos.map((video, index) => (
                     <GridCell
                       key={video.id}
@@ -693,7 +693,7 @@ const Profile = () => {
           {activeTab === "videos" && (
             <>
               {videos.length > 0 ? (
-                <div className="grid grid-cols-3" style={{ gap: 1.5 }}>
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5" style={{ gap: 1.5 }}>
                   {videos.map((video, index) => (
                     <GridCell
                       key={video.id}
@@ -713,7 +713,7 @@ const Profile = () => {
           {activeTab === "repost" && (
             <>
               {repostedVideos.length > 0 ? (
-                <div className="grid grid-cols-3" style={{ gap: 1.5 }}>
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5" style={{ gap: 1.5 }}>
                   {repostedVideos.map((video, index) => (
                     <GridCell
                       key={video.id}
@@ -736,7 +736,7 @@ const Profile = () => {
           {activeTab === "saved" && (
             <>
               {savedVideos.length > 0 ? (
-                <div className="grid grid-cols-3" style={{ gap: 1.5 }}>
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5" style={{ gap: 1.5 }}>
                   {savedVideos.map((video, index) => (
                     <GridCell
                       key={video.id}

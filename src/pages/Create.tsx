@@ -191,8 +191,8 @@ const Create = () => {
   const canPublish = hasContent && title.trim() && selectedCategory && !uploading;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pb-24">
-      <div className="mx-auto w-full max-w-lg">
+    <div className="min-h-screen bg-background flex flex-col pb-24 md:pb-4">
+      <div className="mx-auto w-full max-w-[480px]">
         <div className="flex items-center justify-between px-4 pt-14 pb-4">
           <button onClick={() => navigate(-1)}><X className="h-6 w-6 text-foreground" /></button>
           <h1 className="font-display text-2xl text-foreground">{t("create.title")}</h1>

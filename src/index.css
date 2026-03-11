@@ -171,6 +171,11 @@
     scroll-snap-align: start;
   }
 
+  /* Touch action for feed scroll */
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+
   /* FIX #17: Safe area utilities */
   .safe-top {
     padding-top: env(safe-area-inset-top, 0px);
