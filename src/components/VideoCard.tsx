@@ -199,7 +199,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
           message: `${displayName} reposted your highlight`,
         });
       }
-      toast.success(language === "he" ? "שותף מחדש!" : "Reposted!");
+      toast.success(t("video.reposted"));
     }
   };
 

@@ -367,7 +367,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
         {/* Reply indicator */}
         {replyTo && (
           <div className="flex items-center gap-2 px-4 py-1.5 bg-secondary text-xs text-muted-foreground border-t border-border">
-            <span>{language === "he" ? "מגיב ל-" : "Replying to "}@{replyTo.profiles?.display_name || "user"}</span>
+            <span>{t("comments.replyingTo")}@{replyTo.profiles?.display_name || "user"}</span>
             <button onClick={() => setReplyTo(null)}><X className="h-3.5 w-3.5" /></button>
           </div>
         )}

@@ -724,7 +724,7 @@ const Profile = () => {
                   ))}
                 </div>
               ) : (
-                <EmptyTabState icon={Repeat2} title="Reposts" subtitle="No reposts yet" />
+                <EmptyTabState icon={Repeat2} title={t("profile.reposts")} subtitle={t("profile.noReposts")} />
               )}
             </>
           )}
