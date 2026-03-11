@@ -393,7 +393,7 @@ const StoryViewer = ({ group, onClose }: StoryViewerProps) => {
         )}
 
         {/* Like button (always visible) */}
-        <button onClick={toggleLike} className="ml-auto p-2">
+        <button onClick={toggleLike} className="ms-auto p-2">
           <Heart
             className={`h-6 w-6 transition-colors ${liked ? "text-red-500 fill-red-500" : "text-white"}`}
           />

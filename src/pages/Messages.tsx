@@ -148,7 +148,7 @@ const Messages = () => {
               placeholder={language === "he" ? "חפש שיחה..." : "Search conversations..."}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-secondary border-0"
+              className="ps-9 bg-secondary border-0"
             />
           </div>
         </div>
