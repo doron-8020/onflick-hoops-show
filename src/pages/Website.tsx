@@ -21,8 +21,8 @@ const Website = () => {
             <span className="text-primary">YOUR STAGE.</span>
           </>
         }
-        subtitle="The basketball media platform where players showcase highlights, connect with scouts, and build their brand."
-        ctaText="Get Started"
+        subtitle="פלטפורמת המדיה לכדורסל שבה שחקנים מציגים הרגעים הטובים שלהם, מתחברים לסקאוטים ובונים את המותג שלהם."
+        ctaText="בואו נתחיל"
         ctaLink="/auth"
       />
 
@@ -37,14 +37,14 @@ const Website = () => {
             variants={fade}
             transition={{ duration: 0.6 }}
           >
-            WHY <span className="text-primary">ONFLICK</span>
+            למה <span className="text-primary">ONFLICK</span>?
           </motion.h2>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: Camera, title: "Share Highlights", desc: "Upload your best plays and moments. Vertical or landscape — we handle every format." },
-              { icon: Users, title: "Get Discovered", desc: "Scouts, coaches, and professionals browse talent daily. Put yourself on the map." },
-              { icon: Trophy, title: "Build Your Brand", desc: "Create a player profile with stats, traits, and a portfolio that speaks for itself." },
+              { icon: Camera, title: "HIGHLIGHTS", desc: "העלו את המשחקים הכי טובים שלכם. אנכי או רוחבי — אנחנו מתאימים לכל פורמט." },
+              { icon: Users, title: "GET DISCOVERED", desc: "סקאוטים, מאמנים ואנשי מקצוע גולשים כל יום. שימו את עצמכם על המפה." },
+              { icon: Trophy, title: "BUILD YOUR BRAND", desc: "צרו פרופיל שחקן עם סטטיסטיקות, תכונות ותיק עבודות שמדבר בעד עצמו." },
             ].map((feature, i) => (
               <motion.div
                 key={feature.title}
@@ -78,13 +78,13 @@ const Website = () => {
             READY TO <span className="text-primary">PLAY?</span>
           </h2>
           <p className="text-white/50 mb-8 max-w-lg mx-auto">
-            Join the community of ballers who are taking their game to the next level.
+            הצטרפו לקהילת השחקנים שלוקחים את המשחק שלהם לשלב הבא.
           </p>
           <Link
             to="/auth"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-base font-bold text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            Join Now <ArrowRight className="h-5 w-5" />
+            הצטרפו עכשיו <ArrowRight className="h-5 w-5" />
           </Link>
         </motion.div>
       </section>
