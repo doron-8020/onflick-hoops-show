@@ -313,6 +313,14 @@ const Create = () => {
           )}
 
           <input ref={fileInputRef} type="file" accept="video/*,image/*" multiple onChange={handleFileSelect} className="hidden" />
+          <input ref={coverInputRef} type="file" accept="image/*" onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            if (!file.type.startsWith("image/")) return;
+            setCoverFile(file);
+            setCoverPreview(URL.createObjectURL(file));
+            e.target.value = "";
+          }} className="hidden" />
 
           <input type="text" placeholder={t("create.titleField")} value={title} onChange={(e) => setTitle(e.target.value)}
             dir={isRTL ? "rtl" : "ltr"}
