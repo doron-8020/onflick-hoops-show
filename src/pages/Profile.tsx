@@ -145,6 +145,7 @@ const Profile = () => {
   const [storyUploadOpen, setStoryUploadOpen] = useState(false);
   const [scoutFollowers, setScoutFollowers] = useState(0);
   const [scoutRating, setScoutRating] = useState<number | null>(null);
+  const [videoScoutViews, setVideoScoutViews] = useState<Record<string, number>>({});
 
   const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({
     liked: null,
