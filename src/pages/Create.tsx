@@ -257,9 +257,9 @@ const Create = () => {
             </div>
           ) : previewUrl ? (
             <>
-              <div className="relative w-full aspect-[9/16] max-h-[40vh] rounded-2xl overflow-hidden bg-secondary">
+              <div className="relative w-full aspect-[9/16] max-h-[40vh] rounded-2xl overflow-hidden bg-black">
                 {mediaType === "video" ? (
-                  <video src={previewUrl} className="h-full w-full object-cover" controls playsInline />
+                  <video src={previewUrl} className="h-full w-full object-contain" controls playsInline autoPlay muted />
                 ) : (
                   <img src={previewUrl} className="h-full w-full object-cover" alt="" />
                 )}

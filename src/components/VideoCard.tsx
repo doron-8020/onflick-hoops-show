@@ -209,7 +209,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false, onDeleted }: VideoCar
   return (
     <div className="relative h-full w-full" onClick={isVideo ? handleTap : undefined}>
       {/* Media */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-black">
         {video.media_type === "gallery" && video.gallery_urls && video.gallery_urls.length > 0 ? (
           <GalleryCarousel urls={video.gallery_urls} alt={video.caption || "Gallery"} />
         ) : video.media_type === "image" ? (
