@@ -7,7 +7,7 @@ interface DesktopLayoutProps {
 }
 
 /** Wraps page content in a centered container for desktop, full-width on mobile */
-const DesktopLayout = ({ children, maxWidth = "max-w-lg", className = "" }: DesktopLayoutProps) => (
+const DesktopLayout = ({ children, maxWidth = "max-w-[480px]", className = "" }: DesktopLayoutProps) => (
   <div className={`mx-auto w-full ${maxWidth} ${className}`}>
     {children}
   </div>
