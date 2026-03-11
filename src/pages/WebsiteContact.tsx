@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import FloatingNav from "@/components/website/FloatingNav";
+import VideoHero from "@/components/website/VideoHero";
 import WebsiteFooter from "@/components/website/WebsiteFooter";
 
 const fade = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } };
