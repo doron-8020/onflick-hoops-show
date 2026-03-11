@@ -1,14 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import FloatingNav from "@/components/website/FloatingNav";
-import WebsiteFooter from "@/components/website/WebsiteFooter";
 import Index from "@/pages/Index";
 
 const navLinks = [
-  { label: "Home", path: "/website" },
-  { label: "For You", path: "/website/feed" },
-  { label: "About", path: "/website/about" },
-  { label: "Gallery", path: "/website/gallery" },
-  { label: "Contact", path: "/website/contact" },
+  { label: "ראשי", path: "/website" },
+  { label: "פור יו", path: "/website/feed" },
+  { label: "אודות", path: "/website/about" },
+  { label: "גלריה", path: "/website/gallery" },
+  { label: "צור קשר", path: "/website/contact" },
 ];
 
 const WebsiteFeed = () => {
@@ -28,12 +26,13 @@ const WebsiteFeed = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`rounded-xl px-3 py-3 text-sm font-medium transition-colors ${
+                className={`rounded-xl px-3 py-3 text-sm font-medium transition-colors flex items-center gap-2 ${
                   isActive
                     ? "bg-white/10 text-white"
                     : "text-white/50 hover:bg-white/5 hover:text-white/80"
                 }`}
               >
+                {isActive && <span className="text-[10px]">🏀</span>}
                 {link.label}
               </Link>
             );
@@ -43,7 +42,7 @@ const WebsiteFeed = () => {
           to="/"
           className="rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground text-center hover:bg-primary/90 transition-colors"
         >
-          Open App
+          APP
         </Link>
       </aside>
 

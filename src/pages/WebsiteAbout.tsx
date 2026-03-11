@@ -19,7 +19,7 @@ const WebsiteAbout = () => {
             ABOUT <span className="text-primary">ONFLICK</span>
           </>
         }
-        subtitle="We're a basketball media company on a mission to give every player a stage."
+        subtitle="חברת מדיה לכדורסל במשימה לתת לכל שחקן במה."
       />
 
       {/* Story */}
@@ -33,17 +33,17 @@ const WebsiteAbout = () => {
             transition={{ duration: 0.6 }}
           >
             <h2 className="font-display text-3xl md:text-4xl tracking-wider mb-6">
-              OUR <span className="text-primary">STORY</span>
+              THE <span className="text-primary">STORY</span>
             </h2>
             <p className="text-white/50 leading-relaxed mb-4">
-              ONFLICK was born from a simple belief: talent shouldn't go unnoticed. 
-              We saw countless ballers grinding on courts every day — players with real skill, 
-              real hustle — but no platform built for them.
+              ONFLICK נולד מתוך אמונה פשוטה: כישרון לא צריך להישאר בלתי מוכר.
+              ראינו אינספור שחקנים טוחנים על המגרשים כל יום — שחקנים עם כישרון אמיתי,
+              עם חשק אמיתי — אבל בלי פלטפורמה שנבנתה בשבילם.
             </p>
             <p className="text-white/50 leading-relaxed">
-              So we built one. A space where highlights speak louder than words, 
-              where scouts discover the next generation, and where every player 
-              can build their brand from the ground up.
+              אז בנינו אחת. מקום שבו הרגעים המשמעותיים מדברים חזק יותר ממילים,
+              שבו סקאוטים מגלים את הדור הבא, ושבו כל שחקן
+              יכול לבנות את המותג שלו מאפס.
             </p>
           </motion.div>
           <motion.div
@@ -56,7 +56,7 @@ const WebsiteAbout = () => {
           >
             <div className="font-display text-6xl text-primary mb-2">🏀</div>
             <p className="font-display text-2xl tracking-wider mb-1">BASKETBALL FIRST</p>
-            <p className="text-white/40 text-sm">Everything we do revolves around the game.</p>
+            <p className="text-white/40 text-sm">כל מה שאנחנו עושים סובב סביב המשחק.</p>
           </motion.div>
         </div>
       </section>
@@ -71,14 +71,14 @@ const WebsiteAbout = () => {
             viewport={{ once: true }}
             variants={fade}
           >
-            WHAT WE <span className="text-primary">STAND FOR</span>
+            מה אנחנו <span className="text-primary">מייצגים</span>
           </motion.h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: Target, title: "Exposure", desc: "Every player deserves to be seen." },
-              { icon: Heart, title: "Community", desc: "Built by ballers, for ballers." },
-              { icon: Zap, title: "Innovation", desc: "Pushing basketball media forward." },
-              { icon: Users, title: "Connection", desc: "Bridging players, scouts & coaches." },
+              { icon: Target, title: "חשיפה", desc: "כל שחקן ראוי שיראו אותו." },
+              { icon: Heart, title: "קהילה", desc: "נבנה על ידי שחקנים, בשביל שחקנים." },
+              { icon: Zap, title: "חדשנות", desc: "דוחפים את מדיית הכדורסל קדימה." },
+              { icon: Users, title: "חיבור", desc: "מגשרים בין שחקנים, סקאוטים ומאמנים." },
             ].map((v, i) => (
               <motion.div
                 key={v.title}
@@ -110,12 +110,12 @@ const WebsiteAbout = () => {
           <h2 className="font-display text-3xl md:text-4xl tracking-wider mb-4">
             READY TO <span className="text-primary">JOIN?</span>
           </h2>
-          <p className="text-white/50 mb-8">Be part of the next generation of basketball media.</p>
+          <p className="text-white/50 mb-8">היו חלק מהדור הבא של מדיית הכדורסל.</p>
           <Link
             to="/auth"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 font-bold text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            Get Started
+            בואו נתחיל
           </Link>
         </motion.div>
       </section>

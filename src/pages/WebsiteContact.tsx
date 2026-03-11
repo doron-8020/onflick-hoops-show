@@ -11,28 +11,28 @@ const contactMethods = [
   {
     icon: MessageCircle,
     title: "WhatsApp",
-    value: "Chat with us",
+    value: "דברו איתנו",
     href: "https://wa.me/972500000000",
     color: "text-green-400",
   },
   {
     icon: Phone,
-    title: "Phone",
+    title: "טלפון",
     value: "+972 50-000-0000",
     href: "tel:+972500000000",
     color: "text-primary",
   },
   {
     icon: Mail,
-    title: "Email",
+    title: "אימייל",
     value: "hello@onflick.com",
     href: "mailto:hello@onflick.com",
     color: "text-blue-400",
   },
   {
     icon: MapPin,
-    title: "Location",
-    value: "Israel",
+    title: "מיקום",
+    value: "ישראל",
     href: "#",
     color: "text-yellow-400",
   },
@@ -44,7 +44,6 @@ const WebsiteContact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Placeholder — hook up to backend later
     setSent(true);
   };
 
@@ -59,7 +58,7 @@ const WebsiteContact = () => {
             GET IN <span className="text-primary">TOUCH</span>
           </>
         }
-        subtitle="Have a question, want to collaborate, or just want to say what's up? We'd love to hear from you."
+        subtitle="יש לכם שאלה, רוצים לשתף פעולה, או סתם להגיד מה קורה? נשמח לשמוע מכם."
       />
 
       <section className="px-6 pb-24">
@@ -73,7 +72,7 @@ const WebsiteContact = () => {
               viewport={{ once: true }}
               variants={fade}
             >
-              REACH <span className="text-primary">US</span>
+              דברו <span className="text-primary">איתנו</span>
             </motion.h2>
             {contactMethods.map((method, i) => (
               <motion.a
@@ -106,20 +105,20 @@ const WebsiteContact = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <h2 className="font-display text-2xl tracking-wider mb-6">
-              SEND A <span className="text-primary">MESSAGE</span>
+              שלחו <span className="text-primary">הודעה</span>
             </h2>
             {sent ? (
               <div className="rounded-2xl border border-primary/30 bg-primary/10 p-10 text-center">
                 <div className="text-4xl mb-3">🏀</div>
-                <h3 className="font-display text-2xl tracking-wider mb-2">MESSAGE SENT!</h3>
-                <p className="text-white/50 text-sm">We'll get back to you soon.</p>
+                <h3 className="font-display text-2xl tracking-wider mb-2">ההודעה נשלחה!</h3>
+                <p className="text-white/50 text-sm">נחזור אליכם בקרוב.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <input
                     type="text"
-                    placeholder="Your Name"
+                    placeholder="השם שלכם"
                     required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -129,7 +128,7 @@ const WebsiteContact = () => {
                 <div>
                   <input
                     type="email"
-                    placeholder="Your Email"
+                    placeholder="האימייל שלכם"
                     required
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -138,7 +137,7 @@ const WebsiteContact = () => {
                 </div>
                 <div>
                   <textarea
-                    placeholder="Your Message"
+                    placeholder="ההודעה שלכם"
                     required
                     rows={5}
                     value={form.message}
@@ -150,7 +149,7 @@ const WebsiteContact = () => {
                   type="submit"
                   className="w-full rounded-xl bg-primary py-3.5 font-bold text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
-                  Send Message
+                  שלחו הודעה
                 </button>
               </form>
             )}
