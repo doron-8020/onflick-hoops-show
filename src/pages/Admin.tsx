@@ -587,6 +587,9 @@ const Admin = () => {
             </div>
           </>
         )}
+
+        {/* MEDIA TAB */}
+        {activeTab === "media" && <MediaManager />}
       </div>
 
       <BottomNav />
