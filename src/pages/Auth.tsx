@@ -81,7 +81,7 @@ const Auth = () => {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) throw error;
-      toast.success(language === "he" ? "נשלח אימייל לאיפוס סיסמה!" : "Password reset email sent!");
+      toast.success(t("auth.resetEmailSent"));
       setShowForgotPassword(false);
     } catch (error: any) {
       toast.error(error.message || t("auth.error"));
