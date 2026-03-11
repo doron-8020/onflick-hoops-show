@@ -14,7 +14,7 @@ const DesktopSidebar = () => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   const navItems = [
-    { icon: Home, label: t("nav.home"), path: "/" },
+    { icon: Home, label: t("feed.foryou"), path: "/" },
     { icon: Search, label: t("nav.discover"), path: "/discover" },
     { icon: Plus, label: "Create", path: "/create" },
     { icon: Bell, label: t("nav.notifications"), path: "/notifications" },
