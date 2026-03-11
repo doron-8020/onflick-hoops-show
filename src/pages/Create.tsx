@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Camera, Video, Image, Upload, X, Loader2, Plus, Check, Globe, Users, Lock } from "lucide-react";
+import { Camera, Video, Image, Upload, X, Loader2, Plus, Check, Globe, Users, Lock, ImagePlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -21,6 +21,7 @@ const Create = () => {
   const { user, loading: authLoading } = useAuth();
   const { t, isRTL, language } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadDone, setUploadDone] = useState(false);
@@ -37,6 +38,8 @@ const Create = () => {
   const [activePreview, setActivePreview] = useState(0);
   const [privacy, setPrivacy] = useState("public");
   const [showCategoryError, setShowCategoryError] = useState(false);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
 
   // Combined tag count
   const customTagsArray = customTags.split(",").map((t) => t.trim().replace("#", "")).filter(Boolean);
@@ -164,16 +167,32 @@ const Create = () => {
         });
         if (insertError) throw insertError;
       } else {
-        totalBytes = selectedFile!.size;
+        totalBytes = selectedFile!.size + (coverFile?.size || 0);
         const fileExt = selectedFile!.name.split(".").pop();
         const filePath = `${user.id}/${Date.now()}.${fileExt}`;
         const { error: uploadError } = await supabase.storage.from("videos").upload(filePath, selectedFile!);
         if (uploadError) throw uploadError;
-        setUploadProgress(100);
+        uploadedBytes += selectedFile!.size;
+        setUploadProgress(Math.round((uploadedBytes / totalBytes) * 100));
         const { data: { publicUrl } } = supabase.storage.from("videos").getPublicUrl(filePath);
+        
+        let thumbnailUrl: string | null = mediaType === "image" ? publicUrl : null;
+        
+        // Upload cover image if selected for video
+        if (coverFile && mediaType === "video") {
+          const coverExt = coverFile.name.split(".").pop();
+          const coverPath = `${user.id}/${Date.now()}-cover.${coverExt}`;
+          const { error: coverError } = await supabase.storage.from("videos").upload(coverPath, coverFile);
+          if (coverError) throw coverError;
+          uploadedBytes += coverFile.size;
+          setUploadProgress(Math.round((uploadedBytes / totalBytes) * 100));
+          const { data: { publicUrl: coverUrl } } = supabase.storage.from("videos").getPublicUrl(coverPath);
+          thumbnailUrl = coverUrl;
+        }
+        
         const { error: insertError } = await supabase.from("videos").insert({
           user_id: user.id, title: title.trim(), caption: caption.trim() || null,
-          video_url: publicUrl, thumbnail_url: mediaType === "image" ? publicUrl : null,
+          video_url: publicUrl, thumbnail_url: thumbnailUrl,
           tags: allTags.length > 0 ? allTags : null, media_type: mediaType, privacy,
         });
         if (insertError) throw insertError;
@@ -237,26 +256,48 @@ const Create = () => {
               </div>
             </div>
           ) : previewUrl ? (
-            <div className="relative w-full aspect-[9/16] max-h-[40vh] rounded-2xl overflow-hidden bg-secondary">
-              {mediaType === "video" ? (
-                <video src={previewUrl} className="h-full w-full object-cover" controls playsInline />
-              ) : (
-                <img src={previewUrl} className="h-full w-full object-cover" alt="" />
-              )}
-              <button onClick={() => { setSelectedFile(null); setPreviewUrl(null); }}
-                className="absolute top-2 end-2 rounded-full bg-background/70 p-1.5 backdrop-blur-sm">
-                <X className="h-4 w-4 text-foreground" />
-              </button>
-              {mediaType === "image" && (
-                <button onClick={() => {
-                  setGalleryFiles([selectedFile!]); setGalleryPreviews([previewUrl!]);
-                  setMediaType("gallery"); setSelectedFile(null); setPreviewUrl(null); setActivePreview(0);
-                }} className="absolute bottom-3 end-3 rounded-full bg-background/70 px-3 py-1.5 backdrop-blur-sm flex items-center gap-1.5">
-                  <Plus className="h-3.5 w-3.5 text-foreground" />
-                  <span className="text-xs font-semibold text-foreground">{t("create.addMore") || "Add more"}</span>
+            <>
+              <div className="relative w-full aspect-[9/16] max-h-[40vh] rounded-2xl overflow-hidden bg-secondary">
+                {mediaType === "video" ? (
+                  <video src={previewUrl} className="h-full w-full object-cover" controls playsInline />
+                ) : (
+                  <img src={previewUrl} className="h-full w-full object-cover" alt="" />
+                )}
+                <button onClick={() => { setSelectedFile(null); setPreviewUrl(null); setCoverFile(null); setCoverPreview(null); }}
+                  className="absolute top-2 end-2 rounded-full bg-background/70 p-1.5 backdrop-blur-sm">
+                  <X className="h-4 w-4 text-foreground" />
                 </button>
+                {mediaType === "video" && (
+                  <button onClick={() => coverInputRef.current?.click()}
+                    className="absolute bottom-3 end-3 rounded-full bg-background/70 px-3 py-1.5 backdrop-blur-sm flex items-center gap-1.5">
+                    <ImagePlus className="h-3.5 w-3.5 text-foreground" />
+                    <span className="text-xs font-semibold text-foreground">{language === "he" ? "תמונת קאבר" : "Cover image"}</span>
+                  </button>
+                )}
+                {mediaType === "image" && (
+                  <button onClick={() => {
+                    setGalleryFiles([selectedFile!]); setGalleryPreviews([previewUrl!]);
+                    setMediaType("gallery"); setSelectedFile(null); setPreviewUrl(null); setActivePreview(0);
+                  }} className="absolute bottom-3 end-3 rounded-full bg-background/70 px-3 py-1.5 backdrop-blur-sm flex items-center gap-1.5">
+                    <Plus className="h-3.5 w-3.5 text-foreground" />
+                    <span className="text-xs font-semibold text-foreground">{t("create.addMore") || "Add more"}</span>
+                  </button>
+                )}
+              </div>
+              {coverPreview && mediaType === "video" && (
+                <div className="flex items-center gap-3 rounded-xl bg-secondary px-3 py-2">
+                  <img src={coverPreview} className="h-14 w-10 rounded-lg object-cover" alt="" />
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold text-foreground">{language === "he" ? "תמונת קאבר נבחרה" : "Cover image selected"}</p>
+                    <p className="text-[11px] text-muted-foreground">{language === "he" ? "תוצג בגריד הפרופיל" : "Shown in profile grid"}</p>
+                  </div>
+                  <button onClick={() => { setCoverFile(null); setCoverPreview(null); }}
+                    className="rounded-full bg-destructive/20 p-1.5">
+                    <X className="h-3.5 w-3.5 text-destructive" />
+                  </button>
+                </div>
               )}
-            </div>
+            </>
           ) : (
             <button onClick={() => fileInputRef.current?.click()}
               className="w-full aspect-[9/16] max-h-[40vh] rounded-2xl bg-secondary border-2 border-dashed border-border flex flex-col items-center justify-center gap-3">
@@ -273,6 +314,14 @@ const Create = () => {
           )}
 
           <input ref={fileInputRef} type="file" accept="video/*,image/*" multiple onChange={handleFileSelect} className="hidden" />
+          <input ref={coverInputRef} type="file" accept="image/*" onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            if (!file.type.startsWith("image/")) return;
+            setCoverFile(file);
+            setCoverPreview(URL.createObjectURL(file));
+            e.target.value = "";
+          }} className="hidden" />
 
           <input type="text" placeholder={t("create.titleField")} value={title} onChange={(e) => setTitle(e.target.value)}
             dir={isRTL ? "rtl" : "ltr"}

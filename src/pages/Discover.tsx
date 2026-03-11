@@ -309,9 +309,15 @@ const Discover = () => {
                   {videos.map((video, index) => (
                     <div key={video.id} className="mb-2 break-inside-avoid overflow-hidden rounded-xl bg-card cursor-pointer group" onClick={() => openFullScreen(index)}>
                       <div className={`relative w-full overflow-hidden ${getHeightClass(index)}`}>
-                        <img src={video.thumbnail_url || (video.media_type === "image" ? video.video_url : "/placeholder.svg")}
+                      {(video.thumbnail_url || video.media_type === "image") ? (
+                        <img src={video.thumbnail_url || video.video_url}
                           alt={video.caption || ""} loading="lazy"
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      ) : (
+                        <video src={video.video_url + "#t=0.5"}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          muted preload="metadata" playsInline />
+                      )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                         <div className="absolute bottom-2 left-2 flex items-center gap-1 text-white/90 text-[11px] font-medium">
                           <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
