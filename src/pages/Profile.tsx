@@ -500,7 +500,7 @@ const Profile = () => {
               <span className="text-white" style={{ fontSize: 17, fontWeight: 700, lineHeight: 1.2 }}>
                 {formatCount(profileViews?.scout ?? 0)}
               </span>
-              <span className="text-white/60" style={{ fontSize: 11 }}>🔍 {language === "he" ? "צפיות סקאוטים" : "Scout Views"}</span>
+              <span className="text-white/60" style={{ fontSize: 11 }}>🔍 {t("profile.scoutViews")}</span>
             </div>
 
             <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", margin: "0 16px" }} />
