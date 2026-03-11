@@ -46,7 +46,7 @@ const timeAgo = (dateStr: string, lang: string) => {
 const CommentRow = ({
   comment,
   user,
-  language,
+  t,
   isRTL,
   onReply,
   onDelete,
@@ -55,14 +55,14 @@ const CommentRow = ({
 }: {
   comment: Comment;
   user: any;
-  language: string;
+  t: (key: any) => string;
   isRTL: boolean;
   onReply: (comment: Comment) => void;
   onDelete: (id: string) => void;
   onToggleLike: (comment: Comment) => void;
   isReply?: boolean;
 }) => {
-  const name = comment.profiles?.display_name || (language === "he" ? "אנונימי" : "Anonymous");
+  const name = comment.profiles?.display_name || t("comments.anonymous");
   return (
     <div className={`flex gap-3 group ${isReply ? "ms-10" : ""}`}>
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full overflow-hidden bg-muted">
@@ -78,12 +78,12 @@ const CommentRow = ({
           {comment.profiles?.verified && (
             <BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0" fill="currentColor" />
           )}
-          <span className="text-[10px] text-muted-foreground">{timeAgo(comment.created_at, language)}</span>
+          <span className="text-[10px] text-muted-foreground">{timeAgo(comment.created_at, isRTL ? "he" : "en")}</span>
         </div>
         <p className="text-sm text-foreground mt-0.5 break-words">{comment.content}</p>
         {!isReply && (
           <button onClick={() => onReply(comment)} className="text-[11px] text-muted-foreground hover:text-foreground mt-1">
-            {language === "he" ? "הגב" : "Reply"}
+            {t("comments.reply")}
           </button>
         )}
       </div>
@@ -328,7 +328,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
                 <CommentRow
                   comment={comment}
                   user={user}
-                  language={language}
+                  t={t}
                   isRTL={isRTL}
                   onReply={handleReply}
                   onDelete={handleDelete}
@@ -340,9 +340,9 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
                     className="ms-10 flex items-center gap-1 text-[11px] text-primary font-medium"
                   >
                     {expandedReplies.has(comment.id) ? (
-                      <><ChevronUp className="h-3 w-3" />{language === "he" ? "הסתר תגובות" : "Hide replies"}</>
+                      <><ChevronUp className="h-3 w-3" />{t("comments.hideReplies")}</>
                     ) : (
-                      <><ChevronDown className="h-3 w-3" />{language === "he" ? `צפה ב-${replyCounts[comment.id]} תגובות` : `View ${replyCounts[comment.id]} replies`}</>
+                      <><ChevronDown className="h-3 w-3" />{t("comments.viewReplies").replace("{count}", String(replyCounts[comment.id]))}</>
                     )}
                   </button>
                 )}
@@ -351,7 +351,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
                     key={reply.id}
                     comment={reply}
                     user={user}
-                    language={language}
+                    t={t}
                     isRTL={isRTL}
                     onReply={handleReply}
                     onDelete={handleDelete}
@@ -367,7 +367,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
         {/* Reply indicator */}
         {replyTo && (
           <div className="flex items-center gap-2 px-4 py-1.5 bg-secondary text-xs text-muted-foreground border-t border-border">
-            <span>{language === "he" ? "מגיב ל-" : "Replying to "}@{replyTo.profiles?.display_name || "user"}</span>
+            <span>{t("comments.replyingTo")}@{replyTo.profiles?.display_name || "user"}</span>
             <button onClick={() => setReplyTo(null)}><X className="h-3.5 w-3.5" /></button>
           </div>
         )}

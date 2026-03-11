@@ -63,16 +63,13 @@ const Auth = () => {
   };
 
   const roleLabel = (type: UserType) => {
-    if (language === "he") {
-      if (type === "player") return "שחקן";
-      if (type === "coach") return "מאמן";
-      if (type === "scout") return "סקאוט";
-      return "בעל מקצוע";
-    }
-    if (type === "player") return "Player";
-    if (type === "coach") return "Coach";
-    if (type === "scout") return "Scout";
-    return "Professional";
+    const map: Record<UserType, string> = {
+      player: t("auth.rolePlayer"),
+      coach: t("auth.roleCoach"),
+      scout: t("auth.roleScout"),
+      professional: t("auth.roleProfessional"),
+    };
+    return map[type];
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
@@ -84,7 +81,7 @@ const Auth = () => {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) throw error;
-      toast.success(language === "he" ? "נשלח אימייל לאיפוס סיסמה!" : "Password reset email sent!");
+      toast.success(t("auth.resetEmailSent"));
       setShowForgotPassword(false);
     } catch (error: any) {
       toast.error(error.message || t("auth.error"));
@@ -125,7 +122,7 @@ const Auth = () => {
 
               <div className="rounded-xl bg-secondary p-2">
                 <p className="px-2 pb-2 text-xs font-semibold text-muted-foreground">
-                  {t("auth.role") || (language === "he" ? "סוג חשבון" : "Account type")}
+                  {t("auth.role")}
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   {(["player", "coach", "scout", "professional"] as UserType[]).map((type) => {
@@ -190,7 +187,7 @@ const Auth = () => {
               onClick={() => setShowForgotPassword(true)}
               className="w-full text-end text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
-              {language === "he" ? "שכחת סיסמה?" : "Forgot password?"}
+              {t("auth.forgotPassword")}
             </button>
           )}
 
@@ -217,10 +214,10 @@ const Auth = () => {
           <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-6" onClick={() => setShowForgotPassword(false)}>
             <div className="w-full max-w-sm bg-background rounded-2xl p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
               <h2 className="font-display text-xl text-foreground text-center">
-                {language === "he" ? "איפוס סיסמה" : "Reset Password"}
+                {t("auth.resetPassword")}
               </h2>
               <p className="text-sm text-muted-foreground text-center">
-                {language === "he" ? "נשלח לך אימייל עם קישור לאיפוס" : "We'll send you a reset link"}
+                {t("auth.resetDescription")}
               </p>
               <form onSubmit={handleForgotPassword} className="space-y-3">
                 <input
@@ -242,12 +239,12 @@ const Auth = () => {
                       <span className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
                     </span>
                   ) : (
-                    language === "he" ? "שלח קישור" : "Send Reset Link"
+                    t("auth.sendResetLink")
                   )}
                 </button>
               </form>
               <button onClick={() => setShowForgotPassword(false)} className="w-full text-center text-sm text-muted-foreground">
-                {language === "he" ? "ביטול" : "Cancel"}
+                {t("auth.cancel")}
               </button>
             </div>
           </div>

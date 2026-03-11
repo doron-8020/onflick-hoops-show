@@ -472,8 +472,8 @@ const Profile = () => {
               { value: profile?.following_count || 0, label: t("profile.following"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=following`) },
               { value: profile?.followers_count || 0, label: t("profile.followers"), onClick: () => user && navigate(`/user/${user.id}/follows?tab=followers`) },
               { value: totalLikes, label: t("profile.likes") },
-              { value: totalShares, label: language === "he" ? "שיתופים" : "Shares" },
-              { value: totalReposts, label: language === "he" ? "ריפוסט" : "Reposts" },
+              { value: totalShares, label: t("profile.shares") },
+              { value: totalReposts, label: t("profile.reposts") },
             ].map((stat, i) => (
               <div key={stat.label} className="flex items-center">
                 {i > 0 && (
@@ -500,7 +500,7 @@ const Profile = () => {
               <span className="text-white" style={{ fontSize: 17, fontWeight: 700, lineHeight: 1.2 }}>
                 {formatCount(profileViews?.scout ?? 0)}
               </span>
-              <span className="text-white/60" style={{ fontSize: 11 }}>🔍 {language === "he" ? "צפיות סקאוטים" : "Scout Views"}</span>
+              <span className="text-white/60" style={{ fontSize: 11 }}>🔍 {t("profile.scoutViews")}</span>
             </div>
 
             <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", margin: "0 16px" }} />
@@ -510,7 +510,7 @@ const Profile = () => {
               <span className="text-white" style={{ fontSize: 17, fontWeight: 700, lineHeight: 1.2 }}>
                 {formatCount(scoutFollowers)}
               </span>
-              <span className="text-white/60" style={{ fontSize: 11 }}>🎯 {language === "he" ? "סקאוטים עוקבים" : "Scout Followers"}</span>
+              <span className="text-white/60" style={{ fontSize: 11 }}>🎯 {t("profile.scoutFollowers")}</span>
             </div>
 
             <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", margin: "0 16px" }} />
@@ -570,7 +570,7 @@ const Profile = () => {
                 }
                 try {
                   await navigator.clipboard.writeText(profileUrl);
-                  toast({ title: "✅ הלינק הועתק!" });
+                  toast({ title: t("profile.linkCopied") });
                 } catch {
                   const ta = document.createElement("textarea");
                   ta.value = profileUrl;
@@ -580,7 +580,7 @@ const Profile = () => {
                   ta.select();
                   document.execCommand("copy");
                   document.body.removeChild(ta);
-                  toast({ title: "✅ הלינק הועתק!" });
+                  toast({ title: t("profile.linkCopied") });
                 }
               }}
             >
@@ -685,7 +685,7 @@ const Profile = () => {
                   ))}
                 </div>
               ) : (
-                <EmptyTabState icon={Heart} title="Liked" subtitle="No liked videos yet" />
+                <EmptyTabState icon={Heart} title={t("profile.likes")} subtitle={t("profile.noLikedVideos")} />
               )}
             </>
           )}
@@ -724,7 +724,7 @@ const Profile = () => {
                   ))}
                 </div>
               ) : (
-                <EmptyTabState icon={Repeat2} title="Reposts" subtitle="No reposts yet" />
+                <EmptyTabState icon={Repeat2} title={t("profile.reposts")} subtitle={t("profile.noReposts")} />
               )}
             </>
           )}

@@ -46,6 +46,30 @@ export const translations = {
   "auth.passwordMinLength": { he: "הסיסמה חייבת להכיל לפחות 6 תווים", en: "Password must be at least 6 characters" },
   "auth.welcome": { he: "ברוך הבא! 🏀", en: "Welcome! 🏀" },
   "auth.signUpSuccess": { he: "נרשמת בהצלחה! בדוק את האימייל לאימות.", en: "Signed up! Check your email to verify." },
+  "auth.forgotPassword": { he: "שכחת סיסמה?", en: "Forgot password?" },
+  "auth.resetPassword": { he: "איפוס סיסמה", en: "Reset Password" },
+  "auth.resetEmailSent": { he: "נשלח אימייל לאיפוס סיסמה!", en: "Password reset email sent!" },
+  "auth.resetDescription": { he: "נשלח לך אימייל עם קישור לאיפוס", en: "We'll send you a reset link" },
+  "auth.sendResetLink": { he: "שלח קישור", en: "Send Reset Link" },
+  "auth.cancel": { he: "ביטול", en: "Cancel" },
+  "auth.signInToMessages": { he: "התחבר כדי לראות הודעות", en: "Sign in to see messages" },
+
+  // Auth roles
+  "auth.rolePlayer": { he: "שחקן", en: "Player" },
+  "auth.roleCoach": { he: "מאמן", en: "Coach" },
+  "auth.roleScout": { he: "סקאוט", en: "Scout" },
+  "auth.roleProfessional": { he: "בעל מקצוע", en: "Professional" },
+
+  // Reset Password page
+  "reset.invalidLink": { he: "קישור לא תקין או שפג תוקפו.", en: "Invalid or expired reset link." },
+  "reset.backToSignIn": { he: "חזרה להתחברות", en: "Back to Sign In" },
+  "reset.enterNewPassword": { he: "הכנס סיסמה חדשה", en: "Enter your new password" },
+  "reset.newPassword": { he: "סיסמה חדשה", en: "New password" },
+  "reset.confirmPassword": { he: "אימות סיסמה", en: "Confirm password" },
+  "reset.passwordsMismatch": { he: "הסיסמאות לא תואמות", en: "Passwords don't match" },
+  "reset.passwordUpdated": { he: "הסיסמה עודכנה בהצלחה!", en: "Password updated successfully!" },
+  "reset.updating": { he: "מעדכן...", en: "Updating..." },
+  "reset.updatePassword": { he: "עדכן סיסמה", en: "Update Password" },
 
   // Discover
   "discover.title": { he: "גלה", en: "Discover" },
@@ -58,6 +82,7 @@ export const translations = {
   "discover.trending": { he: "טרנדים 🔥", en: "Trending 🔥" },
   "discover.topHighlights": { he: "הדגשות מובילות", en: "Top Highlights" },
   "discover.backToGrid": { he: "חזרה", en: "Back" },
+  "discover.topPlayers": { he: "שחקנים מובילים 🔥", en: "Top Players 🔥" },
 
   // Notifications
   "notifications.title": { he: "התראות", en: "Notifications" },
@@ -69,6 +94,7 @@ export const translations = {
   "notifications.hour": { he: "ש׳", en: "h" },
   "notifications.days": { he: "ימים", en: "days" },
   "notifications.weeks": { he: "שבועות", en: "weeks" },
+  "notifications.ago": { he: "לפני", en: "ago" },
 
   // Player Profile
   "profile.playerNotFound": { he: "השחקן לא נמצא", en: "Player not found" },
@@ -81,8 +107,11 @@ export const translations = {
   "profile.followers": { he: "עוקבים", en: "Followers" },
   "profile.following": { he: "עוקב", en: "Following" },
   "profile.likes": { he: "לייקים", en: "Likes" },
+  "profile.shares": { he: "שיתופים", en: "Shares" },
+  "profile.reposts": { he: "ריפוסט", en: "Reposts" },
   "profile.coachViews": { he: "צפיות מאמנים", en: "Coach views" },
-  "profile.scoutViews": { he: "צפיות סקאוטים", en: "Scout views" },
+  "profile.scoutViews": { he: "צפיות סקאוטים", en: "Scout Views" },
+  "profile.scoutFollowers": { he: "סקאוטים עוקבים", en: "Scout Followers" },
   "profile.editProfile": { he: "ערוך פרופיל", en: "Edit Profile" },
   "profile.shareProfile": { he: "שתף פרופיל", en: "Share Profile" },
   "profile.noVideos": { he: "אין סרטונים עדיין", en: "No videos yet" },
@@ -100,6 +129,10 @@ export const translations = {
   "profile.followingList": { he: "נעקבים", en: "Following" },
   "profile.noFollowers": { he: "אין עוקבים עדיין", en: "No followers yet" },
   "profile.noFollowing": { he: "לא עוקב אחרי אף אחד", en: "Not following anyone" },
+  "profile.linkCopied": { he: "✅ הלינק הועתק!", en: "✅ Link copied!" },
+  "profile.noLikedVideos": { he: "אין סרטונים שאהבת", en: "No liked videos yet" },
+  "profile.noReposts": { he: "אין ריפוסטים עדיין", en: "No reposts yet" },
+  "profile.pinned": { he: "הוצמד", en: "Pinned" },
 
   // Create
   "create.title": { he: "העלאת תוכן", en: "Upload Content" },
@@ -123,6 +156,9 @@ export const translations = {
   "create.images": { he: "תמונות", en: "images" },
   "create.addMore": { he: "הוסף עוד", en: "Add more" },
   "create.upTo20Images": { he: "עד 35 תמונות בגלריה", en: "Up to 35 images gallery" },
+  "create.public": { he: "ציבורי", en: "Public" },
+  "create.followersOnly": { he: "עוקבים בלבד", en: "Followers only" },
+  "create.private": { he: "פרטי", en: "Private" },
 
   // Settings
   "settings.title": { he: "הגדרות", en: "Settings" },
@@ -193,6 +229,7 @@ export const translations = {
   "video.share": { he: "שיתוף", en: "Share" },
   "video.followBtn": { he: "עקוב", en: "Follow" },
   "video.followingBtn": { he: "עוקב", en: "Following" },
+  "video.reposted": { he: "שותף מחדש!", en: "Reposted!" },
 
   // Comments
   "comments.title": { he: "תגובות", en: "Comments" },
@@ -202,6 +239,10 @@ export const translations = {
   "comments.sendError": { he: "שגיאה בשליחת התגובה", en: "Error sending comment" },
   "comments.deleteError": { he: "שגיאה במחיקת התגובה", en: "Error deleting comment" },
   "comments.anonymous": { he: "אנונימי", en: "Anonymous" },
+  "comments.reply": { he: "הגב", en: "Reply" },
+  "comments.hideReplies": { he: "הסתר תגובות", en: "Hide replies" },
+  "comments.viewReplies": { he: "צפה ב-{count} תגובות", en: "View {count} replies" },
+  "comments.replyingTo": { he: "מגיב ל-", en: "Replying to " },
 
   // Edit Profile
   "editProfile.title": { he: "עריכת פרופיל", en: "Edit Profile" },
@@ -292,6 +333,77 @@ export const translations = {
   "install.iosStep1": { he: "לחץ על כפתור השיתוף בתחתית הדפדפן", en: "Tap the Share button at the bottom of the browser" },
   "install.iosStep2": { he: 'בחר "הוסף למסך הבית"', en: 'Select "Add to Home Screen"' },
   "install.browserMenu": { he: "פתח את תפריט הדפדפן ובחר \"הוסף למסך הבית\"", en: "Open browser menu and select \"Add to Home Screen\"" },
+
+  // Account status
+  "account.blocked": { he: "החשבון שלך נחסם", en: "Your Account is Blocked" },
+  "account.frozen": { he: "החשבון שלך מוקפא", en: "Your Account is Frozen" },
+  "account.blockedDesc": { he: "החשבון שלך נחסם על ידי מנהל. צור קשר לברור.", en: "Your account has been blocked by an admin. Contact support for help." },
+  "account.frozenDesc": { he: "החשבון שלך הוקפא זמנית. צור קשר לברור.", en: "Your account has been temporarily frozen. Contact support for help." },
+  "account.signOut": { he: "התנתק", en: "Sign Out" },
+
+  // Messages
+  "messages.title": { he: "הודעות", en: "Messages" },
+  "messages.searchPlaceholder": { he: "חפש שיחה...", en: "Search conversations..." },
+  "messages.sendFirst": { he: "שלח הודעה ראשונה 👋", en: "Send the first message 👋" },
+  "messages.typePlaceholder": { he: "הקלד הודעה...", en: "Type a message..." },
+  "messages.noConversations": { he: "אין הודעות עדיין", en: "No messages yet" },
+  "messages.noConversationsDesc": { he: "שלח הודעה מפרופיל של שחקן", en: "Send a message from a player's profile" },
+  "messages.noResults": { he: "לא נמצאו שיחות", en: "No conversations found" },
+  "messages.newConversation": { he: "שיחה חדשה", en: "New conversation" },
+
+  // Stories
+  "stories.myStory": { he: "הסטורי שלי", en: "Your story" },
+  "stories.newStory": { he: "סטורי חדש", en: "New Story" },
+  "stories.maxLength": { he: "סרטון מקסימלי 15 שניות", en: "Max video length is 15 seconds" },
+  "stories.uploadFailed": { he: "שגיאה בהעלאה", en: "Upload failed" },
+  "stories.posted": { he: "הסטורי עלה! 🎉", en: "Story posted! 🎉" },
+  "stories.gallery": { he: "גלריה", en: "Gallery" },
+  "stories.gallerySubtitle": { he: "בחר מהטלפון או מהמחשב", en: "Choose from device" },
+  "stories.uploadPhotos": { he: "העלאת תמונות", en: "Upload Photos" },
+  "stories.uploadPhotosSubtitle": { he: "תמונה מהמכשיר", en: "Image from device" },
+  "stories.recordVideo": { he: "הקלטת וידאו", en: "Record Video" },
+  "stories.recordVideoSubtitle": { he: "עד 15 שניות", en: "Up to 15 seconds" },
+  "stories.takeSelfie": { he: "צילום סלפי", en: "Take Selfie" },
+  "stories.takeSelfieSubtitle": { he: "מצלמה קדמית", en: "Front camera" },
+  "stories.cloudSubtitle": { he: "בחר מהענן", en: "Choose from cloud" },
+  "stories.cloudComingSoon": { he: "Google Drive יהיה זמין בקרוב", en: "Google Drive coming soon" },
+  "stories.addCaption": { he: "הוסף כיתוב...", en: "Add a caption..." },
+  "stories.uploading": { he: "מעלה...", en: "Uploading..." },
+  "stories.postStory": { he: "פרסם סטורי", en: "Post Story" },
+
+  // Offline
+  "offline.noConnection": { he: "אין חיבור לאינטרנט", en: "No internet connection" },
+
+  // Video Action Sheet
+  "action.copyLink": { he: "📋 העתק קישור", en: "📋 Copy Link" },
+  "action.linkCopied": { he: "הקישור הועתק", en: "Link copied" },
+  "action.notInterested": { he: "🚫 לא מעניין", en: "🚫 Not Interested" },
+  "action.notInterestedConfirm": { he: "הבנו, נציג פחות כאלה", en: "Got it, we'll show less like this" },
+  "action.report": { he: "🚨 דווח", en: "🚨 Report" },
+  "action.blockUser": { he: "🔇 חסום משתמש", en: "🔇 Block User" },
+  "action.deletePost": { he: "🗑️ מחק פוסט", en: "🗑️ Delete Post" },
+  "action.selectReason": { he: "בחר סיבה", en: "Select a reason" },
+  "action.reportSubmitted": { he: "הדיווח נשלח", en: "Report submitted" },
+  "action.blockConfirm": { he: "חסום משתמש?", en: "Block this user?" },
+  "action.blockDesc": { he: "לא תראה את התוכן שלהם יותר.", en: "You won't see their content." },
+  "action.userBlocked": { he: "המשתמש נחסם", en: "User blocked" },
+  "action.deleteConfirm": { he: "מחק פוסט?", en: "Delete this post?" },
+  "action.deleteDesc": { he: "הפוסט יימחק לצמיתות ולא ניתן יהיה לשחזר אותו.", en: "This post will be permanently deleted and cannot be recovered." },
+  "action.deleteError": { he: "שגיאה במחיקה", en: "Error deleting post" },
+  "action.postDeleted": { he: "הפוסט נמחק", en: "Post deleted" },
+  "action.block": { he: "חסום", en: "Block" },
+  "action.delete": { he: "מחק", en: "Delete" },
+
+  // Report reasons
+  "report.spam": { he: "ספאם", en: "Spam" },
+  "report.inappropriate": { he: "תוכן לא הולם", en: "Inappropriate content" },
+  "report.fake": { he: "מזויף", en: "Fake" },
+  "report.other": { he: "אחר", en: "Other" },
+
+  // Onflick page
+  "onflick.whatsapp": { he: "וואטסאפ", en: "WhatsApp" },
+  "onflick.phone": { he: "טלפון", en: "Phone" },
+  "onflick.email": { he: "אימייל", en: "Email" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

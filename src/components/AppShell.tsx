@@ -13,33 +13,27 @@ interface AppShellProps {
 
 const AppShell = ({ children }: AppShellProps) => {
   const { user, userStatus, signOut, userType, userTypeLoading } = useAuth();
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
 
-  // Activate badge count on home screen icon
   useBadgeCount();
 
-  // Onboarding: require role selection for authenticated users
   useEffect(() => {
     if (!user) return;
     if (userTypeLoading) return;
-
     const path = location.pathname;
     const onRoleOnboarding = path === "/onboarding/role";
     const onAuth = path === "/auth";
-
     if (!userType && !onRoleOnboarding && !onAuth) {
       navigate("/onboarding/role", { replace: true });
     }
-
     if (userType && onRoleOnboarding) {
       navigate("/", { replace: true });
     }
   }, [user, userType, userTypeLoading, location.pathname, navigate]);
 
-  // Show install prompt after login redirect
   useEffect(() => {
     if (user && location.pathname === "/" && localStorage.getItem("show-install-prompt") === "true") {
       localStorage.removeItem("show-install-prompt");
@@ -48,7 +42,6 @@ const AppShell = ({ children }: AppShellProps) => {
     }
   }, [user, location.pathname]);
 
-  // iOS: periodic install reminder (every 7 days) to prevent session loss
   useEffect(() => {
     if (!user) return;
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches || (window.navigator as any).standalone === true;
@@ -65,42 +58,29 @@ const AppShell = ({ children }: AppShellProps) => {
     return () => clearTimeout(timer);
   }, [user]);
 
-  // Block/freeze enforcement
   if (user && (userStatus === "blocked" || userStatus === "frozen") && location.pathname !== "/auth") {
     const isBlocked = userStatus === "blocked";
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center">
         <div className={`rounded-full p-6 mb-4 ${isBlocked ? "bg-destructive/10" : "bg-accent/10"}`}>
-          {isBlocked ? (
-            <Ban className="h-12 w-12 text-destructive" />
-          ) : (
-            <Snowflake className="h-12 w-12 text-accent" />
-          )}
+          {isBlocked ? <Ban className="h-12 w-12 text-destructive" /> : <Snowflake className="h-12 w-12 text-accent" />}
         </div>
         <h1 className="font-display text-2xl text-foreground mb-2">
-          {isBlocked
-            ? language === "he" ? "החשבון שלך נחסם" : "Your Account is Blocked"
-            : language === "he" ? "החשבון שלך מוקפא" : "Your Account is Frozen"}
+          {isBlocked ? t("account.blocked") : t("account.frozen")}
         </h1>
         <p className="text-muted-foreground text-sm mb-6 max-w-xs">
-          {isBlocked
-            ? language === "he" ? "החשבון שלך נחסם על ידי מנהל. צור קשר לברור." : "Your account has been blocked by an admin. Contact support for help."
-            : language === "he" ? "החשבון שלך הוקפא זמנית. צור קשר לברור." : "Your account has been temporarily frozen. Contact support for help."}
+          {isBlocked ? t("account.blockedDesc") : t("account.frozenDesc")}
         </p>
         <button
-          onClick={async () => {
-            await signOut();
-            navigate("/auth");
-          }}
+          onClick={async () => { await signOut(); navigate("/auth"); }}
           className="rounded-xl bg-secondary px-6 py-2.5 text-sm font-semibold text-foreground"
         >
-          {language === "he" ? "התנתק" : "Sign Out"}
+          {t("account.signOut")}
         </button>
       </div>
     );
   }
 
-  // Pages that should NOT show the desktop sidebar (fullscreen experiences)
   const noSidebarPaths = ["/auth", "/onboarding/role", "/reset-password"];
   const showSidebar = !noSidebarPaths.includes(location.pathname);
 
@@ -120,4 +100,3 @@ const AppShell = ({ children }: AppShellProps) => {
 };
 
 export default AppShell;
-
