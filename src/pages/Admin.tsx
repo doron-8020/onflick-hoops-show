@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Shield, Ban, Snowflake, CheckCircle, Trash2, Search, Users,
   BarChart3, Flag, BadgeCheck, Eye, Heart, MessageCircle, Video, TrendingUp,
-  UserPlus, Crown, ShieldCheck,
+  UserPlus, Crown, ShieldCheck, Image,
 } from "lucide-react";
+import MediaManager from "@/components/admin/MediaManager";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useAuth } from "@/contexts/AuthContext";
@@ -55,7 +56,7 @@ const statusConfig = {
   blocked: { icon: Ban, color: "text-destructive", bg: "bg-destructive/10", label: { he: "חסום", en: "Blocked" } },
 };
 
-type AdminTab = "users" | "moderation" | "analytics" | "verified" | "roles";
+type AdminTab = "users" | "moderation" | "analytics" | "verified" | "roles" | "media";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -209,6 +210,7 @@ const Admin = () => {
     { key: "moderation", icon: Flag, label: t("admin.moderation") },
     { key: "analytics", icon: BarChart3, label: t("admin.analytics") },
     { key: "verified", icon: BadgeCheck, label: t("admin.verified") },
+    { key: "media", icon: Image, label: language === "he" ? "מדיה" : "Media" },
   ];
 
   const getUserRole = (userId: string) => adminRoles.filter((r) => r.user_id === userId);
@@ -585,6 +587,9 @@ const Admin = () => {
             </div>
           </>
         )}
+
+        {/* MEDIA TAB */}
+        {activeTab === "media" && <MediaManager />}
       </div>
 
       <BottomNav />
