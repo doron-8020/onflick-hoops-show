@@ -23,7 +23,7 @@ interface ConversationItem {
 
 const Messages = () => {
   const { user } = useAuth();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,7 +58,6 @@ const Messages = () => {
       (profiles || []).map((p) => [p.user_id, p])
     );
 
-    // Get last message for each conversation
     const items: ConversationItem[] = [];
     for (const c of convos) {
       const otherId = c.user1_id === user.id ? c.user2_id : c.user1_id;
@@ -98,7 +97,6 @@ const Messages = () => {
     fetchConversations();
   }, [user]);
 
-  // Realtime subscription for new messages
   useEffect(() => {
     if (!user) return;
     const channel = supabase
@@ -121,7 +119,7 @@ const Messages = () => {
       <DesktopLayout>
         <div className="flex flex-col items-center justify-center min-h-screen px-6">
           <p className="text-muted-foreground">
-            {language === "he" ? "התחבר כדי לראות הודעות" : "Sign in to see messages"}
+            {t("auth.signInToMessages")}
           </p>
         </div>
         <BottomNav />
@@ -132,20 +130,19 @@ const Messages = () => {
   return (
     <DesktopLayout>
       <div className="min-h-screen bg-background pb-20">
-        {/* Header */}
         <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border px-4 py-3">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate(-1)} className="text-foreground">
               <ArrowLeft className="h-5 w-5 rtl:rotate-180" />
             </button>
             <h1 className="font-display text-xl text-foreground">
-              {language === "he" ? "הודעות" : "Messages"}
+              {t("messages.title")}
             </h1>
           </div>
           <div className="mt-3 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder={language === "he" ? "חפש שיחה..." : "Search conversations..."}
+              placeholder={t("messages.searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="ps-9 bg-secondary border-0"
@@ -153,7 +150,6 @@ const Messages = () => {
           </div>
         </div>
 
-        {/* Stories */}
         <StoriesBar />
         <div className="border-b border-border" />
 
@@ -167,14 +163,10 @@ const Messages = () => {
               <MessageCircle className="h-8 w-8 text-muted-foreground" />
             </div>
             <p className="text-muted-foreground text-sm">
-              {search
-                ? language === "he" ? "לא נמצאו שיחות" : "No conversations found"
-                : language === "he" ? "אין הודעות עדיין" : "No messages yet"}
+              {search ? t("messages.noResults") : t("messages.noConversations")}
             </p>
             <p className="text-muted-foreground/60 text-xs mt-1">
-              {language === "he"
-                ? "שלח הודעה מפרופיל של שחקן"
-                : "Send a message from a player's profile"}
+              {t("messages.noConversationsDesc")}
             </p>
           </div>
         ) : (
@@ -201,7 +193,7 @@ const Messages = () => {
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground truncate mt-0.5">
-                    {conv.lastMessage || (language === "he" ? "שיחה חדשה" : "New conversation")}
+                    {conv.lastMessage || t("messages.newConversation")}
                   </p>
                 </div>
                 {conv.unreadCount > 0 && (

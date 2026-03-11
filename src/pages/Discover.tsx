@@ -98,7 +98,7 @@ const SuggestedPlayerCard = ({ player }: { player: PlayerProfile }) => {
         )}
       </div>
       <p className="text-xs font-semibold text-foreground truncate w-full text-center">{displayName}</p>
-      <p className="text-[10px] text-muted-foreground">{player.followers_count} followers</p>
+      <p className="text-[10px] text-muted-foreground">{player.followers_count} {t("discover.followersCount")}</p>
     </a>
   );
 };

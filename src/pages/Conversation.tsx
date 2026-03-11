@@ -21,7 +21,7 @@ interface Message {
 const Conversation = () => {
   const { conversationId } = useParams<{ conversationId: string }>();
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
@@ -218,7 +218,7 @@ const Conversation = () => {
           ) : messages.length === 0 ? (
             <div className="flex items-center justify-center py-20">
               <p className="text-muted-foreground text-sm">
-                {language === "he" ? "שלח הודעה ראשונה 👋" : "Send the first message 👋"}
+                {t("messages.sendFirst")}
               </p>
             </div>
           ) : (
@@ -241,8 +241,8 @@ const Conversation = () => {
                     <div
                       className={`max-w-[75%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
                         isMe
-                          ? "bg-primary text-primary-foreground rounded-br-md"
-                          : "bg-secondary text-foreground rounded-bl-md"
+                          ? "bg-primary text-primary-foreground rounded-be-md"
+                          : "bg-secondary text-foreground rounded-bs-md"
                       }`}
                     >
                       {msg.content}
@@ -262,7 +262,7 @@ const Conversation = () => {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={language === "he" ? "הקלד הודעה..." : "Type a message..."}
+              placeholder={t("messages.typePlaceholder")}
               className="flex-1 bg-secondary border-0 rounded-full px-4"
             />
             <Button

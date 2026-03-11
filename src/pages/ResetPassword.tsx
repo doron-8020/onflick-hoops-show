@@ -10,18 +10,16 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isRecovery, setIsRecovery] = useState(false);
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for recovery event from Supabase
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
         setIsRecovery(true);
       }
     });
 
-    // Also check URL hash for type=recovery
     const hash = window.location.hash;
     if (hash.includes("type=recovery")) {
       setIsRecovery(true);
@@ -37,14 +35,14 @@ const ResetPassword = () => {
       return;
     }
     if (password !== confirmPassword) {
-      toast.error(language === "he" ? "הסיסמאות לא תואמות" : "Passwords don't match");
+      toast.error(t("reset.passwordsMismatch"));
       return;
     }
     setLoading(true);
     try {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
-      toast.success(language === "he" ? "הסיסמה עודכנה בהצלחה!" : "Password updated successfully!");
+      toast.success(t("reset.passwordUpdated"));
       navigate("/");
     } catch (error: any) {
       toast.error(error.message || t("auth.error"));
@@ -57,10 +55,10 @@ const ResetPassword = () => {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
         <p className="text-foreground text-center mb-4">
-          {language === "he" ? "קישור לא תקין או שפג תוקפו." : "Invalid or expired reset link."}
+          {t("reset.invalidLink")}
         </p>
         <button onClick={() => navigate("/auth")} className="text-primary font-semibold text-sm">
-          {language === "he" ? "חזרה להתחברות" : "Back to Sign In"}
+          {t("reset.backToSignIn")}
         </button>
       </div>
     );
@@ -77,16 +75,16 @@ const ResetPassword = () => {
 
       <div className="w-full max-w-sm">
         <h1 className="font-display text-3xl text-center text-foreground mb-2">
-          {language === "he" ? "איפוס סיסמה" : "Reset Password"}
+          {t("auth.resetPassword")}
         </h1>
         <p className="text-sm text-muted-foreground text-center mb-8">
-          {language === "he" ? "הכנס סיסמה חדשה" : "Enter your new password"}
+          {t("reset.enterNewPassword")}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="password"
-            placeholder={language === "he" ? "סיסמה חדשה" : "New password"}
+            placeholder={t("reset.newPassword")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -96,7 +94,7 @@ const ResetPassword = () => {
           />
           <input
             type="password"
-            placeholder={language === "he" ? "אימות סיסמה" : "Confirm password"}
+            placeholder={t("reset.confirmPassword")}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
@@ -112,12 +110,12 @@ const ResetPassword = () => {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                {language === "he" ? "מעדכן..." : "Updating..."}
+                {t("reset.updating")}
               </span>
             ) : (
               <span className="flex items-center justify-center gap-2">
                 <Check className="h-4 w-4" />
-                {language === "he" ? "עדכן סיסמה" : "Update Password"}
+                {t("reset.updatePassword")}
               </span>
             )}
           </button>

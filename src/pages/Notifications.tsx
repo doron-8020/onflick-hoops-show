@@ -41,12 +41,12 @@ const Notifications = () => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
     if (mins < 1) return t("notifications.now");
-    if (mins < 60) return language === "he" ? `לפני ${mins}${t("notifications.min")}` : `${mins}${t("notifications.min")} ago`;
+    if (mins < 60) return language === "he" ? `${t("notifications.ago")} ${mins}${t("notifications.min")}` : `${mins}${t("notifications.min")} ${t("notifications.ago")}`;
     const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return language === "he" ? `לפני ${hrs}${t("notifications.hour")}` : `${hrs}${t("notifications.hour")} ago`;
+    if (hrs < 24) return language === "he" ? `${t("notifications.ago")} ${hrs}${t("notifications.hour")}` : `${hrs}${t("notifications.hour")} ${t("notifications.ago")}`;
     const days = Math.floor(hrs / 24);
-    if (days < 7) return language === "he" ? `לפני ${days} ${t("notifications.days")}` : `${days} ${t("notifications.days")} ago`;
-    return language === "he" ? `לפני ${Math.floor(days / 7)} ${t("notifications.weeks")}` : `${Math.floor(days / 7)} ${t("notifications.weeks")} ago`;
+    if (days < 7) return language === "he" ? `${t("notifications.ago")} ${days} ${t("notifications.days")}` : `${days} ${t("notifications.days")} ${t("notifications.ago")}`;
+    return language === "he" ? `${t("notifications.ago")} ${Math.floor(days / 7)} ${t("notifications.weeks")}` : `${Math.floor(days / 7)} ${t("notifications.weeks")} ${t("notifications.ago")}`;
   };
 
   useEffect(() => {
