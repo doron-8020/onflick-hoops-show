@@ -273,7 +273,7 @@ const StoryViewer = ({ group, onClose }: StoryViewerProps) => {
         </Avatar>
         <div className="flex-1 min-w-0">
           <span className="text-white text-sm font-semibold">{group.displayName}</span>
-          <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary text-primary-foreground">
+          <span className="ms-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary text-primary-foreground">
             STORY
           </span>
         </div>
@@ -393,7 +393,7 @@ const StoryViewer = ({ group, onClose }: StoryViewerProps) => {
         )}
 
         {/* Like button (always visible) */}
-        <button onClick={toggleLike} className="ml-auto p-2">
+        <button onClick={toggleLike} className="ms-auto p-2">
           <Heart
             className={`h-6 w-6 transition-colors ${liked ? "text-red-500 fill-red-500" : "text-white"}`}
           />

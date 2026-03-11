@@ -108,7 +108,7 @@ const Analytics = () => {
         {/* Header */}
         <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border px-4 py-3 flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="text-foreground">
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5 rtl:rotate-180" />
           </button>
           <BarChart3 className="h-5 w-5 text-primary" />
           <h1 className="font-display text-xl text-foreground">

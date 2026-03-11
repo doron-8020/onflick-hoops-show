@@ -168,7 +168,7 @@ const Auth = () => {
               required
               minLength={6}
               dir="ltr"
-              className="w-full rounded-xl bg-secondary px-4 py-3.5 pr-12 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary transition-shadow"
+              className="w-full rounded-xl bg-secondary px-4 py-3.5 pe-12 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary transition-shadow"
             />
             <button
               type="button"

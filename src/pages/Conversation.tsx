@@ -182,7 +182,7 @@ const Conversation = () => {
         {/* Header */}
         <div className="shrink-0 border-b border-border bg-background/95 backdrop-blur-xl px-4 py-3 flex items-center gap-3 z-40">
           <button onClick={() => navigate("/messages")} className="text-foreground">
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5 rtl:rotate-180" />
           </button>
           {otherProfile && (
             <button

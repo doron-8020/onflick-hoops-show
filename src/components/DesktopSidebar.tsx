@@ -44,7 +44,7 @@ const DesktopSidebar = () => {
   }, [location.pathname]);
 
   return (
-    <aside className="hidden md:flex flex-col w-[240px] shrink-0 h-screen sticky top-0 border-r border-border bg-background px-3 py-6">
+    <aside className="hidden md:flex flex-col w-[240px] shrink-0 h-screen sticky top-0 border-e border-border bg-background px-3 py-6">
       {/* Logo */}
       <Link to="/" className="px-3 mb-8">
         <span className="font-display text-2xl text-primary tracking-wider">ONFLICK</span>
@@ -67,7 +67,7 @@ const DesktopSidebar = () => {
               <item.icon className="h-6 w-6 shrink-0" strokeWidth={isActive ? 2 : 1.5} />
               <span>{item.label}</span>
               {isNotif && unreadCount > 0 && (
-                <span className="ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-bold text-primary-foreground">
+                <span className="ms-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-bold text-primary-foreground">
                   {unreadCount > 99 ? "99+" : unreadCount}
                 </span>
               )}

@@ -136,7 +136,7 @@ const Messages = () => {
         <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border px-4 py-3">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate(-1)} className="text-foreground">
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5 rtl:rotate-180" />
             </button>
             <h1 className="font-display text-xl text-foreground">
               {language === "he" ? "הודעות" : "Messages"}
@@ -148,7 +148,7 @@ const Messages = () => {
               placeholder={language === "he" ? "חפש שיחה..." : "Search conversations..."}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-secondary border-0"
+              className="ps-9 bg-secondary border-0"
             />
           </div>
         </div>

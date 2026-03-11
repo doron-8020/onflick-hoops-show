@@ -254,8 +254,8 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         )}
       </AnimatePresence>
 
-      {/* RIGHT side action column */}
-      <div className="absolute right-3 flex flex-col items-center gap-4 z-10" style={{ bottom: "calc(88px + env(safe-area-inset-bottom, 0px))" }} onClick={(e) => e.stopPropagation()}>
+      {/* Side action column — end side (right in LTR, left in RTL) */}
+      <div className="absolute end-3 flex flex-col items-center gap-4 z-10" style={{ bottom: "calc(88px + env(safe-area-inset-bottom, 0px))" }} onClick={(e) => e.stopPropagation()}>
         {/* Avatar */}
         {video.user_id && (
           <button onClick={() => { haptic(10); navigate(`/player/${video.user_id}`); }} className="relative mb-1">
@@ -332,10 +332,10 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
         )}
       </div>
 
-      {/* Bottom-left info area */}
-      <div className="absolute left-3 right-[72px] z-10" style={{ bottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
+      {/* Bottom info area — start side (left in LTR, right in RTL) */}
+      <div className="absolute start-3 end-[72px] z-10" style={{ bottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
         {/* Gradient readability overlay */}
-        <div className="absolute inset-0 -left-3 -bottom-[72px] -right-[72px] pointer-events-none" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 40%, transparent 100%)" }} />
+        <div className="absolute inset-0 -start-3 -bottom-[72px] -end-[72px] pointer-events-none" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 40%, transparent 100%)" }} />
 
         <div className="relative">
           {/* Username + Follow */}
