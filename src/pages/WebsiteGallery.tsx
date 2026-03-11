@@ -4,8 +4,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import FloatingNav from "@/components/website/FloatingNav";
 import VideoHero from "@/components/website/VideoHero";
 import WebsiteFooter from "@/components/website/WebsiteFooter";
-import FloatingNav from "@/components/website/FloatingNav";
-import WebsiteFooter from "@/components/website/WebsiteFooter";
 
 const fade = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } };
 
