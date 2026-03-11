@@ -196,6 +196,14 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
+  .safe-left {
+    padding-left: env(safe-area-inset-left, 0px);
+  }
+
+  .safe-right {
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
   /* FIX #36: Scale-in animation for badges and icons */
   @keyframes scale-in-center {
     0% {

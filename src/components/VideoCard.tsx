@@ -255,7 +255,7 @@ const VideoCard = ({ video, isLiked: initialLiked = false }: VideoCardProps) => 
       </AnimatePresence>
 
       {/* RIGHT side action column */}
-      <div className="absolute right-3 bottom-[88px] flex flex-col items-center gap-4 z-10" onClick={(e) => e.stopPropagation()}>
+      <div className="absolute right-3 flex flex-col items-center gap-4 z-10" style={{ bottom: "calc(88px + env(safe-area-inset-bottom, 0px))" }} onClick={(e) => e.stopPropagation()}>
         {/* Avatar */}
         {video.user_id && (
           <button onClick={() => { haptic(10); navigate(`/player/${video.user_id}`); }} className="relative mb-1">

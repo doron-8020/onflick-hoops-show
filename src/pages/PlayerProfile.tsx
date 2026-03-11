@@ -362,6 +362,7 @@ const PlayerProfile = () => {
 
       <BottomNav />
     </div>
+    </div>
   );
 };
 
