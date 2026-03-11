@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import FloatingNav from "@/components/website/FloatingNav";
+import VideoHero from "@/components/website/VideoHero";
 import WebsiteFooter from "@/components/website/WebsiteFooter";
 
 const fade = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } };
@@ -51,30 +52,15 @@ const WebsiteContact = () => {
     <div className="min-h-screen bg-black text-white">
       <FloatingNav />
 
-      {/* Hero */}
-      <section className="relative pt-32 pb-16 px-6">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent" />
-        <div className="relative max-w-4xl mx-auto text-center">
-          <motion.h1
-            className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider mb-6"
-            initial="hidden"
-            animate="visible"
-            variants={fade}
-            transition={{ duration: 0.8 }}
-          >
+      <VideoHero
+        videoId="6nwz_zx5jGo"
+        title={
+          <>
             GET IN <span className="text-primary">TOUCH</span>
-          </motion.h1>
-          <motion.p
-            className="text-lg text-white/60 max-w-xl mx-auto"
-            initial="hidden"
-            animate="visible"
-            variants={fade}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            Have a question, want to collaborate, or just want to say what's up? We'd love to hear from you.
-          </motion.p>
-        </div>
-      </section>
+          </>
+        }
+        subtitle="Have a question, want to collaborate, or just want to say what's up? We'd love to hear from you."
+      />
 
       <section className="px-6 pb-24">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
