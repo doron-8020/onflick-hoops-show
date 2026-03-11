@@ -38,17 +38,17 @@ const formatCount = (n: number) => {
 };
 
 /* ───── Grid cell ───── */
-const GridCell = ({
-  video,
-  index,
-  onClick,
-  scoutViews,
-}: {
+const GridCell = forwardRef<HTMLDivElement, {
   video: any;
   index: number;
   onClick: () => void;
   scoutViews?: number;
-}) => {
+}>(({
+  video,
+  index,
+  onClick,
+  scoutViews,
+}, ref) => {
   const isGallery = video.media_type === "gallery";
   const isImage = video.media_type === "image";
 
