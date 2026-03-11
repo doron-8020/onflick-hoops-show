@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import VideoFrameThumb from "@/components/VideoFrameThumb";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
