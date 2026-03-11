@@ -29,6 +29,7 @@ import { useStories } from "@/hooks/useStories";
 import StoryViewer from "@/components/StoryViewer";
 import StoryUploadModal from "@/components/StoryUploadModal";
 import { AnimatePresence } from "framer-motion";
+import { toast as sonnerToast } from "sonner";
 
 type TabKey = "liked" | "videos" | "repost" | "private" | "saved" | "about";
 
