@@ -713,7 +713,7 @@ const Profile = () => {
           {activeTab === "repost" && (
             <>
               {repostedVideos.length > 0 ? (
-                <div className="grid grid-cols-3" style={{ gap: 1.5 }}>
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5" style={{ gap: 1.5 }}>
                   {repostedVideos.map((video, index) => (
                     <GridCell
                       key={video.id}
