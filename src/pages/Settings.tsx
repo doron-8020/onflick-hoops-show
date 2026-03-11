@@ -285,7 +285,7 @@ const Settings = () => {
         {/* Admin */}
         {user && isAdmin && (
           <Section title={language === "he" ? "ניהול" : "Admin"}>
-            <Row icon={Shield} label={t("admin.title")} onClick={() => navigate("/admin")} />
+            <Row icon={Shield} label={t("admin.title")} onClick={() => window.open("https://onflick-hoops-show.lovable.app/admin", "_blank")} />
           </Section>
         )}
 
