@@ -1,56 +1,150 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Play, Users, Camera, Trophy } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowRight, Users, Camera, Trophy } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
 
 const fade = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } };
+
+const VideoHero = ({
+  videoId,
+  title,
+  subtitle,
+}: {
+  videoId: string;
+  title: React.ReactNode;
+  subtitle?: string;
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const textY = useTransform(scrollYProgress, [0, 0.5], [0, 80]);
+
+  return (
+    <section ref={ref} className="relative h-screen w-full overflow-hidden">
+      {/* Background video */}
+      <motion.div className="absolute inset-0" style={{ scale }}>
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&iv_load_policy=3&disablekb=1`}
+          className="absolute top-1/2 left-1/2 w-[180vw] h-[180vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+          style={{ border: 0 }}
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+          title="Hero Video"
+        />
+      </motion.div>
+
+      {/* Overlays */}
+      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black to-transparent" />
+
+      {/* Content */}
+      <motion.div
+        className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6"
+        style={{ opacity, y: textY }}
+      >
+        <motion.h1
+          className="font-display text-6xl md:text-8xl lg:text-[10rem] leading-[0.85] tracking-wider mb-6 drop-shadow-2xl"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {title}
+        </motion.h1>
+        {subtitle && (
+          <motion.p
+            className="text-lg md:text-2xl text-white/70 max-w-2xl mb-10 font-body"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            {subtitle}
+          </motion.p>
+        )}
+        <motion.div
+          className="flex flex-wrap gap-4 justify-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+        >
+          <Link
+            to="/auth"
+            className="rounded-full bg-primary px-8 py-3.5 text-base font-bold text-primary-foreground hover:bg-primary/90 transition-all hover:scale-105 flex items-center gap-2"
+          >
+            Get Started <ArrowRight className="h-5 w-5" />
+          </Link>
+        </motion.div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          className="absolute bottom-10 left-1/2 -translate-x-1/2"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+        >
+          <div className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-1.5">
+            <motion.div
+              className="w-1.5 h-1.5 rounded-full bg-white/70"
+              animate={{ y: [0, 16, 0] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+            />
+          </div>
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+};
+
+/** Floating nav that goes transparent on scroll */
+const FloatingNav = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <header
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-black/80 backdrop-blur-md border-b border-white/10"
+          : "bg-transparent border-b border-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+        <span className="font-display text-3xl text-primary tracking-wider">ONFLICK</span>
+        <Link
+          to="/"
+          className="rounded-full bg-primary px-5 py-2 text-sm font-bold text-primary-foreground hover:bg-primary/90 transition-colors"
+        >
+          Open App
+        </Link>
+      </div>
+    </header>
+  );
+};
 
 const Website = () => {
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Nav */}
-      <header className="fixed top-0 inset-x-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-          <span className="font-display text-3xl text-primary tracking-wider">ONFLICK</span>
-          <Link
-            to="/"
-            className="rounded-full bg-primary px-5 py-2 text-sm font-bold text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            Open App
-          </Link>
-        </div>
-      </header>
+      <FloatingNav />
 
-      {/* Hero */}
-      <section className="relative flex items-center justify-center min-h-screen px-6 pt-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-black to-black" />
-        <motion.div
-          className="relative z-10 text-center max-w-4xl mx-auto"
-          initial="hidden"
-          animate="visible"
-          variants={fade}
-          transition={{ duration: 0.8 }}
-        >
-          <h1 className="font-display text-6xl md:text-8xl lg:text-9xl leading-none mb-6 tracking-wider">
-            YOUR GAME.<br />
+      {/* Full-screen Video Hero */}
+      <VideoHero
+        videoId="6nwz_zx5jGo"
+        title={
+          <>
+            YOUR GAME.
+            <br />
             <span className="text-primary">YOUR STAGE.</span>
-          </h1>
-          <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-10">
-            The basketball media platform where players showcase highlights, 
-            connect with scouts, and build their brand.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link
-              to="/auth"
-              className="rounded-full bg-primary px-8 py-3.5 text-base font-bold text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-2"
-            >
-              Get Started <ArrowRight className="h-5 w-5" />
-            </Link>
-            <button className="rounded-full border border-white/20 px-8 py-3.5 text-base font-bold text-white hover:bg-white/10 transition-colors flex items-center gap-2">
-              <Play className="h-5 w-5" /> Watch Demo
-            </button>
-          </div>
-        </motion.div>
-      </section>
+          </>
+        }
+        subtitle="The basketball media platform where players showcase highlights, connect with scouts, and build their brand."
+      />
 
       {/* Features */}
       <section className="py-24 px-6">
