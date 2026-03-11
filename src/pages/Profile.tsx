@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo, forwardRef } from "react";
+import { useEffect, useState, useRef, useMemo, forwardRef, useCallback } from "react";
 
 import {
   Grid3X3,
@@ -16,6 +16,7 @@ import {
   Heart,
   Share2,
   Pencil,
+  Trash2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
