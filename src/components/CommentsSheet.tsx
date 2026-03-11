@@ -62,7 +62,7 @@ const CommentRow = ({
   onToggleLike: (comment: Comment) => void;
   isReply?: boolean;
 }) => {
-  const name = comment.profiles?.display_name || (language === "he" ? "אנונימי" : "Anonymous");
+  const name = comment.profiles?.display_name || t("comments.anonymous");
   return (
     <div className={`flex gap-3 group ${isReply ? "ms-10" : ""}`}>
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full overflow-hidden bg-muted">
