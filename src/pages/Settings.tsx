@@ -167,7 +167,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-24 md:pb-4">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border safe-top">
         <div className="mx-auto max-w-lg flex items-center gap-3 px-4 py-3">
