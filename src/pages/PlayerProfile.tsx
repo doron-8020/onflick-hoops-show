@@ -290,7 +290,7 @@ const PlayerProfile = () => {
       <div className="min-h-[40vh]">
         {activeTab === "videos" &&
           (videos.length > 0 ? (
-            <div className="grid grid-cols-3 gap-px">
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-px">
               {videos.map((video, index) => {
                 const isGallery = video.media_type === "gallery";
                 const isImage = video.media_type === "image";

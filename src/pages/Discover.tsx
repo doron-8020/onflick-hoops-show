@@ -304,7 +304,7 @@ const Discover = () => {
               </div>
             ) : videos.length > 0 ? (
               <>
-                <div className="columns-2 gap-2 px-2">
+                <div className="columns-2 md:columns-3 gap-2 px-2">
                   {videos.map((video, index) => (
                     <div key={video.id} className="mb-2 break-inside-avoid overflow-hidden rounded-xl bg-card cursor-pointer group" onClick={() => openFullScreen(index)}>
                       <div className={`relative w-full overflow-hidden ${getHeightClass(index)}`}>

@@ -302,7 +302,7 @@ const CommentsSheet = ({ videoId, open, onOpenChange }: CommentsSheetProps) => {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="h-[70vh] rounded-t-2xl flex flex-col p-0 bg-background"
+        className="h-[70vh] md:h-[60vh] rounded-t-2xl flex flex-col p-0 bg-background max-w-[480px] mx-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-center pt-3 pb-1">
