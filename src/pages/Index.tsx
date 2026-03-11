@@ -93,9 +93,12 @@ const Index = () => {
     const { data, error } = await query;
     if (!error && data) {
       let typed = data as unknown as VideoWithProfile[];
-      // Filter out blocked users
+      // Filter out blocked users and not-interested videos
       if (blockedIds.size > 0) {
         typed = typed.filter((v) => !blockedIds.has(v.user_id));
+      }
+      if (notInterestedIds.size > 0) {
+        typed = typed.filter((v) => !notInterestedIds.has(v.id));
       }
       setVideos((prev) => append ? [...prev, ...typed] : typed);
       setHasMore(typed.length === PAGE_SIZE);
