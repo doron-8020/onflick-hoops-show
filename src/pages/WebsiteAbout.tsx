@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Target, Heart, Zap, Users } from "lucide-react";
 import FloatingNav from "@/components/website/FloatingNav";
+import VideoHero from "@/components/website/VideoHero";
 import WebsiteFooter from "@/components/website/WebsiteFooter";
 
 const fade = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } };
@@ -11,23 +12,15 @@ const WebsiteAbout = () => {
     <div className="min-h-screen bg-black text-white">
       <FloatingNav />
 
-      {/* Hero */}
-      <section className="relative pt-32 pb-20 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent" />
-        <div className="relative max-w-4xl mx-auto text-center">
-          <motion.h1
-            className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider mb-6"
-            initial="hidden"
-            animate="visible"
-            variants={fade}
-            transition={{ duration: 0.8 }}
-          >
+      <VideoHero
+        videoId="6nwz_zx5jGo"
+        title={
+          <>
             ABOUT <span className="text-primary">ONFLICK</span>
-          </motion.h1>
-          <motion.p
-            className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto"
-            initial="hidden"
-            animate="visible"
+          </>
+        }
+        subtitle="We're a basketball media company on a mission to give every player a stage."
+      />
             variants={fade}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
