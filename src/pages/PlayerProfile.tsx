@@ -308,6 +308,8 @@ const PlayerProfile = () => {
                 >
                   {thumbSrc ? (
                     <img src={thumbSrc} className="h-full w-full object-cover" alt="" loading="lazy" />
+                  ) : video.video_url ? (
+                    <video src={video.video_url + "#t=0.5"} className="h-full w-full object-cover" muted preload="metadata" playsInline />
                   ) : (
                     <div className="h-full w-full bg-secondary flex items-center justify-center">
                       <Play className="h-3 w-3 text-foreground" />
