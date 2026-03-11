@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useBadgeCount } from "@/hooks/useBadgeCount";
 import InstallPrompt from "@/components/InstallPrompt";
+import DesktopSidebar from "@/components/DesktopSidebar";
 import { Ban, Snowflake } from "lucide-react";
 
 interface AppShellProps {
