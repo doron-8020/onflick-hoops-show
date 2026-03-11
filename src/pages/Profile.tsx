@@ -348,6 +348,33 @@ const Profile = () => {
     }
   };
 
+  const handleDeleteVideo = useCallback(async (videoId: string) => {
+    const { data: video } = await supabase.from("videos").select("video_url, gallery_urls").eq("id", videoId).single();
+    const { error } = await supabase.from("videos").delete().eq("id", videoId);
+    if (error) {
+      sonnerToast.error(t("action.deleteError"));
+      return;
+    }
+    // Clean up storage
+    if (video) {
+      try {
+        const urls: string[] = [];
+        if (video.video_url) urls.push(video.video_url);
+        if (video.gallery_urls) urls.push(...(video.gallery_urls as string[]));
+        for (const url of urls) {
+          const match = url.match(/\/storage\/v1\/object\/public\/videos\/(.+)/);
+          if (match) await supabase.storage.from("videos").remove([match[1]]);
+        }
+      } catch {}
+    }
+    sonnerToast.success(t("action.postDeleted"));
+    // Remove from all local state lists
+    setVideos(prev => prev.filter(v => v.id !== videoId));
+    setSavedVideos(prev => prev.filter(v => v.id !== videoId));
+    setRepostedVideos(prev => prev.filter(v => v.id !== videoId));
+    setLikedVideos(prev => prev.filter(v => v.id !== videoId));
+  }, [t]);
+
   const totalLikes = useMemo(() => videos.reduce((sum, v) => sum + (v.likes_count || 0), 0), [videos]);
   const totalShares = useMemo(() => videos.reduce((sum, v) => sum + (v.shares_count || 0), 0), [videos]);
   const totalReposts = useMemo(() => videos.reduce((sum, v) => sum + (v.reposts_count || 0), 0), [videos]);
