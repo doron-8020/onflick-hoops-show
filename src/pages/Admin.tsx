@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Shield, Ban, Snowflake, CheckCircle, Trash2, Search, Users,
   BarChart3, Flag, BadgeCheck, Eye, Heart, MessageCircle, Video, TrendingUp,
-  UserPlus, Crown, ShieldCheck,
+  UserPlus, Crown, ShieldCheck, Image,
 } from "lucide-react";
+import MediaManager from "@/components/admin/MediaManager";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useAuth } from "@/contexts/AuthContext";
