@@ -348,8 +348,8 @@ const Profile = () => {
   const handle = `@${(profile?.display_name || "player").toLowerCase().replace(/\s+/g, "")}`;
 
   return (
-    <div className="min-h-screen bg-black pb-24">
-      <div className="mx-auto max-w-lg">
+    <div className="min-h-screen bg-black pb-24 md:pb-4">
+      <div className="mx-auto max-w-[480px]">
         {/* ── Header ── */}
         <div
           className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 transition-all duration-300 ${
