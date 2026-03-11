@@ -167,16 +167,32 @@ const Create = () => {
         });
         if (insertError) throw insertError;
       } else {
-        totalBytes = selectedFile!.size;
+        totalBytes = selectedFile!.size + (coverFile?.size || 0);
         const fileExt = selectedFile!.name.split(".").pop();
         const filePath = `${user.id}/${Date.now()}.${fileExt}`;
         const { error: uploadError } = await supabase.storage.from("videos").upload(filePath, selectedFile!);
         if (uploadError) throw uploadError;
-        setUploadProgress(100);
+        uploadedBytes += selectedFile!.size;
+        setUploadProgress(Math.round((uploadedBytes / totalBytes) * 100));
         const { data: { publicUrl } } = supabase.storage.from("videos").getPublicUrl(filePath);
+        
+        let thumbnailUrl: string | null = mediaType === "image" ? publicUrl : null;
+        
+        // Upload cover image if selected for video
+        if (coverFile && mediaType === "video") {
+          const coverExt = coverFile.name.split(".").pop();
+          const coverPath = `${user.id}/${Date.now()}-cover.${coverExt}`;
+          const { error: coverError } = await supabase.storage.from("videos").upload(coverPath, coverFile);
+          if (coverError) throw coverError;
+          uploadedBytes += coverFile.size;
+          setUploadProgress(Math.round((uploadedBytes / totalBytes) * 100));
+          const { data: { publicUrl: coverUrl } } = supabase.storage.from("videos").getPublicUrl(coverPath);
+          thumbnailUrl = coverUrl;
+        }
+        
         const { error: insertError } = await supabase.from("videos").insert({
           user_id: user.id, title: title.trim(), caption: caption.trim() || null,
-          video_url: publicUrl, thumbnail_url: mediaType === "image" ? publicUrl : null,
+          video_url: publicUrl, thumbnail_url: thumbnailUrl,
           tags: allTags.length > 0 ? allTags : null, media_type: mediaType, privacy,
         });
         if (insertError) throw insertError;
