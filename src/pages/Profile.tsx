@@ -123,7 +123,8 @@ const GridCell = forwardRef<HTMLDivElement, {
       <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
     </div>
   );
-};
+});
+GridCell.displayName = "GridCell";
 
 const Profile = () => {
   const { user, loading: authLoading } = useAuth();
