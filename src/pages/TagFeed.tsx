@@ -92,7 +92,7 @@ const TagFeed = () => {
         <div className="fixed top-0 inset-x-0 z-50 safe-top md:start-[240px]">
           <div className="mx-auto w-full max-w-[480px] flex items-center gap-3 px-4 py-3 bg-background/90 backdrop-blur-sm">
             <button onClick={() => navigate(-1)} className="p-1">
-              <ArrowRight className={`h-5 w-5 text-foreground ${isRTL ? "" : "rotate-180"}`} />
+              <ArrowLeft className="h-5 w-5 text-foreground rtl:rotate-180" />
             </button>
             <div>
               <h1 className="font-display text-lg text-foreground">#{tagName}</h1>
