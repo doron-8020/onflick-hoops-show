@@ -115,7 +115,7 @@ const Index = () => {
     setLoading(false);
     setLoadingMore(false);
     setNewPostsCount(0);
-  }, [user, activeTab, blockedIds]);
+  }, [user, activeTab, blockedIds, notInterestedIds]);
 
   useEffect(() => {
     const tab = searchParams.get("tab");
