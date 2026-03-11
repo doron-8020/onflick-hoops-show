@@ -83,7 +83,7 @@ const CommentRow = ({
         <p className="text-sm text-foreground mt-0.5 break-words">{comment.content}</p>
         {!isReply && (
           <button onClick={() => onReply(comment)} className="text-[11px] text-muted-foreground hover:text-foreground mt-1">
-            {language === "he" ? "הגב" : "Reply"}
+            {t("comments.reply")}
           </button>
         )}
       </div>
