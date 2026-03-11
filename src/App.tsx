@@ -91,10 +91,12 @@ const App = () => (
     <ThemeProvider>
       <LanguageProvider>
         <MuteProvider>
-          <TooltipProvider>
+          <RemoteConfigProvider>
             <Toaster />
             <Sonner />
             <OfflineBanner />
+            <MaintenanceScreen />
+            <AppBanner />
             <BrowserRouter>
               <AuthProvider>
                 <OGTagUpdater />
