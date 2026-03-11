@@ -57,6 +57,7 @@ const GridCell = forwardRef<HTMLDivElement, {
 }, ref) => {
   const [showMenu, setShowMenu] = useState(false);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { t } = useLanguage();
   const isGallery = video.media_type === "gallery";
   const isImage = video.media_type === "image";
 
