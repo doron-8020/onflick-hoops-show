@@ -44,7 +44,7 @@ const DesktopSidebar = () => {
   }, [location.pathname]);
 
   return (
-    <aside className="hidden md:flex flex-col w-[240px] shrink-0 h-screen sticky top-0 border-r border-border bg-background px-3 py-6">
+    <aside className="hidden md:flex flex-col w-[240px] shrink-0 h-screen sticky top-0 border-e border-border bg-background px-3 py-6">
       {/* Logo */}
       <Link to="/" className="px-3 mb-8">
         <span className="font-display text-2xl text-primary tracking-wider">ONFLICK</span>
