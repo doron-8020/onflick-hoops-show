@@ -288,7 +288,7 @@ const Discover = () => {
 
             {!showSearch && topPlayers.length > 0 && (
               <div className="px-4 pb-3">
-                <h2 className="text-sm font-bold text-foreground mb-2">{language === "he" ? "שחקנים מובילים 🔥" : "Top Players 🔥"}</h2>
+                <h2 className="text-sm font-bold text-foreground mb-2">{t("discover.topPlayers")}</h2>
                 <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
                   {topPlayers.map((p) => <SuggestedPlayerCard key={p.user_id} player={p} />)}
                 </div>
