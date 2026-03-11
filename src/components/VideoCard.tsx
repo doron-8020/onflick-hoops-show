@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CommentsSheet from "./CommentsSheet";
 import GalleryCarousel from "./GalleryCarousel";
 import SoundWheel from "./SoundWheel";
-import VideoActionSheet from "./VideoActionSheet";
+
 
 interface VideoCardProps {
   video: {
