@@ -74,6 +74,24 @@ const Auth = () => {
     return "Professional";
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail.trim()) return;
+    setResetLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast.success(language === "he" ? "נשלח אימייל לאיפוס סיסמה!" : "Password reset email sent!");
+      setShowForgotPassword(false);
+    } catch (error: any) {
+      toast.error(error.message || t("auth.error"));
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
       <button
