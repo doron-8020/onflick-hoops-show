@@ -123,11 +123,6 @@ const App = () => (
                       <Route path="/onboarding/role" element={<RoleOnboarding />} />
                       <Route path="/reset-password" element={<ResetPassword />} />
                       <Route path="/terms" element={<Terms />} />
-                      <Route path="/website" element={<Website />} />
-                      <Route path="/website/about" element={<WebsiteAbout />} />
-                      <Route path="/website/gallery" element={<WebsiteGallery />} />
-                      <Route path="/website/contact" element={<WebsiteContact />} />
-                      <Route path="/website/feed" element={<WebsiteFeed />} />
                       <Route path="/privacy" element={<PrivacyPolicy />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
