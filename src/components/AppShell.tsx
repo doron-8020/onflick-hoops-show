@@ -82,8 +82,7 @@ const AppShell = ({ children }: AppShellProps) => {
   }
 
   const noSidebarPaths = ["/auth", "/onboarding/role", "/reset-password"];
-  const isWebsite = location.pathname.startsWith("/website");
-  const showSidebar = !noSidebarPaths.includes(location.pathname) && !isWebsite;
+  const showSidebar = !noSidebarPaths.includes(location.pathname);
 
   return (
     <>
