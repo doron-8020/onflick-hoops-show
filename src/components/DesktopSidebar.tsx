@@ -1,4 +1,4 @@
-import { Home, Search, Plus, Bell, User, MessageCircle, Settings, Globe } from "lucide-react";
+import { Home, Search, Plus, Bell, User, MessageCircle, Settings } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
